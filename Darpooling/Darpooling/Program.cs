@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Darpooling
 {
-    class User
+    public class User
     {
         enum Sex {f, m};
         int userId;
@@ -17,6 +17,19 @@ namespace Darpooling
         Boolean smoker;
         DateTime signupDate;
         String whereabouts;
+
+        public User(String name) 
+        {
+            this.name = name;
+        }
+
+        public String Name 
+        {
+            get 
+            {
+                return name;
+            }
+         }
     }
 
     class Path
@@ -40,6 +53,9 @@ namespace Darpooling
     {
         static void Main(string[] args)
         {
+            User antonio = new User("Antonio");
+            Console.WriteLine("Nome utente : {0}", antonio.Name);
+            Console.ReadLine();
         }
     }
 };
