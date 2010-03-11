@@ -19,7 +19,7 @@ namespace Darpooling
         String whereabouts;
     }
 
-
+    // Vediamo se funge
 
     class Path
     {
