@@ -18,7 +18,7 @@ namespace Darpooling
         DateTime signupDate;
         String whereabouts;
     }
-};
+
 
 
     class Path
