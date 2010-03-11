@@ -19,9 +19,6 @@ namespace Darpooling
         String whereabouts;
     }
 
-    // 
-    // Odio VS!
-
     class Path
     {
         Int32 id;
@@ -45,4 +42,4 @@ namespace Darpooling
         {
         }
     }
-}
+};
