@@ -1,5 +1,0 @@
-C:\Users\Antonio Lima\Documents\Visual Studio 2008\Projects\Darpooling\Darpooling\Darpooling\bin\Debug\Darpooling.exe
-C:\Users\Antonio Lima\Documents\Visual Studio 2008\Projects\Darpooling\Darpooling\Darpooling\bin\Debug\Darpooling.pdb
-C:\Users\Antonio Lima\Documents\Visual Studio 2008\Projects\Darpooling\Darpooling\Darpooling\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Antonio Lima\Documents\Visual Studio 2008\Projects\Darpooling\Darpooling\Darpooling\obj\Debug\Darpooling.exe
-C:\Users\Antonio Lima\Documents\Visual Studio 2008\Projects\Darpooling\Darpooling\Darpooling\obj\Debug\Darpooling.pdb
