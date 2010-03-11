@@ -19,8 +19,6 @@ namespace Darpooling
         String whereabouts;
     }
 
-
-
     class Path
     {
         Int32 id;
@@ -44,4 +42,4 @@ namespace Darpooling
         {
         }
     }
-}
+};
