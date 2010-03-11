@@ -19,7 +19,8 @@ namespace Darpooling
         String whereabouts;
     }
 
-    // Vediamo se funge
+    // 
+    // Odio VS!
 
     class Path
     {
