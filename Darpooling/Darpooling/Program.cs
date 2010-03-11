@@ -7,25 +7,18 @@ namespace Darpooling
 {
     class User
     {
+        enum Sex {f, m};
         int userId;
-
+        String username;
+        String name;
+        Sex sex;
+        DateTime birthDate;
+        String email;
+        Boolean smoker;
+        DateTime signupDate;
+        String whereabouts;
     }
-
-
-    create table Utenti (
-   ID          int primary key auto_increment,
-   userName    varchar(20) unique,
-   psw         varchar(32) not null,
-   nome        varchar(20) not null,
-   cognome     varchar(20) not null,
-   sesso       enum('f','m') not null,
-   dataNascita date not null,
-   email       varchar(40) not null unique,
-   dataPatente date not null,
-   fumatore    boolean not null,
-   dataIscriz  date not null,
-   localita    varchar(20) not null,
-);
+};
 
 
     class Path
