@@ -32,7 +32,7 @@ namespace Darpooling
          }
     }
 
-    class Trip
+    public class Trip
     {
         Int32 id;
         DateTime departureDateTime;

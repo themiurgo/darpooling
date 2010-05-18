@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F4A3AC15-EB39-4C80-A41D-A78150617DDE}</ProjectGuid>
+    <ProjectGuid>{35C29F3E-E20D-4F17-AD92-4776F3133F2B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Darpooling</RootNamespace>
-    <AssemblyName>Darpooling</AssemblyName>
+    <RootNamespace>ServiceNode</RootNamespace>
+    <AssemblyName>ServiceNode</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,17 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceNode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="ServiceNode\" />
+    <ProjectReference Include="..\..\Darpooling\Darpooling.csproj">
+      <Project>{F4A3AC15-EB39-4C80-A41D-A78150617DDE}</Project>
+      <Name>Darpooling</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darpooling", "Darpooling\Darpooling.csproj", "{F4A3AC15-EB39-4C80-A41D-A78150617DDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarPoolingService", "DarPoolingService\DarPoolingService.csproj", "{21E3BE9F-DF06-4D77-944C-F349E558145D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceNode", "ServiceNode\ServiceNode\ServiceNode.csproj", "{35C29F3E-E20D-4F17-AD92-4776F3133F2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,10 @@ Global
 		{F4A3AC15-EB39-4C80-A41D-A78150617DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4A3AC15-EB39-4C80-A41D-A78150617DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4A3AC15-EB39-4C80-A41D-A78150617DDE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21E3BE9F-DF06-4D77-944C-F349E558145D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21E3BE9F-DF06-4D77-944C-F349E558145D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21E3BE9F-DF06-4D77-944C-F349E558145D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21E3BE9F-DF06-4D77-944C-F349E558145D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35C29F3E-E20D-4F17-AD92-4776F3133F2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35C29F3E-E20D-4F17-AD92-4776F3133F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35C29F3E-E20D-4F17-AD92-4776F3133F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35C29F3E-E20D-4F17-AD92-4776F3133F2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
