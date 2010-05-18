@@ -54,7 +54,9 @@ namespace Darpooling
         static void Main(string[] args)
         {
             User antonio = new User("Antonio");
+            User daniele = new User("Daniele");
             Console.WriteLine("Nome utente : {0}", antonio.Name);
+            Console.WriteLine("Nome utente : {0}", daniele.Name);
             Console.ReadLine();
         }
     }
