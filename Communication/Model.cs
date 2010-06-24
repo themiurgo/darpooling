@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Runtime.Serialization;
+
 namespace Communication
 {
     class Location
@@ -74,5 +76,19 @@ namespace Communication
         int freeSits;
         String notes;
         Boolean modifiable;
+    }
+
+    [DataContract]
+    public class SimpleUser
+    {
+        [DataMember]
+        public string userName { get; set; }
+
+        [DataMember]
+        public string Name { get; set; }
+
+        [DataMember]
+        public int userId { get; set; }
+
     }
 }

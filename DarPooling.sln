@@ -2,10 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{B4DA5967-AA86-466F-B27B-216682D67932}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5} = {4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{16FC099C-EB1D-4BB8-B74B-B45EFB192333}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarPooling", "Service\DarPooling.csproj", "{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
