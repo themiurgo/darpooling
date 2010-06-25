@@ -1,5 +1,0 @@
-C:\Documents and Settings\Daniele\Desktop\TPA\darpooling\Service\bin\Service.dll
-C:\Documents and Settings\Daniele\Desktop\TPA\darpooling\Service\bin\Service.pdb
-C:\Documents and Settings\Daniele\Desktop\TPA\darpooling\Service\obj\Debug\ResolveAssemblyReference.cache
-C:\Documents and Settings\Daniele\Desktop\TPA\darpooling\Service\obj\Debug\Service.dll
-C:\Documents and Settings\Daniele\Desktop\TPA\darpooling\Service\obj\Debug\Service.pdb
