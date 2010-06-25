@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 namespace Communication
 {
-    class Location
+    public class Location
     {
         double latitude;
         double longitude;
