@@ -9,6 +9,7 @@ namespace Communication
     {
         Location location;
         string name;
+        
 
         public String Name
         {
@@ -22,9 +23,16 @@ namespace Communication
             }
         }
     }
+
+    public class UserNode : Node
+    {
+
+    }
+
     public class ServiceNode : Node
     {
         List<ServiceNode> neighbours;
+        List<UserNode> localUsers;
 
         public bool hasNeighbour(ServiceNode node)
         {
@@ -44,11 +52,20 @@ namespace Communication
         {
             neighbours.Remove(node);
         }
+
+        public bool hasUser(UserNode node)
+        {
+            return localUsers.Contains(node);
+        }
+
+        public void addUser(UserNode node)
+        {
+            localUsers.Add(node);
+        }
+
+        public void removeUser(UserNode node)
+        {
+            localUsers.Remove(node);
+        }
     }
-
-
-    public class Network
-    {
-    }
-
 }
