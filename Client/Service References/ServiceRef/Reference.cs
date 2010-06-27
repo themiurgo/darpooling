@@ -25,24 +25,24 @@ namespace Client.ServiceRef {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "3.0.0.0")]
-    public partial class DarPoolingClient : System.ServiceModel.ClientBase<Client.ServiceRef.IDarPooling>, Client.ServiceRef.IDarPooling {
+    public partial class ServiceNodeProxy : System.ServiceModel.ClientBase<Client.ServiceRef.IDarPooling>, Client.ServiceRef.IDarPooling {
         
-        public DarPoolingClient() {
+        public ServiceNodeProxy() {
         }
         
-        public DarPoolingClient(string endpointConfigurationName) : 
+        public ServiceNodeProxy(string endpointConfigurationName) : 
                 base(endpointConfigurationName) {
         }
         
-        public DarPoolingClient(string endpointConfigurationName, string remoteAddress) : 
+        public ServiceNodeProxy(string endpointConfigurationName, string remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public DarPoolingClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public ServiceNodeProxy(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public DarPoolingClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public ServiceNodeProxy(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
         }
         

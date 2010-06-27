@@ -2,15 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{B4DA5967-AA86-466F-B27B-216682D67932}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5} = {4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{16FC099C-EB1D-4BB8-B74B-B45EFB192333}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarPoolingTemp", "Service\DarPoolingTemp.csproj", "{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarPooling_2", "DarPooling\DarPooling_2.csproj", "{4E8B3C0C-3184-4DD5-88AC-787839878D7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DarPoolingNode", "DarPoolingNode\DarPoolingNode.csproj", "{DAC1635E-0ADE-4A44-9242-A9643C750A77}"
 EndProject
@@ -28,14 +21,6 @@ Global
 		{16FC099C-EB1D-4BB8-B74B-B45EFB192333}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16FC099C-EB1D-4BB8-B74B-B45EFB192333}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16FC099C-EB1D-4BB8-B74B-B45EFB192333}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4EBD4BF8-17A2-4231-A635-4C9E5DE2C4F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E8B3C0C-3184-4DD5-88AC-787839878D7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E8B3C0C-3184-4DD5-88AC-787839878D7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E8B3C0C-3184-4DD5-88AC-787839878D7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E8B3C0C-3184-4DD5-88AC-787839878D7A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DAC1635E-0ADE-4A44-9242-A9643C750A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DAC1635E-0ADE-4A44-9242-A9643C750A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAC1635E-0ADE-4A44-9242-A9643C750A77}.Release|Any CPU.ActiveCfg = Release|Any CPU

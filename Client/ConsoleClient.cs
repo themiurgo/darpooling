@@ -9,10 +9,52 @@ using Client.ServiceRef;
 
 namespace Client
 {
-    class ConsoleClient
+    public class ClientCore
+    {
+        private UserNode myNode;
+        private State state;
+
+        public ClientCore(UserNode clientNode)
+        {
+            state = new DisconnectedState();
+            myNode = clientNode;
+        }
+
+        public virtual void Join(string address)
+        {
+            state.Join(address);
+        }
+
+        public virtual void Unjoin()
+        {
+            state.Unjoin();
+        }
+
+        public virtual void InsertTrip(Trip trip)
+        {
+            state.NewTrip(trip);
+        }
+
+        public virtual void SearchTrip()
+        {
+            state.SearchTrip();
+        }
+    }
+
+    public class ConsoleClient
     {
         static void Main(string[] args)
         {
+            // Mock-up connessione
+            Communication.UserNode myNode = new UserNode();
+            ClientCore clientCore = new ClientCore(myNode);
+
+            clientCore.Join("localhost");
+
+
+            /*
+           
+           
             SimpleUser[] users = new SimpleUser[] 
             {
                 new SimpleUser { userId=1, Name="Antonio", userName="anto"},
@@ -23,7 +65,7 @@ namespace Client
 
             PrintUsers(users);
 
-            using (DarPoolingClient proxy = new DarPoolingClient())
+            using (ServiceNodeProxy proxy = new ServiceNodeProxy())
             {
                 Console.WriteLine("Processing...");
                 SimpleUser[]  result = proxy.GetSimpleUsers(users);
@@ -32,7 +74,8 @@ namespace Client
 
             }
             Console.ReadLine();
-
+             
+            */
         }
 
         static void PrintUsers(SimpleUser[] array)
@@ -40,9 +83,7 @@ namespace Client
             foreach (SimpleUser su in array)
             {
                 Console.WriteLine(" {0}, {1}, {2}", su.userId, su.Name, su.userName);
-            }
-        
-        
+            }        
         }
     }
 }
