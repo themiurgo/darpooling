@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="State.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="IDarPooling.cs" />
     <Compile Include="Model.cs" />

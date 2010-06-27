@@ -12,7 +12,7 @@ namespace Client
     public class ClientCore
     {
         private UserNode myNode;
-        private State state;
+        private IState state;
 
         public ClientCore(UserNode clientNode)
         {
@@ -20,24 +20,30 @@ namespace Client
             myNode = clientNode;
         }
 
-        public virtual void Join(string address)
+        public IState State
         {
-            state.Join(address);
+            get { return state; }
+            set { state = value; }
+        }
+        
+        public void Join(string address)
+        {
+            state.Join(this, address);
         }
 
-        public virtual void Unjoin()
+        public void Unjoin()
         {
-            state.Unjoin();
+            state.Unjoin(this);
         }
 
-        public virtual void InsertTrip(Trip trip)
+        public void InsertTrip(Trip trip)
         {
-            state.NewTrip(trip);
+            state.InsertTrip(this, trip);
         }
 
-        public virtual void SearchTrip()
+        public void SearchTrip()
         {
-            state.SearchTrip();
+            state.SearchTrip(this);
         }
     }
 
@@ -50,6 +56,9 @@ namespace Client
             ClientCore clientCore = new ClientCore(myNode);
 
             clientCore.Join("localhost");
+            clientCore.SearchTrip();
+            clientCore.InsertTrip(new Trip());
+            clientCore.Unjoin();
 
 
             /*
