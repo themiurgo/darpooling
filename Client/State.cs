@@ -21,6 +21,7 @@ namespace Client
         public bool Join(ClientCore context, string address)
         {
             // Connect operations
+            // ... Here should create proxy ...
             context.State = new ConnectedState();
             return true;
         }
@@ -71,6 +72,7 @@ namespace Client
 
         public bool LoginUser(ClientCore context, string username, string pw_hash)
         {
+            Console.WriteLine("LOGIN");
             return false;
         }
 

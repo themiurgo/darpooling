@@ -8,8 +8,7 @@ namespace Communication
     public class Node
     {
         Location location;
-        string name;
-        
+        string name;       
 
         public String Name
         {

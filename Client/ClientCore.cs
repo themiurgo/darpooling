@@ -31,6 +31,11 @@ namespace Client
             state.Join(this, address);
         }
 
+        public void LoginUser(string username, string pw_hash)
+        {
+            state.LoginUser(this, username, pw_hash);
+        }
+
         public void Unjoin()
         {
             state.Unjoin(this);
@@ -51,6 +56,7 @@ namespace Client
     {
         static void Main(string[] args)
         {
+            /*
             // Mock-up connessione
             Communication.UserNode myNode = new UserNode();
             ClientCore clientCore = new ClientCore(myNode);
@@ -59,7 +65,7 @@ namespace Client
             clientCore.SearchTrip();
             clientCore.InsertTrip(new Trip());
             clientCore.Unjoin();
-
+            */
 
             /*
            
