@@ -9,8 +9,8 @@ namespace Client
     public interface IState
     {
         bool Join(ClientCore context, string address);
-        bool RegisterUser(string username, string pw_hash);
-        bool LoginUser(string username, string pw_hash);
+        bool RegisterUser(ClientCore context, string username, string pw_hash);
+        bool LoginUser(ClientCore context, string username, string pw_hash);
         bool Unjoin(ClientCore context);
         bool InsertTrip(ClientCore context, Communication.Trip trip);
         bool SearchTrip(ClientCore context);
@@ -25,12 +25,12 @@ namespace Client
             return true;
         }
 
-        public bool RegisterUser(string username, string pw_hash)
+        public bool RegisterUser(ClientCore context, string username, string pw_hash)
         {
             return false;
         }
 
-        public bool LoginUser(string username, string pw_hash)
+        public bool LoginUser(ClientCore context, string username, string pw_hash)
         {
             return false;
         }
@@ -64,12 +64,12 @@ namespace Client
             return true;
         }
 
-        public bool RegisterUser(string username, string pw_hash)
+        public bool RegisterUser(ClientCore context, string username, string pw_hash)
         {
             return false;
         }
 
-        public bool LoginUser(string username, string pw_hash)
+        public bool LoginUser(ClientCore context, string username, string pw_hash)
         {
             return false;
         }
@@ -98,12 +98,12 @@ namespace Client
             return true;
         }
 
-        public bool RegisterUser(string username, string pw_hash)
+        public bool RegisterUser(ClientCore context, string username, string pw_hash)
         {
             return false;
         }
 
-        public bool LoginUser(string username, string pw_hash)
+        public bool LoginUser(ClientCore context, string username, string pw_hash)
         {
             return false;
         }
