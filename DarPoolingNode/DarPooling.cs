@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 
 using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 using Communication;
 using System.Runtime.Serialization;
 
@@ -46,6 +48,24 @@ namespace DarPoolingNode
             Type contract = typeof(IDarPooling);
 
             roma.AddServiceEndpoint(contract, bind, roma_addr);
+
+            BindingElement bindingElement = new HttpTransportBindingElement();
+            CustomBinding binding =
+               new CustomBinding(bindingElement);
+            // bindingElement = new BasicHttpBinding();
+            //CustomBinding binding = new CustomBinding(bindingElement);
+            //Uri tcpBaseAddress = new Uri("net.tcp://localhost:9000/");
+            //ServiceHost host = new ServiceHost(typeof(MyService), tcpBaseAddress);
+            ServiceMetadataBehavior metadataBehavior;
+            metadataBehavior = roma.Description.Behaviors.Find<ServiceMetadataBehavior>();
+            if (metadataBehavior == null)
+            {
+                metadataBehavior = new ServiceMetadataBehavior();
+                roma.Description.Behaviors.Add(metadataBehavior);
+            }
+            //roma.AddServiceEndpoint(typeof(IMetadataExchange), bind, "MEX");
+            //host.Open();
+
 
             roma.Open();
 
