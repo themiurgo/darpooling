@@ -67,6 +67,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="State.cs" />
+    <Compile Include="TestClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

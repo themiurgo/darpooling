@@ -14,6 +14,9 @@ namespace Communication
         [OperationContract]
         SimpleUser[] GetSimpleUsers(SimpleUser[] inputUsers);
 
+        [OperationContract]
+        string SayHello();
+
     }
 
 }

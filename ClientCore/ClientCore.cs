@@ -54,9 +54,9 @@ namespace Client
 
     public class ConsoleClient
     {
-        static void Main(string[] args)
+        /* static void Main(string[] args)
         {
-            /*
+            
             // Mock-up connessione
             Communication.UserNode myNode = new UserNode();
             ClientCore clientCore = new ClientCore(myNode);
@@ -90,8 +90,8 @@ namespace Client
             }
             Console.ReadLine();
              
-            */
-        }
+            
+        }*/
 
         static void PrintUsers(SimpleUser[] array)
         {
