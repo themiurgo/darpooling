@@ -29,6 +29,13 @@ namespace DarPoolingNode
             return result.ToArray();
         }
 
+
+        public string SayHello() 
+        {
+            return "Hi, dummy";
+        }
+
+
         // Start The Service Nodes
         static void Main(string[] args)
         {
