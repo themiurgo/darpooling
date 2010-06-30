@@ -5,6 +5,7 @@ using System.Text;
 
 using System.ServiceModel;
 using Communication;
+using System.Threading;
 
 namespace ClientCore
 {
@@ -24,7 +25,7 @@ namespace ClientCore
             ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
             IDarPooling client2 = channelFactory.CreateChannel(address);
 
-
+            Thread.Sleep(7000);
             Console.WriteLine(client.SayHello());
             Console.WriteLine(client2.SayHello());
             Console.ReadLine();
