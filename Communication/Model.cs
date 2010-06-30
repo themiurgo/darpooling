@@ -9,18 +9,48 @@ namespace Communication
 {
     public class Location
     {
-        double latitude;
-        double longitude;
-        double r = 6378;
+        private string name;
+        private double latitude;
+        private double longitude;
+
+        public Location(string locName)
+        {
+            Name = locName;
+        }
+
+        public Location(string locName, double latitude, double longitude)
+        {
+            Name = locName;
+            Latitude = latitude;
+            Longitude = longitude;
+        }
 
         public Location(double latitude, double longitude)
         {
-            this.latitude = latitude;
-            this.longitude = longitude;
-            Console.WriteLine("New Location {0} {1}", latitude, longitude);
+            Latitude = latitude;
+            Longitude = longitude;
         }
 
+        // Properties
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
 
+        public double Latitude
+        {
+            get { return latitude; }
+            set { latitude = value; }
+        }
+
+        public double Longitude
+        {
+            get { return longitude; }
+            set { longitude = value; }
+        }
+
+        // Methods
         public double distance(Location other)
         {
             double a1 = this.latitude;
@@ -28,10 +58,13 @@ namespace Communication
             double a2 = other.latitude;
             double b2 = other.longitude;
 
-
-            double a = Math.Acos(Math.Cos(a1) * Math.Cos(b1) * Math.Cos(a2) * Math.Cos(b2) + Math.Cos(a1) * Math.Sin(b1) * Math.Cos(a2) * Math.Sin(b2) + Math.Sin(a1) * Math.Sin(a2)) * r;
-            Console.WriteLine("{0}", a);
-            return a;
+            if ((a1 == 0 && b1 == 0) || (a2 == 0 && b2 == 0))
+                throw new System.Exception("One of the member has no coordinates");
+          
+            int earthRadius = 6378;
+            double ret = Math.Acos(Math.Cos(a1) * Math.Cos(b1) * Math.Cos(a2) * Math.Cos(b2) + Math.Cos(a1) * Math.Sin(b1) * Math.Cos(a2) * Math.Sin(b2) + Math.Sin(a1) * Math.Sin(a2)) * earthRadius;
+            Console.WriteLine("{0}", ret);
+            return ret;
         }
     }
 
