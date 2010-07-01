@@ -7,6 +7,9 @@ using System.Runtime.Serialization;
 
 namespace Communication
 {
+
+ 
+
     public class Location
     {
         private string name;
