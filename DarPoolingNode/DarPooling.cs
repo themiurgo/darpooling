@@ -25,7 +25,13 @@ namespace DarPoolingNode
 
         private DuplexChannelFactory<IPeer> _factory;
 //        private readonly AutoResetEvent _stopFlag = new AutoResetEvent(false);
- 
+
+        EndpointAddress n_address;
+        WSHttpBinding n_binding; 
+        ChannelFactory<IDarPooling> channelFactory; 
+        IDarPooling client; 
+
+
         public PeerNode(string nodeName)
         {
             this.nodeName = nodeName;
@@ -77,6 +83,16 @@ namespace DarPoolingNode
         
         }
 
+        public string CallNeighbour()
+        {
+            /* Verbose */
+            n_address = new EndpointAddress("http://localhost:1111/Milano");
+            n_binding = new WSHttpBinding();
+            channelFactory = new ChannelFactory<IDarPooling>(n_binding);
+            client = channelFactory.CreateChannel(n_address);
+            return client.SayHello();
+        }
+
         public void StopService()
         {
             Console.WriteLine("Closing the service host...");
@@ -85,6 +101,8 @@ namespace DarPoolingNode
                 ((ICommunicationObject)Channel).Close();
             if (_factory != null)
                 _factory.Close();
+            if ( channelFactory != null)
+                channelFactory.Close();
         }
         
         
@@ -169,12 +187,15 @@ namespace DarPoolingNode
 
             PeerNode p0 = (PeerNode) peers[0];
             PeerNode p1 = (PeerNode)peers[1];
+            
+            Console.WriteLine(p0.nodeName + " is calling Milano....");
+            string mex = p0.CallNeighbour();
+            Console.WriteLine("Got :" + mex);
+            //Console.WriteLine("\nEnabling WCF P2P. Please, wait...");
+            //p0.EnableP2P();
+            //p1.EnableP2P();
 
-            Console.WriteLine("\nEnabling WCF P2P. Please, wait...");
-            p0.EnableP2P();
-            p1.EnableP2P();
-
-            p1.Channel.Ping(p1.nodeName,message);
+            //p1.Channel.Ping(p1.nodeName,message);
         }
 
  
