@@ -23,7 +23,7 @@ namespace DarPoolingNode
 //        public IPeer Host;
         private ServiceHost host;
 
-//        private DuplexChannelFactory<IPeer> _factory;
+        private DuplexChannelFactory<IPeer> _factory;
 //        private readonly AutoResetEvent _stopFlag = new AutoResetEvent(false);
  
         public PeerNode(string nodeName)
@@ -48,35 +48,43 @@ namespace DarPoolingNode
             host.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
             
             host.Open();
-            Console.WriteLine(nodeName + "\t\tnode is now active. Waiting...");
-                       
+            Console.WriteLine(nodeName + "\t\tnode is now active.");        
             
-           /* var peer_binding = new NetPeerTcpBinding();
-            peer_binding.Security.Mode = SecurityMode.None;
+        }
 
-            var peer_endpoint = new ServiceEndpoint(
+        public void EnableP2P()
+        {
+
+            NetPeerTcpBinding peerBinding = new NetPeerTcpBinding();
+            peerBinding.Security.Mode = SecurityMode.None;
+
+            ServiceEndpoint peerEndpoint = new ServiceEndpoint(
                 ContractDescription.GetContract(typeof(IPeer)),
-                peer_binding,
-                new EndpointAddress("net.p2p://SimpleP2P"));
+                peerBinding,
+                new EndpointAddress("net.p2p://DarpoolingP2P")
+                );
 
-            Host = new DarPooling();
-
-            _factory = new DuplexChannelFactory<IPeer>(
-                new InstanceContext(Host),
-                peer_endpoint);
+            InstanceContext site = new InstanceContext(new DarPooling());
+            _factory = new DuplexChannelFactory<IPeer>(site, peerEndpoint);
 
             var channel = _factory.CreateChannel();
 
             ((ICommunicationObject)channel).Open();
 
-            // wait until after the channel is open to allow access.
-            Channel = channel;*/
+            // Wait until after the channel is open to allow access.
+            Channel = channel;   
+        
+        
         }
 
         public void StopService()
         {
             Console.WriteLine("Closing the service host...");
             host.Close();
+            if (Channel != null)
+                ((ICommunicationObject)Channel).Close();
+            if (_factory != null)
+                _factory.Close();
         }
         
         
@@ -128,9 +136,9 @@ namespace DarPoolingNode
         }
 
     
-        public void Ping(string sender, string message)
+        public void Ping( string sender, string message)
         {
-           Console.WriteLine("{0} says: {1}", sender, message);
+           Console.WriteLine("I received from {0} the following message: {1}", sender, message);
         }
         #endregion
 
@@ -144,16 +152,35 @@ namespace DarPoolingNode
             Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
             StartBackboneNodes();
 
-            Console.WriteLine("\nAll Service nodes are now Active \nPress enter to quit...");
+            Console.WriteLine("\nAll Service nodes are now Active");
+            Console.WriteLine("\n\n" + "Insert a message: ");
 
+            string tmp = Console.ReadLine();
+            TestPeers(tmp);
             Console.ReadLine();
+
+
             CloseBackboneNodes();
         }
 
 
+        public static void TestPeers(string message)
+        {
+
+            PeerNode p0 = (PeerNode) peers[0];
+            PeerNode p1 = (PeerNode)peers[1];
+
+            Console.WriteLine("\nEnabling WCF P2P. Please, wait...");
+            p0.EnableP2P();
+            p1.EnableP2P();
+
+            p1.Channel.Ping(p1.nodeName,message);
+        }
+
  
         public static void StartBackboneNodes()
         {
+            //string[] nodeNames = { "Catania" };
             string[] nodeNames = { "Chiasso", "Milano", "Roma", "Napoli", "Catania" };
         
             foreach (string name in nodeNames)
