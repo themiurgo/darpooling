@@ -19,4 +19,12 @@ namespace Communication
 
     }
 
+    //Contract for our network. It says we can 'ping'
+    [ServiceContract(CallbackContract = typeof(IPeer))]
+    public interface IPeer
+    {
+        [OperationContract(IsOneWay = true)]
+        void Ping(string sender, string message);
+    }
+
 }
