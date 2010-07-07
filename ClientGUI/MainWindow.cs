@@ -28,9 +28,9 @@ namespace ClientGUI
             connectDialog.ShowDialog();
         }
 
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
+        private void searchButton_Click(object sender, EventArgs e)
         {
-
-        }
+            searchTabControl.Controls.Add(new TabPage());
+        }  
     }
 }

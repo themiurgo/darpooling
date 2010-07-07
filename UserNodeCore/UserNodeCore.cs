@@ -9,12 +9,12 @@ using Client.ServiceRef;
 
 namespace Client
 {
-    public class ClientCore
+    public class UserNodeCore
     {
         private UserNode myNode;
         private IState state;
 
-        public ClientCore(UserNode clientNode)
+        public UserNodeCore(UserNode clientNode)
         {
             state = new DisconnectedState();
             myNode = clientNode;
