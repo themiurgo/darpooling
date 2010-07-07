@@ -17,6 +17,7 @@ namespace Communication
         [OperationContract]
         string SayHello();
 
+        
     }
 
     //Contract for our network. It says we can 'ping'

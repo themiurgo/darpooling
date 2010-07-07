@@ -92,13 +92,5 @@ namespace Client
              
             
         }*/
-
-        static void PrintUsers(SimpleUser[] array)
-        {
-            foreach (SimpleUser su in array)
-            {
-                Console.WriteLine(" {0}, {1}, {2}", su.userId, su.Name, su.userName);
-            }        
-        }
     }
 }
