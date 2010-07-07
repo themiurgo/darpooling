@@ -67,4 +67,37 @@ namespace Communication
             localUsers.Remove(node);
         }
     }
+
+    public class QueryMessage
+    {
+        private UserNode issuer;
+        private ServiceNode answerTo;
+
+        public QueryMessage(UserNode issuer)
+        {
+            this.issuer = issuer;
+        }
+
+    }
+
+    public class SearchTripQueryMessage : QueryMessage
+    {
+        private Location tripSource, tripDestination;
+
+        public SearchTripQueryMessage(UserNode issuer,
+            Location source, Location destination) :
+            base(issuer)
+        {
+            this.tripSource = source;
+            this.tripDestination = destination;
+        }
+    }
+
+    public class InsertTripQueryMessage : QueryMessage
+    {
+        public InsertTripQueryMessage(UserNode issuer) :
+            base(issuer)
+        {
+        }
+    }
 }
