@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Communication;
+using System.ServiceModel;
 
 namespace Client
 {
@@ -20,6 +21,12 @@ namespace Client
     {
         public bool Join(UserNodeCore context, string address)
         {
+            address = "http://localhost:1111/Milano";
+            WSHttpBinding binding = new WSHttpBinding();
+            ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
+            EndpointAddress endpointAddress = new EndpointAddress(address);
+            IDarPooling proxy = channelFactory.CreateChannel(endpointAddress);
+            // Console.WriteLine(proxy.SayHello());
             // Connect operations
             // ... Here should create proxy ...
             context.State = new ConnectedState();
