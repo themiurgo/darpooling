@@ -17,17 +17,16 @@ namespace DarPoolingNode
 
     public class ServiceNodeCore
     {
-        //private List<ServiceNode> neighbours;
-        //private List<UserNode> localUsers;
         private ServiceNode serviceNode;
         private ServiceHost serviceHost;
-        //private EndpointAddress address;
-        private WSHttpBinding binding;
+
         private Type contract;
-        private ChannelFactory<IDarPooling> channelFactory;
-        private IDarPooling client;
+        private WSHttpBinding binding;
         private ServiceMetadataBehavior behavior;
 
+        private IDarPooling client;
+        private ChannelFactory<IDarPooling> channelFactory;
+        
         public const string baseAddress = "http://localhost:1111/";
         public string nodeName { get; private set; }
 
@@ -73,10 +72,6 @@ namespace DarPoolingNode
         {
             Console.WriteLine("Closing the service host...");
             serviceHost.Close();
-            //if (Channel != null)
-            //    ((ICommunicationObject)Channel).Close();
-            //if (_factory != null)
-            //    _factory.Close();
             if (channelFactory != null)
                 channelFactory.Close();
         }
@@ -113,14 +108,12 @@ namespace DarPoolingNode
         }
     }
 
-   
+
     public class DarPoolingService : IDarPooling
     {
-        #region Interfaces Implementation
-
+    
         public SimpleUser[] GetSimpleUsers(SimpleUser[] inputUsers)
         {
-
             List<SimpleUser> result = new List<SimpleUser>();
             foreach (SimpleUser su in inputUsers)
             {
@@ -138,23 +131,12 @@ namespace DarPoolingNode
         {
             return "Hi, dummy";
         }
-
     
-        /* public void Ping( string sender, string message)
-        {
-           Console.WriteLine("I received from {0} the following message: {1}", sender, message);
-        }*/
-        #endregion
-
-
-
-
-
     }
     
     public class Launcher
     {
-        private static ArrayList peers = new ArrayList();
+        private static ArrayList nodes = new ArrayList();
     
         static void Main(string[] args)
         {
@@ -162,13 +144,17 @@ namespace DarPoolingNode
             StartBackboneNodes();
 
             Console.WriteLine("\nAll Service nodes are now Active");
+            Console.WriteLine("\nWaiting for incoming requests...");
+            
+            /*
             Console.WriteLine("\n\n" + "Insert a message: ");
-
             string tmp = Console.ReadLine();
-            TestPeers(tmp);
+            TestNodes(tmp);
             Console.ReadLine();
+            */
 
-
+            /* Press Enter to stop the services */
+            Console.ReadLine();
             CloseBackboneNodes();
         }
 
@@ -179,12 +165,12 @@ namespace DarPoolingNode
 
             foreach (string name in nodeNames)
             {
-                peers.Add(new ServiceNodeCore(name.ToUpper()));
+                nodes.Add(new ServiceNodeCore(name.ToUpper()));
             }
 
-            foreach (ServiceNodeCore peer in peers)
+            foreach (ServiceNodeCore node in nodes)
             {
-                peer.StartService();
+                node.StartService();
             }
 
             //peer.Channel.Ping(peer.Id, tmp);
@@ -193,32 +179,22 @@ namespace DarPoolingNode
 
         }
 
-        public static void TestPeers(string message)
+        public static void TestNodes(string message)
         {
 
-            ServiceNodeCore p0 = (ServiceNodeCore) peers[0];
-            ServiceNodeCore p1 = (ServiceNodeCore)peers[1];
+            ServiceNodeCore n0 = (ServiceNodeCore) nodes[0];
+            ServiceNodeCore n1 = (ServiceNodeCore)nodes[1];
             
-            Console.WriteLine(p0.nodeName + " is calling Milano....");
-            string mex = p0.CallNeighbour();
+            Console.WriteLine(n0.nodeName + " is calling Milano....");
+            string mex = n0.CallNeighbour();
             Console.WriteLine("Got :" + mex);
-            
-            //Console.WriteLine("\nEnabling WCF P2P. Please, wait...");
-            //p0.EnableP2P();
-            //p1.EnableP2P();
-
-            //p1.Channel.Ping(p1.nodeName,message);
         }
-
- 
-        
-
 
         public static void CloseBackboneNodes()
         {
-            foreach(ServiceNodeCore peer in peers)
+            foreach(ServiceNodeCore node in nodes)
             {
-                peer.StopService();
+                node.StopService();
             }
         }
 
