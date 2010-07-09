@@ -8,6 +8,7 @@ using System.Text;
 namespace Communication
 {
     // NOTE: If you change the interface name "IService1" here, you must also update the reference to "IService1" in Web.config.
+    //[ServiceContract(CallbackContract=typeof(IDarPoolingCallback))]
     [ServiceContract]
     public interface IDarPooling
     {
@@ -23,15 +24,13 @@ namespace Communication
         [OperationContract]
         string SayHello();
 
-        
     }
 
-    //Contract for our network. It says we can 'ping'
-    [ServiceContract(CallbackContract = typeof(IPeer))]
-    public interface IPeer
+    interface IDarPoolingCallback
     {
-        [OperationContract(IsOneWay = true)]
-        void Ping(string sender, string message);
+        [OperationContract]
+        void OnCallback();
     }
+
 
 }

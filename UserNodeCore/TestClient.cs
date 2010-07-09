@@ -26,8 +26,13 @@ namespace ClientCore
             IDarPooling client2 = channelFactory.CreateChannel(address);
 
             Thread.Sleep(7000);
-            Console.WriteLine(client.SayHello());
-            Console.WriteLine(client2.SayHello());
+            Console.WriteLine("*****  Test Client  *****");
+            Console.WriteLine("\n\nPress a key to start the communication");
+            Console.ReadLine();
+            client.SayHello();
+            Console.WriteLine();
+            //Console.WriteLine(client2.SayHello());
+            Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
 
 
