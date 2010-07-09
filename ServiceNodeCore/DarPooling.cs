@@ -38,7 +38,7 @@ namespace DarPoolingNode
 
         public void StartService()
         {
-            serviceNode = new ServiceNode();
+            serviceNode = new ServiceNode(new Location("Ragusa"), "Ragusa1");
 
             binding = new WSHttpBinding();
             contract = typeof(IDarPooling);

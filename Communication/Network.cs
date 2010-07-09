@@ -5,51 +5,76 @@ using System.Text;
 
 namespace Communication
 {
-    public class Node
+    /// <summary>
+    /// Abstract class representing a generic node in the network. A node is
+    /// characterized by a location and a username.
+    /// </summary>
+    public abstract class Node
     {
-        Location location;
-        string name;       
+        private Location location;
+        private string username;
 
-        public String Name
+        public Node(Location nodeLocation, string username)
+        {
+            this.location = nodeLocation;
+            this.username = username;
+        }
+
+        public String Username
         {
             get
             {
-                return name;
+                return username;
             }
             set
             {
-                name = value;
+                username = value;
             }
+        }
+
+        public Location Location
+        {
+            get { return location; }
+            set { location = value; }
         }
     }
 
     public class UserNode : Node
     {
+        public UserNode(Location nodeLocation, string username) :
+            base(nodeLocation, username)
+        {
+        }
 
     }
 
     public class ServiceNode : Node
     {
-        List<ServiceNode> neighbours;
-        List<UserNode> localUsers;
+        private List<ServiceNode> neighbours;
+        private List<UserNode> localUsers;
+
+        public ServiceNode(Location nodeLocation, string username) :
+            base(nodeLocation, username)
+        {
+        }
 
         public bool hasNeighbour(ServiceNode node)
         {
             return neighbours.Contains(node);
         }
 
-        public void addNeighbour(ServiceNode node)
+        public void addNeighbour(ServiceNode neighbourNode)
         {
-            neighbours.Add(node);
-            if (neighbours.Contains(node))
+            neighbours.Add(neighbourNode);
+            if (neighbours.Contains(neighbourNode))
             {
-                node.addNeighbour(this);
+                neighbourNode.addNeighbour(this);
             }
         }
 
-        public void removeNeighbour(ServiceNode node)
+        public void removeNeighbour(ServiceNode neighbour)
         {
-            neighbours.Remove(node);
+            neighbours.Remove(neighbour);
         }
 
         public bool hasUser(UserNode node)
@@ -95,7 +120,7 @@ namespace Communication
 
     public class InsertTripQueryMessage : QueryMessage
     {
-        public InsertTripQueryMessage(UserNode issuer) :
+        public InsertTripQueryMessage(UserNode issuer, Trip trip) :
             base(issuer)
         {
         }

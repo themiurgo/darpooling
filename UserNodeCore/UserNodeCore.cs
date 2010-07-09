@@ -19,31 +19,52 @@ namespace Client
         private UserNode myNode;
         private IState state;
 
+        /// <summary>
+        /// Setup a new UserNodeCore.
+        /// </summary>
+        /// <param name="clientNode">represents the UserNode and its settings.</param>
         public UserNodeCore(UserNode clientNode)
         {
             state = new DisconnectedState();
             myNode = clientNode;
         }
 
+        public UserNode UserNode
+        {
+            get { return myNode; }
+            set { }
+        }
+
+        /// <summary>
+        /// Represent the state of the connection to the network, according to
+        /// State pattern.
+        /// </summary>
         public IState State
         {
             get { return state; }
             set { state = value; }
         }
         
-        public void Join(string address)
+        /// <summary>
+        /// Join (connect) to the network, through a ServiceNode.
+        /// </summary>
+        /// <param name="serviceNodeAddress">address of the ServiceNode</param>
+        public void Join(string serviceNodeAddress)
         {
-            state.Join(this, address);
+            state.Join(this, serviceNodeAddress);
+        }
+
+        /// <summary>
+        /// Unjoin (disconnect) from the network.
+        /// </summary>
+        public void Unjoin()
+        {
+            state.Unjoin(this);
         }
 
         public void LoginUser(string username, string pw_hash)
         {
             state.LoginUser(this, username, pw_hash);
-        }
-
-        public void Unjoin()
-        {
-            state.Unjoin(this);
         }
 
         public void InsertTrip(Trip trip)

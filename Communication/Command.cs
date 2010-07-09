@@ -9,7 +9,7 @@ namespace Communication
 {
     public interface ICommand
     {
-        void execute();
+        void Execute();
     }
 
     /// <summary>
@@ -18,12 +18,27 @@ namespace Communication
     [DataContract]
     public abstract class Command : ICommand
     {
-        public void execute()
+        private ServiceNode remoteServiceNode;
+
+        public void Execute()
         {
         }
     }
 
-    public class JoinCommand : Command { }
+    public class JoinCommand : Command
+    {
+        private UserNode node;
+
+        public JoinCommand(UserNode node)
+        {
+            this.node = node;
+        }
+
+        public void Execute()
+        {
+
+        }
+    }
     public class UnjoinCommand : Command { }
     public class RegisterUserCommand : Command { }
     public class LoginUserCommand : Command { }
