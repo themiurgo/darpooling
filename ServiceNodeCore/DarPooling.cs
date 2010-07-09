@@ -10,6 +10,7 @@ using Communication;
 using System.Runtime.Serialization;
 
 using System.Collections;
+using System.Threading;
 
 
 namespace DarPoolingNode
@@ -136,6 +137,7 @@ namespace DarPoolingNode
 
         public string SayHello() 
         {
+            Thread.Sleep(4000);
             return "Hi, dummy";
         }
     
