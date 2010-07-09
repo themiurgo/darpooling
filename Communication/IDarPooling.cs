@@ -12,6 +12,12 @@ namespace Communication
     public interface IDarPooling
     {
         [OperationContract]
+        void SendCommand(Command command);
+
+        [OperationContract]
+        Result GetResult();
+
+        [OperationContract]
         SimpleUser[] GetSimpleUsers(SimpleUser[] inputUsers);
 
         [OperationContract]

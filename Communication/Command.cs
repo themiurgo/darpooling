@@ -9,21 +9,25 @@ namespace Communication
 {
     public interface ICommand
     {
+        void execute();
     }
 
     /// <summary>
     /// The command class allows arbitrary commands to be executed.
     /// </summary>
     [DataContract]
-    public class Command
+    public abstract class Command : ICommand
     {
-
+        public void execute()
+        {
+        }
     }
 
     public class JoinCommand : Command { }
     public class UnjoinCommand : Command { }
-    public class LoginCommand : Command { }
-    public class LogoutCommand : Command { }
+    public class RegisterUserCommand : Command { }
+    public class LoginUserCommand : Command { }
+    public class LogoutUserCommand : Command { }
     public class InsertTripCommand : Command { }
     public class SearchTripCOmmand : Command { }
 }
