@@ -26,9 +26,14 @@ namespace Client
             ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
             EndpointAddress endpointAddress = new EndpointAddress(address);
             IDarPooling proxy = channelFactory.CreateChannel(endpointAddress);
+
+            Command comm = new JoinCommand(context.UserNode);
+            proxy.SendCommand(comm);
             // Console.WriteLine(proxy.SayHello());
             // Connect operations
             // ... Here should create proxy ...
+
+            // Change state to connected
             context.State = new ConnectedState();
             return true;
         }
