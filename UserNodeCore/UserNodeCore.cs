@@ -9,6 +9,11 @@ using Client.ServiceRef;
 
 namespace Client
 {
+    /// <summary>
+    /// UserNodeCore class is composed of informations of UserNode plus the status
+    /// of its connection. Also, it allows to execute actions that will have
+    /// consequences on both the UserNode and the Darpooling network.
+    /// </summary>
     public class UserNodeCore
     {
         private UserNode myNode;
@@ -50,47 +55,5 @@ namespace Client
         {
             state.SearchTrip(this);
         }
-    }
-
-    public class ConsoleClient
-    {
-        /* static void Main(string[] args)
-        {
-            
-            // Mock-up connessione
-            Communication.UserNode myNode = new UserNode();
-            ClientCore clientCore = new ClientCore(myNode);
-
-            clientCore.Join("localhost");
-            clientCore.SearchTrip();
-            clientCore.InsertTrip(new Trip());
-            clientCore.Unjoin();
-            */
-
-            /*
-           
-           
-            SimpleUser[] users = new SimpleUser[] 
-            {
-                new SimpleUser { userId=1, Name="Antonio", userName="anto"},
-                new SimpleUser { userId=2, Name="Daniele", userName="dani"},
-                new SimpleUser { userId=100, Name="Follia", userName="folle"},
-            
-            };
-
-            PrintUsers(users);
-
-            using (ServiceNodeProxy proxy = new ServiceNodeProxy())
-            {
-                Console.WriteLine("Processing...");
-                SimpleUser[]  result = proxy.GetSimpleUsers(users);
-                Console.WriteLine("Result :");
-                PrintUsers(result);
-
-            }
-            Console.ReadLine();
-             
-            
-        }*/
     }
 }

@@ -111,6 +111,13 @@ namespace DarPoolingNode
 
     public class DarPoolingService : IDarPooling
     {
+        public void SendCommand(Communication.Command command) {}
+
+        public Communication.Result GetResult()
+        {
+            return new Result();
+        }
+        
     
         public SimpleUser[] GetSimpleUsers(SimpleUser[] inputUsers)
         {
