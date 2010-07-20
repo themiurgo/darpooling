@@ -50,16 +50,14 @@ namespace ClientCore
             WSDualHttpBinding binding = new WSDualHttpBinding();
             binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1");
             EndpointAddress address = new EndpointAddress("http://localhost:1111/Milano");
-            //InstanceContext context = new InstanceContext(callback);
+            
             DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(callback,binding,address);
             IDarPooling proxy = factory.CreateChannel();
 
-            //Thread.Sleep(7000);
             Console.WriteLine("*****  Test HTTP CALLBACK Client  *****");
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
             proxy.GetData("Gimme Trips");
-            //Console.WriteLine(client2.SayHello());
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
 

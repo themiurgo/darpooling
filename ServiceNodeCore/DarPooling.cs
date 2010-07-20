@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using System.Xml;
+
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
@@ -159,12 +161,54 @@ namespace DarPoolingNode
         static void Main(string[] args)
         {
             
-            StartBackboneNodes();
+            /*  StartBackboneNodes();
+                Console.ReadLine(); // Press Enter to stop the services
+                CloseBackboneNodes();
+            */
 
-            /* Press Enter to stop the services */
-            Console.ReadLine();
+            WriteXML();
+        }
+
+        public static void WriteXML()
+        {
+
+            string filename = @"..\..\..\config\chiasso.xml";
+            XmlDocument xmlDoc = new XmlDocument();
+
+            // Create a new XML file
+            XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
+            textWriter.Formatting = Formatting.Indented;
+            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+            textWriter.WriteComment("Configuration File for a DarPooling Service Node");
+            textWriter.WriteStartElement("configuration");
+            textWriter.Close();
             
-            CloseBackboneNodes();
+            xmlDoc.Load(filename);
+            XmlNode root = xmlDoc.DocumentElement;
+            XmlElement neighbours = xmlDoc.CreateElement("neighbours");
+            XmlElement neighbour = xmlDoc.CreateElement("neighbour");
+            //XmlText textNode = xmlDoc.CreateTextNode("hello");
+            //textNode.Value = "hello, world";
+
+            root.AppendChild(neighbours);
+            neighbours.AppendChild(neighbour);
+            neighbour.SetAttribute("Name", "Milano");
+            //neighbour.AppendChild(textNode);
+
+            //textNode.Value = "replacing hello world";
+            xmlDoc.Save(filename);
+
+         
+            // Read a document
+            XmlTextReader textReader = new XmlTextReader(filename);
+            // Read until end of file
+            while (textReader.Read())
+            {
+                Console.WriteLine(textReader.Value);   
+            }
+
+            
+
         }
 
         public static void StartBackboneNodes()
