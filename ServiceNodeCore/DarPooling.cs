@@ -22,7 +22,7 @@ namespace DarPoolingNode
         private ServiceHost serviceHost;
 
         private Type contract;
-        private WSHttpBinding binding;
+        private WSDualHttpBinding binding;
         private NetTcpBinding tcp_binding;
         private ServiceMetadataBehavior behavior;
 
@@ -43,7 +43,7 @@ namespace DarPoolingNode
         {
             serviceNode = new ServiceNode(new Location("Ragusa"), "Ragusa1");
 
-            binding = new WSHttpBinding();
+            binding = new WSDualHttpBinding();
             tcp_binding = new NetTcpBinding();
             contract = typeof(IDarPooling);
 
@@ -67,7 +67,7 @@ namespace DarPoolingNode
         public string CallNeighbour()
         {
             EndpointAddress n_address = new EndpointAddress("http://localhost:1111/Milano");
-            WSHttpBinding  n_binding = new WSHttpBinding();
+            WSDualHttpBinding  n_binding = new WSDualHttpBinding();
             channelFactory = new ChannelFactory<IDarPooling>(n_binding);
             client = channelFactory.CreateChannel(n_address);
             return client.SayHello();

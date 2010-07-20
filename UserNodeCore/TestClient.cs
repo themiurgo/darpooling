@@ -53,7 +53,8 @@ namespace ClientCore
         {
             /* Verbose */
             EndpointAddress address = new EndpointAddress("http://localhost:1111/Milano");
-            WSHttpBinding binding = new WSHttpBinding();
+            WSDualHttpBinding binding = new WSDualHttpBinding();
+            binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1");
             ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
             IDarPooling client2 = channelFactory.CreateChannel(address);
 
