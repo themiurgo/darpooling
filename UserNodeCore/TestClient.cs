@@ -11,11 +11,25 @@ using System.Threading;
 namespace ClientCore
 {
 
-    public class ClientCallback : ICallback
+    /// <summary>
+    /// This class implements the Callback interface, i.e. the set
+    /// of methods that the service will call back when the result
+    /// is ready.
+    /// </summary>
+    public class ClientCallback : IDarPoolingCallback
     {
         public void Notify(string value)
         {
             Console.WriteLine("Service says: " + value);
+        }
+
+        public void GetUsers(SimpleUser[] result)
+        { 
+            Console.WriteLine("These are the users that the Service has returned:");
+            foreach (SimpleUser s in result)
+            {
+                Console.WriteLine("Nick: {0} \t Real Name: {1}", s.userName, s.Name);
+            }
         }
     }
 
@@ -32,7 +46,7 @@ namespace ClientCore
 
         static void CallbackClient()
         {
-            ICallback callback = new ClientCallback();
+            IDarPoolingCallback callback = new ClientCallback();
             WSDualHttpBinding binding = new WSDualHttpBinding();
             binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1");
             EndpointAddress address = new EndpointAddress("http://localhost:1111/Milano");
@@ -41,24 +55,14 @@ namespace ClientCore
             IDarPooling proxy = factory.CreateChannel();
 
             //Thread.Sleep(7000);
-            Console.WriteLine("*****  Test TCP Client  *****");
+            Console.WriteLine("*****  Test HTTP CALLBACK Client  *****");
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
-            proxy.GetData("maaaao");
+            proxy.GetData("Hi, I'm a client");
             //Console.WriteLine(client2.SayHello());
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
 
-            
-            //ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
-            //var callback = new ClientCallback();
-            //var client3 = new (callback, binding, new EndpointAddress(""));
-      //var proxy = client3.ChannelFactory.CreateChannel();
-      //proxy.SayHello(); 
-      
-
-            
-            
         }
 
 
@@ -72,7 +76,7 @@ namespace ClientCore
             IDarPooling client2 = channelFactory.CreateChannel(address);
 
             //Thread.Sleep(7000);
-            Console.WriteLine("*****  Test TCP Client  *****");
+            Console.WriteLine("*****  Test TCP Client  (NO Callback) *****");
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
 
@@ -93,7 +97,7 @@ namespace ClientCore
             IDarPooling client2 = channelFactory.CreateChannel(address);
 
             //Thread.Sleep(7000);
-            Console.WriteLine("*****  Test HTTP Client  *****");
+            Console.WriteLine("*****  Test HTTP Client  (NO Callback) *****");
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
 

@@ -7,14 +7,21 @@ using System.Text;
 
 namespace Communication
 {
-
-    public interface ICallback
+    /// <summary>
+    /// This is the Callback interface.
+    /// The Client MUST implement it.
+    /// </summary>
+    public interface IDarPoolingCallback
     {
         [OperationContract(IsOneWay = true)]
         void Notify(string value);
+
+        [OperationContract(IsOneWay = true)]
+        void GetUsers(SimpleUser[] result);
+
     }
 
-    [ServiceContract(CallbackContract = typeof(ICallback), SessionMode=SessionMode.Required)]
+    [ServiceContract(CallbackContract = typeof(IDarPoolingCallback), SessionMode=SessionMode.Required)]
     public interface IDarPooling
     {
         [OperationContract]
