@@ -8,7 +8,13 @@ using System.Text;
 namespace Communication
 {
 
-    [ServiceContract]
+    public interface ICallback
+    {
+        [OperationContract(IsOneWay = true)]
+        void Notify(string value);
+    }
+
+    [ServiceContract(CallbackContract = typeof(ICallback), SessionMode=SessionMode.Required)]
     public interface IDarPooling
     {
         [OperationContract]
@@ -22,6 +28,9 @@ namespace Communication
 
         [OperationContract]
         string SayHello();
+
+        [OperationContract(IsOneWay = true)]
+        void GetData(string value);
 
     }
 
