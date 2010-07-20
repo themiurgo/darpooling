@@ -148,6 +148,17 @@ namespace DarPoolingNode
             //Thread.Sleep(4000);
             return "Hi, dummy";
         }
+
+        private string result;
+
+        public void GetData(string value)
+        {
+            Console.WriteLine("I received the following value: {0}", value);
+            result = string.Format("You entered: {0}", value);
+            Thread.Sleep(6000);
+            OperationContext.Current.GetCallbackChannel<ICallback>().Notify(result);
+        
+        }
     
     }
     

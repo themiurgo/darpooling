@@ -11,20 +11,54 @@ using System.Threading;
 namespace ClientCore
 {
 
+    public class ClientCallback : ICallback
+    {
+        public void Notify(string value)
+        {
+            Console.WriteLine("Service says: " + value);
+        }
+    }
+
+
     class Program
     {
         static void Main(string[] args)
         {
-            NoCallbackHTTPClient();
-            NoCallbackTCPClient();
-            //CallbackClient();
+            //NoCallbackHTTPClient();
+            //NoCallbackTCPClient();
+            CallbackClient();
         }
 
 
         static void CallbackClient()
-        { 
-        
-        
+        {
+            ICallback callback = new ClientCallback();
+            WSDualHttpBinding binding = new WSDualHttpBinding();
+            binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1");
+            EndpointAddress address = new EndpointAddress("http://localhost:1111/Milano");
+            //InstanceContext context = new InstanceContext(callback);
+            DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(callback,binding,address);
+            IDarPooling proxy = factory.CreateChannel();
+
+            //Thread.Sleep(7000);
+            Console.WriteLine("*****  Test TCP Client  *****");
+            Console.WriteLine("\n\nPress a key to start the communication");
+            Console.ReadLine();
+            proxy.GetData("maaaao");
+            //Console.WriteLine(client2.SayHello());
+            Console.WriteLine("\n\n\nClient is now ready to perform some other task");
+            Console.ReadLine();
+
+            
+            //ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
+            //var callback = new ClientCallback();
+            //var client3 = new (callback, binding, new EndpointAddress(""));
+      //var proxy = client3.ChannelFactory.CreateChannel();
+      //proxy.SayHello(); 
+      
+
+            
+            
         }
 
 
