@@ -110,6 +110,7 @@ namespace DarPoolingNode
     }
 
 
+    //[ServiceBehavior(ConcurrencyMode=ConcurrencyMode.Reentrant)]
     public class DarPoolingService : IDarPooling
     {
         public void SendCommand(Communication.Command command) {}
@@ -137,7 +138,10 @@ namespace DarPoolingNode
 
         public string SayHello() 
         {
-            Thread.Sleep(4000);
+            Console.WriteLine("I received a request");
+            //var callback = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
+            //callback.OnCallback();
+            //Thread.Sleep(4000);
             return "Hi, dummy";
         }
     
@@ -209,118 +213,3 @@ namespace DarPoolingNode
 
     } //End Class
 } //End Namespace
-
-
-/*
-public class PeerNode : Node
-{
-    public string nodeName { get; private set; }
-
-    public IPeer Channel;
-    //        public IPeer Host;
-    private ServiceHost host;
-
-    private DuplexChannelFactory<IPeer> _factory;
-    //        private readonly AutoResetEvent _stopFlag = new AutoResetEvent(false);
-
-    EndpointAddress n_address;
-    WSHttpBinding n_binding;
-    ChannelFactory<IDarPooling> channelFactory;
-    IDarPooling client;
-
-
-    public PeerNode(string nodeName)
-    {
-        this.nodeName = nodeName;
-    }
-
-    public void StartService()
-    {
-
-        WSHttpBinding bind = new WSHttpBinding();
-        Type contract = typeof(IDarPooling);
-
-        host = new ServiceHost(typeof(DarPooling), new Uri("http://localhost:1111/" + nodeName));
-
-        host.AddServiceEndpoint(contract, bind, "");
-
-        ServiceMetadataBehavior behavior = new ServiceMetadataBehavior();
-        behavior.HttpGetEnabled = true;
-
-        host.Description.Behaviors.Add(behavior);
-        host.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
-
-        host.Open();
-        Console.WriteLine(nodeName + "\t\tnode is now active.");
-
-    }
-
-    public void EnableP2P()
-    {
-
-        NetPeerTcpBinding peerBinding = new NetPeerTcpBinding();
-        peerBinding.Security.Mode = SecurityMode.None;
-
-        ServiceEndpoint peerEndpoint = new ServiceEndpoint(
-            ContractDescription.GetContract(typeof(IPeer)),
-            peerBinding,
-            new EndpointAddress("net.p2p://DarpoolingP2P")
-            );
-
-        InstanceContext site = new InstanceContext(new DarPooling());
-        _factory = new DuplexChannelFactory<IPeer>(site, peerEndpoint);
-
-        var channel = _factory.CreateChannel();
-
-        ((ICommunicationObject)channel).Open();
-
-        // Wait until after the channel is open to allow access.
-        Channel = channel;
-
-
-    }
-
-    public string CallNeighbour()
-    {
-        // Verbose
-        n_address = new EndpointAddress("http://localhost:1111/Milano");
-        n_binding = new WSHttpBinding();
-        channelFactory = new ChannelFactory<IDarPooling>(n_binding);
-        client = channelFactory.CreateChannel(n_address);
-        return client.SayHello();
-    }
-
-    public void StopService()
-    {
-        Console.WriteLine("Closing the service host...");
-        host.Close();
-        if (Channel != null)
-            ((ICommunicationObject)Channel).Close();
-        if (_factory != null)
-            _factory.Close();
-        if (channelFactory != null)
-            channelFactory.Close();
-    }
-
-
-    public void DisplayHostInfo()
-    {
-        Console.WriteLine();
-        Console.WriteLine("**** Host Info ****");
-        Console.WriteLine("Uri: {0}", host.State);
-    }
-            public void Run()
-            {
-                Console.WriteLine("[ Starting Service ]");
-                StartService();
-
-                Console.WriteLine("[ Service Started ]");
-                _stopFlag.WaitOne();
-
-                Console.WriteLine("[ Stopping Service ]");
-                StopService();
-
-                Console.WriteLine("[ Service Stopped ]");
-            }
-     
-}*/
