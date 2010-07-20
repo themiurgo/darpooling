@@ -7,15 +7,7 @@ using System.Text;
 
 namespace Communication
 {
-    /*
-    public interface IDarPoolingCallback
-    {
-        [OperationContract]
-        void OnCallback();
-    }*/
-    
-    
-    //[ServiceContract(CallbackContract=typeof(IDarPoolingCallback))]
+
     [ServiceContract]
     public interface IDarPooling
     {
@@ -32,14 +24,5 @@ namespace Communication
         string SayHello();
 
     }
-
-
-
-
-
-
-
-
-
 
 }
