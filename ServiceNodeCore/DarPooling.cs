@@ -22,14 +22,14 @@ namespace DarPoolingNode
         private ServiceHost serviceHost;
 
         private Type contract;
-        private WSDualHttpBinding binding;
+        private WSDualHttpBinding http_binding;
         private NetTcpBinding tcp_binding;
         private ServiceMetadataBehavior behavior;
 
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
 
-        private SimpleUser[] users;
+        //private SimpleUser[] users;
         
         public const string baseHTTPAddress = "http://localhost:1111/";
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
@@ -46,13 +46,13 @@ namespace DarPoolingNode
             
             serviceNode = new ServiceNode(new Location("Ragusa"), "Ragusa1");
 
-            binding = new WSDualHttpBinding();
+            http_binding = new WSDualHttpBinding();
             tcp_binding = new NetTcpBinding();
             contract = typeof(IDarPooling);
 
-            // TO DO: move Uri in the bottom instruction
+            
             serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri(baseHTTPAddress + nodeName));
-            serviceHost.AddServiceEndpoint(contract, binding, "");
+            serviceHost.AddServiceEndpoint(contract, http_binding, "");
             serviceHost.AddServiceEndpoint(contract, tcp_binding, baseTCPAddress + nodeName);
 
             behavior = new ServiceMetadataBehavior();
@@ -84,6 +84,7 @@ namespace DarPoolingNode
                 channelFactory.Close();
         }
 
+        #region ServiceNode methods
 
         public bool hasNeighbour(ServiceNode node)
         {
@@ -114,54 +115,39 @@ namespace DarPoolingNode
         {
             serviceNode.removeUser(node);
         }
+        #endregion
+
     }
 
-
-    //[ServiceBehavior(ConcurrencyMode=ConcurrencyMode.Reentrant)]
+    /// <summary>
+    /// This class implements the interface of the Darpooling service
+    /// </summary>
     public class DarPoolingService : IDarPooling
     {
         public void SendCommand(Communication.Command command) {}
 
         public Communication.Result GetResult()
         {
-            return new Result();
+            return new Result("");
         }
         
-    
-        public SimpleUser[] GetSimpleUsers(SimpleUser[] inputUsers)
-        {
-            List<SimpleUser> result = new List<SimpleUser>();
-            foreach (SimpleUser su in inputUsers)
-            {
-                if (su.userId < 10)
-                {
-                    result.Add(su);
-                }
-
-            }
-
-            return result.ToArray();
-        }
-
         public string SayHello() 
         {
             Console.WriteLine("I received a request");
-            //var callback = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
-            //callback.OnCallback();
-            //Thread.Sleep(4000);
             return "Hi, dummy";
         }
 
-        private string result;
+        
 
         public void GetData(string value)
         {
-            Console.WriteLine("I received the following value: {0}", value);
-            result = string.Format("You entered: {0}", value);
-            SimpleUser[] users = new SimpleUser[] { new SimpleUser { Name = "Daniele", userName = "Shaoran" }, new SimpleUser { Name = "Antonio", userName = "4nT0" } };
-            Thread.Sleep(6000);
-            OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetUsers(users);
-        
+            Console.WriteLine("I've received the following Request: {0}", value);
+            //User[] users = new User[] { new User("Daniele"), new User("Antonio") };
+            Console.WriteLine("Satisfying Client Request...");
+            Result res = new Result("There are 5 Trips available");
+            Thread.Sleep(4000);
+            Console.WriteLine("Ready to send data back to Client...");
+            OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(res);
         }
     
     }

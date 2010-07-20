@@ -14,14 +14,16 @@ namespace Communication
     public interface IDarPoolingCallback
     {
         [OperationContract(IsOneWay = true)]
-        void Notify(string value);
+        void GetUsers(User[] result);
 
         [OperationContract(IsOneWay = true)]
-        void GetUsers(SimpleUser[] result);
-
+        void GetResult(Result result);
     }
 
-    [ServiceContract(CallbackContract = typeof(IDarPoolingCallback), SessionMode=SessionMode.Required)]
+    /// <summary>
+    /// This is the Service Interface
+    /// </summary>
+    [ServiceContract(Namespace="http://www.darpooling.org",CallbackContract = typeof(IDarPoolingCallback), SessionMode=SessionMode.Required)]
     public interface IDarPooling
     {
         [OperationContract]
@@ -29,9 +31,6 @@ namespace Communication
 
         [OperationContract]
         Result GetResult();
-
-        [OperationContract]
-        SimpleUser[] GetSimpleUsers(SimpleUser[] inputUsers);
 
         [OperationContract]
         string SayHello();

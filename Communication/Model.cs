@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 namespace Communication
 {
 
- 
+
 
     public class Location
     {
@@ -63,7 +63,7 @@ namespace Communication
 
             if ((a1 == 0 && b1 == 0) || (a2 == 0 && b2 == 0))
                 throw new System.Exception("One of the member has no coordinates");
-          
+
             int earthRadius = 6378;
             double ret = Math.Acos(Math.Cos(a1) * Math.Cos(b1) * Math.Cos(a2) * Math.Cos(b2) + Math.Cos(a1) * Math.Sin(b1) * Math.Cos(a2) * Math.Sin(b2) + Math.Sin(a1) * Math.Sin(a2)) * earthRadius;
             Console.WriteLine("{0}", ret);
@@ -71,12 +71,16 @@ namespace Communication
         }
     }
 
+    [DataContract]
     public class User
     {
         enum Sex { f, m };
         int userId;
         String username;
+
+        [DataMember]
         String name;
+
         Sex sex;
         DateTime birthDate;
         String email;
@@ -114,17 +118,4 @@ namespace Communication
         Boolean modifiable;
     }
 
-    [DataContract]
-    public class SimpleUser
-    {
-        [DataMember]
-        public string userName { get; set; }
-
-        [DataMember]
-        public string Name { get; set; }
-
-        [DataMember]
-        public int userId { get; set; }
-
-    }
-}
+} //End Namespace

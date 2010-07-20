@@ -5,7 +5,7 @@ using System.Text;
 
 using System.ServiceModel;
 using Communication;
-using Client.ServiceRef;
+//using Client.ServiceRef;
 
 namespace Client
 {
