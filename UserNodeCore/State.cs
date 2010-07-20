@@ -22,7 +22,7 @@ namespace Client
         public bool Join(UserNodeCore context, string address)
         {
             address = "http://localhost:1111/Milano";
-            WSHttpBinding binding = new WSHttpBinding();
+            WSDualHttpBinding binding = new WSDualHttpBinding();
             ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
             EndpointAddress endpointAddress = new EndpointAddress(address);
             IDarPooling proxy = channelFactory.CreateChannel(endpointAddress);
