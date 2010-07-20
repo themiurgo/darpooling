@@ -15,21 +15,59 @@ namespace ClientCore
     {
         static void Main(string[] args)
         {
+            NoCallbackHTTPClient();
+            NoCallbackTCPClient();
+            //CallbackClient();
+        }
+
+
+        static void CallbackClient()
+        { 
+        
+        
+        }
+
+
+        static void NoCallbackTCPClient()
+        {
+            /* Verbose */
+            EndpointAddress address = new EndpointAddress("net.tcp://localhost:1112/Milano");
+            NetTcpBinding binding = new NetTcpBinding();
+            //WSHttpBinding binding = new WSHttpBinding();
+            ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
+            IDarPooling client2 = channelFactory.CreateChannel(address);
+
+            //Thread.Sleep(7000);
+            Console.WriteLine("*****  Test TCP Client  *****");
+            Console.WriteLine("\n\nPress a key to start the communication");
+            Console.ReadLine();
+
+            Console.WriteLine(client2.SayHello());
+            Console.WriteLine("\n\n\nClient is now ready to perform some other task");
+            Console.ReadLine();
+
+        }
+
+
+        static void NoCallbackHTTPClient()
+        {
             /* Verbose */
             EndpointAddress address = new EndpointAddress("http://localhost:1111/Milano");
             WSHttpBinding binding = new WSHttpBinding();
             ChannelFactory<IDarPooling> channelFactory = new ChannelFactory<IDarPooling>(binding);
             IDarPooling client2 = channelFactory.CreateChannel(address);
-           
+
             //Thread.Sleep(7000);
-            Console.WriteLine("*****  Test Client  *****");
+            Console.WriteLine("*****  Test HTTP Client  *****");
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
-            
+
             Console.WriteLine(client2.SayHello());
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
+        
         }
+
 
     } // End Program
 } // End Namespace

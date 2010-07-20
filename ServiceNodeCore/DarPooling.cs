@@ -23,12 +23,14 @@ namespace DarPoolingNode
 
         private Type contract;
         private WSHttpBinding binding;
+        private NetTcpBinding tcp_binding;
         private ServiceMetadataBehavior behavior;
 
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
         
-        public const string baseAddress = "http://localhost:1111/";
+        public const string baseHTTPAddress = "http://localhost:1111/";
+        public const string baseTCPAddress = "net.tcp://localhost:1112/";
         public string nodeName { get; private set; }
 
 
@@ -42,11 +44,13 @@ namespace DarPoolingNode
             serviceNode = new ServiceNode(new Location("Ragusa"), "Ragusa1");
 
             binding = new WSHttpBinding();
+            tcp_binding = new NetTcpBinding();
             contract = typeof(IDarPooling);
 
             // TO DO: move Uri in the bottom instruction
-            serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri(baseAddress + nodeName));
+            serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri(baseHTTPAddress + nodeName));
             serviceHost.AddServiceEndpoint(contract, binding, "");
+            serviceHost.AddServiceEndpoint(contract, tcp_binding, baseTCPAddress + nodeName);
 
             behavior = new ServiceMetadataBehavior();
             behavior.HttpGetEnabled = true;
