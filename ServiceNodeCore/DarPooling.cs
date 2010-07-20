@@ -44,7 +44,8 @@ namespace DarPoolingNode
             binding = new WSHttpBinding();
             contract = typeof(IDarPooling);
 
-            serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri( baseAddress + nodeName));
+            // TO DO: move Uri in the bottom instruction
+            serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri(baseAddress + nodeName));
             serviceHost.AddServiceEndpoint(contract, binding, "");
 
             behavior = new ServiceMetadataBehavior();
@@ -61,7 +62,6 @@ namespace DarPoolingNode
 
         public string CallNeighbour()
         {
-            /* Verbose */
             EndpointAddress n_address = new EndpointAddress("http://localhost:1111/Milano");
             WSHttpBinding  n_binding = new WSHttpBinding();
             channelFactory = new ChannelFactory<IDarPooling>(n_binding);
@@ -153,21 +153,12 @@ namespace DarPoolingNode
     
         static void Main(string[] args)
         {
-            Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
-            StartBackboneNodes();
-
-            Console.WriteLine("\nAll Service nodes are now Active");
-            Console.WriteLine("\nWaiting for incoming requests...");
             
-            /*
-            Console.WriteLine("\n\n" + "Insert a message: ");
-            string tmp = Console.ReadLine();
-            TestNodes(tmp);
-            Console.ReadLine();
-            */
+            StartBackboneNodes();
 
             /* Press Enter to stop the services */
             Console.ReadLine();
+            
             CloseBackboneNodes();
         }
 
@@ -176,6 +167,8 @@ namespace DarPoolingNode
             //string[] nodeNames = { "Catania" };
             string[] nodeNames = { "Chiasso", "Milano", "Roma", "Napoli", "Catania" };
 
+            Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
+    
             foreach (string name in nodeNames)
             {
                 nodes.Add(new ServiceNodeCore(name.ToUpper()));
@@ -186,13 +179,12 @@ namespace DarPoolingNode
                 node.StartService();
             }
 
-            //peer.Channel.Ping(peer.Id, tmp);
-            //peer.Stop();
-            //peerThread.Join();
-
+            Console.WriteLine("\nAll Service nodes are now Active");
+            Console.WriteLine("\nWaiting for incoming requests...");
+    
         }
 
-        public static void TestNodes(string message)
+        public static void TestNeighbour(string message)
         {
 
             ServiceNodeCore n0 = (ServiceNodeCore) nodes[0];
@@ -211,5 +203,5 @@ namespace DarPoolingNode
             }
         }
 
-    } //End Class
+    } //End Launcher
 } //End Namespace
