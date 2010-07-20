@@ -28,6 +28,8 @@ namespace DarPoolingNode
 
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
+
+        private SimpleUser[] users;
         
         public const string baseHTTPAddress = "http://localhost:1111/";
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
@@ -41,6 +43,7 @@ namespace DarPoolingNode
 
         public void StartService()
         {
+            
             serviceNode = new ServiceNode(new Location("Ragusa"), "Ragusa1");
 
             binding = new WSDualHttpBinding();
@@ -155,8 +158,9 @@ namespace DarPoolingNode
         {
             Console.WriteLine("I received the following value: {0}", value);
             result = string.Format("You entered: {0}", value);
+            SimpleUser[] users = new SimpleUser[] { new SimpleUser { Name = "Daniele", userName = "Shaoran" }, new SimpleUser { Name = "Antonio", userName = "4nT0" } };
             Thread.Sleep(6000);
-            OperationContext.Current.GetCallbackChannel<ICallback>().Notify(result);
+            OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetUsers(users);
         
         }
     
