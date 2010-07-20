@@ -18,17 +18,17 @@ namespace ClientCore
     /// </summary>
     public class ClientCallback : IDarPoolingCallback
     {
-        public void Notify(string value)
+        public void GetResult(Result result)
         {
-            Console.WriteLine("Service says: " + value);
+            Console.WriteLine("Service says: " + result.Comment);
         }
 
-        public void GetUsers(SimpleUser[] result)
+        public void GetUsers(User[] result)
         { 
             Console.WriteLine("These are the users that the Service has returned:");
-            foreach (SimpleUser s in result)
+            foreach (User user in result)
             {
-                Console.WriteLine("Nick: {0} \t Real Name: {1}", s.userName, s.Name);
+                Console.WriteLine("Name: {0}", user.Name);
             }
         }
     }
@@ -58,7 +58,7 @@ namespace ClientCore
             Console.WriteLine("*****  Test HTTP CALLBACK Client  *****");
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
-            proxy.GetData("Hi, I'm a client");
+            proxy.GetData("Gimme Trips");
             //Console.WriteLine(client2.SayHello());
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
