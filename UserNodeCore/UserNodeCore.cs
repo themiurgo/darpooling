@@ -4,11 +4,35 @@ using System.Linq;
 using System.Text;
 
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using Communication;
-//using Client.ServiceRef;
+using System.Threading;
 
 namespace Client
 {
+    /// <summary>
+    /// This class implements the Callback interface, i.e. the set
+    /// of methods that the service will call back when the result
+    /// is ready.
+    /// </summary>
+    public class ClientCallback : IDarPoolingCallback
+    {
+        public void GetResult(Result result)
+        {
+            Console.WriteLine("Service says: " + result.Comment);
+        }
+
+        public void GetUsers(User[] result)
+        { 
+            Console.WriteLine("These are the users that the Service has returned:");
+            foreach (User user in result)
+            {
+                Console.WriteLine("Name: {0}", user.Name);
+            }
+        }
+    }
+
+
     /// <summary>
     /// UserNodeCore class is composed of informations of UserNode plus the status
     /// of its connection. Also, it allows to execute actions that will have
@@ -16,8 +40,16 @@ namespace Client
     /// </summary>
     public class UserNodeCore
     {
-        private UserNode myNode;
+        private UserNode userNode;
         private IState state;
+
+        /* Service settings */
+        EndpointAddress serviceAddress;
+        WSDualHttpBinding binding;
+        IDarPoolingCallback callback;
+        DuplexChannelFactory<IDarPooling> factory;
+        IDarPooling serviceProxy;
+ 
         //private Uri serviceAddress;
         //private Uri callbackAddress;
 
@@ -28,12 +60,32 @@ namespace Client
         public UserNodeCore(UserNode clientNode)
         {
             state = new DisconnectedState();
-            myNode = clientNode;
+            userNode = clientNode;
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            /* Address */
+            serviceAddress = new EndpointAddress("http://localhost:1111/" + userNode.UserLocation);
+            /* Binding */
+            binding = new WSDualHttpBinding();
+            binding.ClientBaseAddress = new Uri("http://localhost:2222/" + userNode.NodeName); //Callback address
+            /* (Callback) contract  */
+            callback = new ClientCallback();
+            /** Channels */
+            factory = new DuplexChannelFactory<IDarPooling>(callback, binding, serviceAddress);
+            serviceProxy = factory.CreateChannel();
+        }
+
+        public void ConnectToService()
+        {
+            serviceProxy.GetData("Give me the trips in " + userNode.UserLocation.ToUpper() + " !!");
         }
 
         public UserNode UserNode
         {
-            get { return myNode; }
+            get { return userNode; }
             set { }
         }
 

@@ -8,30 +8,10 @@ using System.ServiceModel.Channels;
 using Communication;
 using System.Threading;
 
-namespace ClientCore
+namespace Client
 {
 
-    /// <summary>
-    /// This class implements the Callback interface, i.e. the set
-    /// of methods that the service will call back when the result
-    /// is ready.
-    /// </summary>
-    public class ClientCallback : IDarPoolingCallback
-    {
-        public void GetResult(Result result)
-        {
-            Console.WriteLine("Service says: " + result.Comment);
-        }
 
-        public void GetUsers(User[] result)
-        { 
-            Console.WriteLine("These are the users that the Service has returned:");
-            foreach (User user in result)
-            {
-                Console.WriteLine("Name: {0}", user.Name);
-            }
-        }
-    }
 
 
     class Program
@@ -40,17 +20,19 @@ namespace ClientCore
         {
             //NoCallbackHTTPClient();
             //NoCallbackTCPClient();
-            CallbackClient();
+            //CallbackClient();
+            StartClientNodes();
         }
 
 
+        /* Callback */
         static void StartClientNodes()
         { 
             /** 
               * Service communication settings 
               */
             /* Address */
-            EndpointAddress serviceAddress = new EndpointAddress("http://localhost:1111/Milano");
+            EndpointAddress serviceAddress = new EndpointAddress("http://localhost:1111/Catania");
             /* Binding */
             WSDualHttpBinding binding = new WSDualHttpBinding();
             binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1"); //Callback address
@@ -61,13 +43,18 @@ namespace ClientCore
             IDarPooling proxy = factory.CreateChannel();
 
             /* Clients */
-            /* Obtain the Location of the Node */
-            UserNode milano1 = new UserNode("Milano");
+            UserNode catania1UN = new UserNode ("shaoranDesktop","Catania");
+            UserNode milano1UN = new UserNode("antoDesktop","Milano");
+
+            UserNodeCore catania1 = new UserNodeCore(catania1UN);
+            UserNodeCore milano1 = new UserNodeCore(milano1UN);
 
             Console.WriteLine("*****  Test HTTP CALLBACK Client  *****");
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
-            proxy.GetData("Gimme Trips");
+            //proxy.GetData("Gimme Trips");
+            catania1.ConnectToService();
+            milano1.ConnectToService();
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
             
@@ -75,26 +62,6 @@ namespace ClientCore
         
         }
 
-
-
-        static void CallbackClient()
-        {
-            IDarPoolingCallback callback = new ClientCallback();
-            WSDualHttpBinding binding = new WSDualHttpBinding();
-            binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1");
-            EndpointAddress address = new EndpointAddress("http://localhost:1111/Milano");
-            
-            DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(callback,binding,address);
-            IDarPooling proxy = factory.CreateChannel();
-
-            Console.WriteLine("*****  Test HTTP CALLBACK Client  *****");
-            Console.WriteLine("\n\nPress a key to start the communication");
-            Console.ReadLine();
-            proxy.GetData("Gimme Trips");
-            Console.WriteLine("\n\n\nClient is now ready to perform some other task");
-            Console.ReadLine();
-
-        }
 
 
         static void NoCallbackTCPClient()
@@ -172,3 +139,25 @@ IDarPooling client = ChannelFactory<IDarPooling>.CreateChannel(
       var proxy = client3.ChannelFactory.CreateChannel();
       proxy.SayHello(); 
       */
+
+
+/*
+static void CallbackClient()
+{
+    IDarPoolingCallback callback = new ClientCallback();
+    WSDualHttpBinding binding = new WSDualHttpBinding();
+    binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1");
+    EndpointAddress address = new EndpointAddress("http://localhost:1111/Milano");
+            
+    DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(callback,binding,address);
+    IDarPooling proxy = factory.CreateChannel();
+
+    Console.WriteLine("*****  Test HTTP CALLBACK Client  *****");
+    Console.WriteLine("\n\nPress a key to start the communication");
+    Console.ReadLine();
+    proxy.GetData("Gimme Trips");
+    Console.WriteLine("\n\n\nClient is now ready to perform some other task");
+    Console.ReadLine();
+
+}
+*/
