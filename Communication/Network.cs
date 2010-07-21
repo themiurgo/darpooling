@@ -15,6 +15,9 @@ namespace Communication
         private Location location;
         private string nodeName;
 
+        public Node(string nodeName)
+            : this(nodeName,null) {}
+
         public Node(string nodeName, Location nodeLocation)
         {
             this.location = nodeLocation;
@@ -40,6 +43,11 @@ namespace Communication
     {
         public UserNode(string nodeName, Location nodeLocation) :
             base(nodeName, nodeLocation)
+        {
+        }
+
+        public UserNode(string nodeName) :
+            base(nodeName)
         {
         }
 
