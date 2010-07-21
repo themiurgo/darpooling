@@ -7,29 +7,24 @@ namespace Communication
 {
     /// <summary>
     /// Abstract class representing a generic node in the network. A node is
-    /// characterized by a location and a username.
+    /// characterized by a location and a name.
     /// </summary>
+    /// 
     public abstract class Node
     {
         private Location location;
-        private string username;
+        private string nodeName;
 
-        public Node(Location nodeLocation, string username)
+        public Node(Location nodeLocation, string nodeName)
         {
             this.location = nodeLocation;
-            this.username = username;
+            this.nodeName = nodeName;
         }
 
-        public String Username
+        public String NodeName
         {
-            get
-            {
-                return username;
-            }
-            set
-            {
-                username = value;
-            }
+            get { return nodeName; }
+            set { nodeName = value;}
         }
 
         public Location Location
@@ -39,10 +34,12 @@ namespace Communication
         }
     }
 
+
+
     public class UserNode : Node
     {
-        public UserNode(Location nodeLocation, string username) :
-            base(nodeLocation, username)
+        public UserNode(Location nodeLocation, string nodeName) :
+            base(nodeLocation, nodeName)
         {
         }
 
@@ -53,8 +50,8 @@ namespace Communication
         private List<ServiceNode> neighbours;
         private List<UserNode> localUsers;
 
-        public ServiceNode(Location nodeLocation, string username) :
-            base(nodeLocation, username)
+        public ServiceNode(Location nodeLocation, string nodeName) :
+            base(nodeLocation, nodeName)
         {
         }
 

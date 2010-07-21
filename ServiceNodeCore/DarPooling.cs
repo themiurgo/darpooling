@@ -26,45 +26,46 @@ namespace DarPoolingNode
         private Type contract;
         private WSDualHttpBinding http_binding;
         private NetTcpBinding tcp_binding;
-        private ServiceMetadataBehavior behavior;
+        private ServiceMetadataBehavior mex_behavior;
 
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
-
-        //private SimpleUser[] users;
         
         public const string baseHTTPAddress = "http://localhost:1111/";
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
-        public string nodeName { get; private set; }
 
 
         public ServiceNodeCore(string nodeName)
         {
-            this.nodeName = nodeName;
+            string[] coords = GMapsAPI.addrToLatLng(nodeName);
+            double latitude = double.Parse(coords[0]);
+            double longitude = double.Parse(coords[1]);
+            Location nodeLocation = new Location(nodeName, latitude, longitude);
+            
+            serviceNode = new ServiceNode(nodeLocation, nodeName);
         }
 
         public void StartService()
         {
-            
-            serviceNode = new ServiceNode(new Location("Ragusa"), "Ragusa1");
-
+            /* Inizializing Service Parameters */
+            contract = typeof(IDarPooling);
             http_binding = new WSDualHttpBinding();
             tcp_binding = new NetTcpBinding();
-            contract = typeof(IDarPooling);
+
 
             
-            serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri(baseHTTPAddress + nodeName));
+            serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri(baseHTTPAddress + NodeName));
             serviceHost.AddServiceEndpoint(contract, http_binding, "");
-            serviceHost.AddServiceEndpoint(contract, tcp_binding, baseTCPAddress + nodeName);
+            serviceHost.AddServiceEndpoint(contract, tcp_binding, baseTCPAddress + NodeName);
 
-            behavior = new ServiceMetadataBehavior();
-            behavior.HttpGetEnabled = true;
+            mex_behavior = new ServiceMetadataBehavior();
+            mex_behavior.HttpGetEnabled = true;
 
-            serviceHost.Description.Behaviors.Add(behavior);
+            serviceHost.Description.Behaviors.Add(mex_behavior);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
             
             serviceHost.Open();
-            Console.WriteLine(nodeName + "\t\tnode is now active.");        
+            Console.WriteLine(NodeName + "\t\tnode is now active.");        
             
         }
 
@@ -84,6 +85,13 @@ namespace DarPoolingNode
             serviceHost.Close();
             if (channelFactory != null)
                 channelFactory.Close();
+        }
+
+        // Properties
+        public string NodeName
+        {
+            get { return serviceNode.NodeName; }
+            private set { serviceNode.NodeName = value; }
         }
 
         #region ServiceNode methods
@@ -161,12 +169,12 @@ namespace DarPoolingNode
         static void Main(string[] args)
         {
             
-            /*  StartBackboneNodes();
-                Console.ReadLine(); // Press Enter to stop the services
+              StartBackboneNodes();
+            /*    Console.ReadLine(); // Press Enter to stop the services
                 CloseBackboneNodes();
             */
 
-            WriteXML();
+            //WriteXML();
         }
 
         public static void WriteXML()
@@ -204,17 +212,16 @@ namespace DarPoolingNode
             // Read until end of file
             while (textReader.Read())
             {
-                Console.WriteLine(textReader.Value);   
+                // Do something
+                //Console.WriteLine(textReader.Value);   
             }
-
-            
 
         }
 
         public static void StartBackboneNodes()
         {
-            //string[] nodeNames = { "Catania" };
-            string[] nodeNames = { "Chiasso", "Milano", "Roma", "Napoli", "Catania" };
+            string[] nodeNames = { "Catania" };
+            //string[] nodeNames = { "Chiasso", "Milano", "Roma", "Napoli", "Catania" };
 
             Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
     
@@ -239,7 +246,7 @@ namespace DarPoolingNode
             ServiceNodeCore n0 = (ServiceNodeCore) nodes[0];
             ServiceNodeCore n1 = (ServiceNodeCore)nodes[1];
             
-            Console.WriteLine(n0.nodeName + " is calling Milano....");
+            Console.WriteLine(n0.NodeName + " is calling Milano....");
             string mex = n0.CallNeighbour();
             Console.WriteLine("Got :" + mex);
         }
