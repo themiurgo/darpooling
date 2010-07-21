@@ -18,6 +18,8 @@ namespace Client
     {
         private UserNode myNode;
         private IState state;
+        //private Uri serviceAddress;
+        //private Uri callbackAddress;
 
         /// <summary>
         /// Setup a new UserNodeCore.

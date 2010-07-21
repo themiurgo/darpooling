@@ -44,6 +44,39 @@ namespace ClientCore
         }
 
 
+        static void StartClientNodes()
+        { 
+            /** 
+              * Service communication settings 
+              */
+            /* Address */
+            EndpointAddress serviceAddress = new EndpointAddress("http://localhost:1111/Milano");
+            /* Binding */
+            WSDualHttpBinding binding = new WSDualHttpBinding();
+            binding.ClientBaseAddress = new Uri("http://localhost:2222/Client1"); //Callback address
+            /* (Callback) contract  */
+            IDarPoolingCallback callback = new ClientCallback();
+            /** Channels */
+            DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(callback, binding, serviceAddress);
+            IDarPooling proxy = factory.CreateChannel();
+
+            /* Clients */
+            /* Obtain the Location of the Node */
+            UserNode milano1 = new UserNode("Milano");
+
+            Console.WriteLine("*****  Test HTTP CALLBACK Client  *****");
+            Console.WriteLine("\n\nPress a key to start the communication");
+            Console.ReadLine();
+            proxy.GetData("Gimme Trips");
+            Console.WriteLine("\n\n\nClient is now ready to perform some other task");
+            Console.ReadLine();
+            
+
+        
+        }
+
+
+
         static void CallbackClient()
         {
             IDarPoolingCallback callback = new ClientCallback();
