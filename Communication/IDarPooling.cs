@@ -32,12 +32,13 @@ namespace Communication
         [OperationContract]
         Result GetResult();
 
-        [OperationContract]
-        string SayHello();
-
         [OperationContract(IsOneWay = true)]
         void GetData(string value);
-
     }
 
-}
+}//End Namespace
+
+/*
+[OperationContract]
+string SayHello();
+*/
