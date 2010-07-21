@@ -35,12 +35,12 @@ namespace DarPoolingNode
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
 
 
-        public ServiceNodeCore(string nodeName)
+        public ServiceNodeCore(string nodeName, string locName)
         {
-            string[] coords = GMapsAPI.addrToLatLng(nodeName);
+            string[] coords = GMapsAPI.addrToLatLng(locName);
             double latitude = double.Parse(coords[0]);
             double longitude = double.Parse(coords[1]);
-            Location nodeLocation = new Location(nodeName, latitude, longitude);
+            Location nodeLocation = new Location(locName, latitude, longitude);
             
             serviceNode = new ServiceNode(nodeLocation, nodeName);
         }
@@ -92,6 +92,22 @@ namespace DarPoolingNode
         {
             get { return serviceNode.NodeName; }
             private set { serviceNode.NodeName = value; }
+        }
+
+        public Location Location
+        {
+            get { return serviceNode.Location; }
+            private set { serviceNode.Location = value; }
+        }
+
+        public int NumNeighbours 
+        {
+            get { return serviceNode.NumNeighbours; }
+        }
+
+        public ServiceNode ServiceNode
+        {
+            get { return serviceNode; }
         }
 
         #region ServiceNode methods
@@ -175,7 +191,12 @@ namespace DarPoolingNode
             */
 
             //WriteXML();
+            Console.ReadLine();
         }
+
+
+
+
 
         public static void WriteXML()
         {
@@ -220,25 +241,46 @@ namespace DarPoolingNode
 
         public static void StartBackboneNodes()
         {
-            string[] nodeNames = { "Catania" };
-            //string[] nodeNames = { "Chiasso", "Milano", "Roma", "Napoli", "Catania" };
+            /* Full set of Nodes 
+            ServiceNodeCore[] nodes = new ServiceNodeCore[] { 
+                                                              new ServiceNodeCore("Chiasso", "Chiasso"),
+                                                              new ServiceNodeCore("Milano", "Milano"),
+                                                              new ServiceNodeCore("Roma", "Roma"),
+                                                              new ServiceNodeCore("Napoli", "Napoli"),                                                              
+                                                              new ServiceNodeCore("Catania", "Catania"),
+                                                              new ServiceNodeCore("Catania_2", "Catania"),
+                                                             };
+            */
+ 
+            /* Simple set of Nodes */
+            ServiceNodeCore[] nodes = new ServiceNodeCore[] { 
+                                                              new ServiceNodeCore("Chiasso", "Chiasso"),
+                                                              new ServiceNodeCore("Milano", "Milano"),
+                                                             };
 
             Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
-    
-            foreach (string name in nodeNames)
-            {
-                nodes.Add(new ServiceNodeCore(name.ToUpper()));
-            }
-
             foreach (ServiceNodeCore node in nodes)
             {
                 node.StartService();
             }
-
             Console.WriteLine("\nAll Service nodes are now Active");
+
+            nodes[0].addNeighbour(nodes[1].ServiceNode);
+            
+            foreach (ServiceNodeCore node in nodes)
+            {
+                PrintInfo(node);
+            }
             Console.WriteLine("\nWaiting for incoming requests...");
     
         }
+
+        static void PrintInfo(ServiceNodeCore n)
+        {
+            Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I've {3} neighbours", n.NodeName, n.Location.Latitude, n.Location.Longitude, n.NumNeighbours);
+   
+        }
+
 
         public static void TestNeighbour(string message)
         {

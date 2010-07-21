@@ -53,6 +53,8 @@ namespace Communication
         public ServiceNode(Location nodeLocation, string nodeName) :
             base(nodeLocation, nodeName)
         {
+            neighbours = new List<ServiceNode>();
+            localUsers = new List<UserNode>();
         }
 
         public bool hasNeighbour(ServiceNode node)
@@ -60,11 +62,13 @@ namespace Communication
             return neighbours.Contains(node);
         }
 
+
+
         public void addNeighbour(ServiceNode neighbourNode)
         {
-            neighbours.Add(neighbourNode);
-            if (neighbours.Contains(neighbourNode))
+            if (!hasNeighbour(neighbourNode))
             {
+                neighbours.Add(neighbourNode);
                 neighbourNode.addNeighbour(this);
             }
         }
@@ -88,6 +92,13 @@ namespace Communication
         {
             localUsers.Remove(node);
         }
+
+        //Properties
+        public int NumNeighbours
+        {
+            get { return neighbours.Count; }
+        }
+
     }
 
     public class QueryMessage
