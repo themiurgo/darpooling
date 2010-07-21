@@ -8,8 +8,7 @@ using System.Text;
 namespace Communication
 {
     /// <summary>
-    /// This is the Callback interface.
-    /// The Client MUST implement it.
+    /// This is the Callback interface. The Client MUST implement it.
     /// </summary>
     public interface IDarPoolingCallback
     {

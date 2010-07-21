@@ -169,6 +169,8 @@ namespace DarPoolingNode
     
     }
     
+    
+    /* Start the SNs */
     public class Launcher
     {
         private static ArrayList nodes = new ArrayList();
@@ -184,13 +186,7 @@ namespace DarPoolingNode
             //WriteXML();
             Console.ReadLine();
         }
-
-
-
-
-
         
-
         public static void StartBackboneNodes()
         {
             ServiceNodeCore chiasso = new ServiceNodeCore("Chiasso", "Chiasso");
