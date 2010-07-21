@@ -7,7 +7,9 @@ using System.Runtime.Serialization;
 
 namespace Communication
 {
-
+    /// <summary>
+    /// This assembly contains Location, User, Trip
+    /// </summary>
 
 
     public class Location

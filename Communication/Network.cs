@@ -57,13 +57,13 @@ namespace Communication
             localUsers = new List<UserNode>();
         }
 
+        
         public bool hasNeighbour(ServiceNode node)
         {
             return neighbours.Contains(node);
         }
 
-
-
+        
         public void addNeighbour(ServiceNode neighbourNode)
         {
             if (!hasNeighbour(neighbourNode))
@@ -73,26 +73,31 @@ namespace Communication
             }
         }
 
+        
         public void removeNeighbour(ServiceNode neighbour)
         {
             neighbours.Remove(neighbour);
         }
 
+        
         public bool hasUser(UserNode node)
         {
             return localUsers.Contains(node);
         }
 
+        
         public void addUser(UserNode node)
         {
             localUsers.Add(node);
         }
 
+        
         public void removeUser(UserNode node)
         {
             localUsers.Remove(node);
         }
 
+        
         //Properties
         public int NumNeighbours
         {
