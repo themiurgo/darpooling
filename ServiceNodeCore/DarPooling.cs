@@ -112,19 +112,19 @@ namespace DarPoolingNode
 
         #region ServiceNode methods
 
-        public bool hasNeighbour(ServiceNode node)
+        public bool hasNeighbour(ServiceNodeCore node)
         {
-            return serviceNode.hasNeighbour(node);
+            return serviceNode.hasNeighbour(node.ServiceNode);
         }
 
-        public void addNeighbour(ServiceNode node)
+        public void addNeighbour(ServiceNodeCore node)
         {
-            serviceNode.addNeighbour(node);
+            serviceNode.addNeighbour(node.ServiceNode);
         }
 
-        public void removeNeighbour(ServiceNode node)
+        public void removeNeighbour(ServiceNodeCore node)
         {
-            serviceNode.removeNeighbour(node);
+            serviceNode.removeNeighbour(node.ServiceNode);
         }
 
         public bool hasUser(UserNode node)
@@ -184,8 +184,8 @@ namespace DarPoolingNode
     
         static void Main(string[] args)
         {
-            
-              StartBackboneNodes();
+            Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
+            StartBackboneNodes();
             /*    Console.ReadLine(); // Press Enter to stop the services
                 CloseBackboneNodes();
             */
@@ -241,46 +241,37 @@ namespace DarPoolingNode
 
         public static void StartBackboneNodes()
         {
-            /* Full set of Nodes 
-            ServiceNodeCore[] nodes = new ServiceNodeCore[] { 
-                                                              new ServiceNodeCore("Chiasso", "Chiasso"),
-                                                              new ServiceNodeCore("Milano", "Milano"),
-                                                              new ServiceNodeCore("Roma", "Roma"),
-                                                              new ServiceNodeCore("Napoli", "Napoli"),                                                              
-                                                              new ServiceNodeCore("Catania", "Catania"),
-                                                              new ServiceNodeCore("Catania_2", "Catania"),
-                                                             };
-            */
- 
-            /* Simple set of Nodes */
-            ServiceNodeCore[] nodes = new ServiceNodeCore[] { 
-                                                              new ServiceNodeCore("Chiasso", "Chiasso"),
-                                                              new ServiceNodeCore("Milano", "Milano"),
-                                                             };
+            ServiceNodeCore chiasso = new ServiceNodeCore("Chiasso", "Chiasso");
+            ServiceNodeCore milano  = new ServiceNodeCore("Milano", "Milano");
+            ServiceNodeCore roma    = new ServiceNodeCore("Roma", "Roma");
+            ServiceNodeCore napoli  = new ServiceNodeCore("Napoli", "Napoli");                                                             
+            ServiceNodeCore catania = new ServiceNodeCore("Catania", "Catania");
+            ServiceNodeCore catania2= new ServiceNodeCore("Catania2", "Catania");
 
-            Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
+            /* Set of Backbone Nodes */
+            ServiceNodeCore[] nodes = 
+                new ServiceNodeCore[] { chiasso, milano, roma, napoli, catania, catania2
+                                      };
+
             foreach (ServiceNodeCore node in nodes)
-            {
-                node.StartService();
-            }
+                { node.StartService(); }
             Console.WriteLine("\nAll Service nodes are now Active");
 
-            nodes[0].addNeighbour(nodes[1].ServiceNode);
-            
-            foreach (ServiceNodeCore node in nodes)
+            /* Set Topology */
+            chiasso.addNeighbour(milano);
+            milano.addNeighbour(roma);
+            roma.addNeighbour(napoli);
+            napoli.addNeighbour(catania);
+            napoli.addNeighbour(catania2);
+            catania.addNeighbour(catania2);
+
+            foreach (ServiceNodeCore n in nodes)
             {
-                PrintInfo(node);
+                Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I have {3} neighbours", n.NodeName, n.Location.Latitude, n.Location.Longitude, n.NumNeighbours);
             }
             Console.WriteLine("\nWaiting for incoming requests...");
     
         }
-
-        static void PrintInfo(ServiceNodeCore n)
-        {
-            Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I've {3} neighbours", n.NodeName, n.Location.Latitude, n.Location.Longitude, n.NumNeighbours);
-   
-        }
-
 
         public static void TestNeighbour(string message)
         {
