@@ -66,7 +66,7 @@ namespace Communication
 
             int earthRadius = 6378;
             double ret = Math.Acos(Math.Cos(a1) * Math.Cos(b1) * Math.Cos(a2) * Math.Cos(b2) + Math.Cos(a1) * Math.Sin(b1) * Math.Cos(a2) * Math.Sin(b2) + Math.Sin(a1) * Math.Sin(a2)) * earthRadius;
-            Console.WriteLine("{0}", ret);
+            //Console.WriteLine("{0}", ret);
             return ret;
         }
     }
