@@ -78,7 +78,7 @@ namespace ClientCore
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
 
-            Console.WriteLine(client2.SayHello());
+            //Console.WriteLine(client2.SayHello());
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
 
@@ -99,7 +99,7 @@ namespace ClientCore
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
 
-            Console.WriteLine(client2.SayHello());
+            //Console.WriteLine(client2.SayHello());
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
         

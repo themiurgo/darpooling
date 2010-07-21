@@ -23,6 +23,7 @@ namespace DarPoolingNode
         private ServiceNode serviceNode;
         private ServiceHost serviceHost;
 
+        /* Service Settings */
         private Type contract;
         private WSDualHttpBinding http_binding;
         private NetTcpBinding tcp_binding;
@@ -35,49 +36,44 @@ namespace DarPoolingNode
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
 
 
-        public ServiceNodeCore(string nodeName, string locName)
+        public ServiceNodeCore(string locName, string nodeName)
         {
+            /* Obtain the Location of the Node */
             string[] coords = GMapsAPI.addrToLatLng(locName);
             double latitude = double.Parse(coords[0]);
             double longitude = double.Parse(coords[1]);
             Location nodeLocation = new Location(locName, latitude, longitude);
             
-            serviceNode = new ServiceNode(nodeLocation, nodeName);
+            serviceNode = new ServiceNode(nodeName,nodeLocation);
         }
+
 
         public void StartService()
         {
-            /* Inizializing Service Parameters */
-            contract = typeof(IDarPooling);
+            /* Address */
+            Uri http_uri = new Uri(baseHTTPAddress + NodeName);
+            Uri tcp_uri = new Uri(baseTCPAddress + NodeName);
+            /* Binding */
             http_binding = new WSDualHttpBinding();
             tcp_binding = new NetTcpBinding();
-
-
-            
-            serviceHost = new ServiceHost(typeof(DarPoolingService), new Uri(baseHTTPAddress + NodeName));
-            serviceHost.AddServiceEndpoint(contract, http_binding, "");
-            serviceHost.AddServiceEndpoint(contract, tcp_binding, baseTCPAddress + NodeName);
-
+            /* Contract */
+            contract = typeof(IDarPooling);
+            /* Behavior */
             mex_behavior = new ServiceMetadataBehavior();
             mex_behavior.HttpGetEnabled = true;
-
+            
+            /* Hosting the service */
+            serviceHost = new ServiceHost(typeof(DarPoolingService), http_uri);
+            serviceHost.AddServiceEndpoint(contract, http_binding, "");
+            serviceHost.AddServiceEndpoint(contract, tcp_binding, tcp_uri);
             serviceHost.Description.Behaviors.Add(mex_behavior);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
             
+            /* Run the service */
             serviceHost.Open();
             Console.WriteLine(NodeName + "\t\tnode is now active.");        
-            
         }
 
-
-        public string CallNeighbour()
-        {
-            EndpointAddress n_address = new EndpointAddress("http://localhost:1111/Milano");
-            WSDualHttpBinding  n_binding = new WSDualHttpBinding();
-            channelFactory = new ChannelFactory<IDarPooling>(n_binding);
-            client = channelFactory.CreateChannel(n_address);
-            return client.SayHello();
-        }
 
         public void StopService()
         {
@@ -94,7 +90,7 @@ namespace DarPoolingNode
             private set { serviceNode.NodeName = value; }
         }
 
-        public Location Location
+        public Location NodeLocation
         {
             get { return serviceNode.Location; }
             private set { serviceNode.Location = value; }
@@ -150,21 +146,16 @@ namespace DarPoolingNode
     /// </summary>
     public class DarPoolingService : IDarPooling
     {
-        public void SendCommand(Communication.Command command) {}
+        public void SendCommand(Communication.Command command) 
+        {
+        
+        }
 
         public Communication.Result GetResult()
         {
             return new Result("");
         }
         
-        public string SayHello() 
-        {
-            Console.WriteLine("I received a request");
-            return "Hi, dummy";
-        }
-
-        
-
         public void GetData(string value)
         {
             Console.WriteLine("I've received the following Request: {0}", value);
@@ -198,46 +189,7 @@ namespace DarPoolingNode
 
 
 
-        public static void WriteXML()
-        {
-
-            string filename = @"..\..\..\config\chiasso.xml";
-            XmlDocument xmlDoc = new XmlDocument();
-
-            // Create a new XML file
-            XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
-            textWriter.Formatting = Formatting.Indented;
-            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-            textWriter.WriteComment("Configuration File for a DarPooling Service Node");
-            textWriter.WriteStartElement("configuration");
-            textWriter.Close();
-            
-            xmlDoc.Load(filename);
-            XmlNode root = xmlDoc.DocumentElement;
-            XmlElement neighbours = xmlDoc.CreateElement("neighbours");
-            XmlElement neighbour = xmlDoc.CreateElement("neighbour");
-            //XmlText textNode = xmlDoc.CreateTextNode("hello");
-            //textNode.Value = "hello, world";
-
-            root.AppendChild(neighbours);
-            neighbours.AppendChild(neighbour);
-            neighbour.SetAttribute("Name", "Milano");
-            //neighbour.AppendChild(textNode);
-
-            //textNode.Value = "replacing hello world";
-            xmlDoc.Save(filename);
-
-         
-            // Read a document
-            XmlTextReader textReader = new XmlTextReader(filename);
-            // Read until end of file
-            while (textReader.Read())
-            {
-                // Do something
-                //Console.WriteLine(textReader.Value);   
-            }
-
-        }
+        
 
         public static void StartBackboneNodes()
         {
@@ -246,7 +198,7 @@ namespace DarPoolingNode
             ServiceNodeCore roma    = new ServiceNodeCore("Roma", "Roma");
             ServiceNodeCore napoli  = new ServiceNodeCore("Napoli", "Napoli");                                                             
             ServiceNodeCore catania = new ServiceNodeCore("Catania", "Catania");
-            ServiceNodeCore catania2= new ServiceNodeCore("Catania2", "Catania");
+            ServiceNodeCore catania2= new ServiceNodeCore("Catania", "Catania2");
 
             /* Set of Backbone Nodes */
             ServiceNodeCore[] nodes = 
@@ -267,23 +219,13 @@ namespace DarPoolingNode
 
             foreach (ServiceNodeCore n in nodes)
             {
-                Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I have {3} neighbours", n.NodeName, n.Location.Latitude, n.Location.Longitude, n.NumNeighbours);
+                Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I have {3} neighbours", n.NodeName, n.NodeLocation.Latitude, n.NodeLocation.Longitude, n.NumNeighbours);
             }
             Console.WriteLine("\nWaiting for incoming requests...");
     
         }
-
-        public static void TestNeighbour(string message)
-        {
-
-            ServiceNodeCore n0 = (ServiceNodeCore) nodes[0];
-            ServiceNodeCore n1 = (ServiceNodeCore)nodes[1];
-            
-            Console.WriteLine(n0.NodeName + " is calling Milano....");
-            string mex = n0.CallNeighbour();
-            Console.WriteLine("Got :" + mex);
-        }
-
+  
+        
         public static void CloseBackboneNodes()
         {
             foreach(ServiceNodeCore node in nodes)
@@ -292,5 +234,77 @@ namespace DarPoolingNode
             }
         }
 
+        public static void WriteXML()
+        {
+
+            string filename = @"..\..\..\config\chiasso.xml";
+            XmlDocument xmlDoc = new XmlDocument();
+
+            // Create a new XML file
+            XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
+            textWriter.Formatting = Formatting.Indented;
+            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+            textWriter.WriteComment("Configuration File for a DarPooling Service Node");
+            textWriter.WriteStartElement("configuration");
+            textWriter.Close();
+
+            xmlDoc.Load(filename);
+            XmlNode root = xmlDoc.DocumentElement;
+            XmlElement neighbours = xmlDoc.CreateElement("neighbours");
+            XmlElement neighbour = xmlDoc.CreateElement("neighbour");
+            //XmlText textNode = xmlDoc.CreateTextNode("hello");
+            //textNode.Value = "hello, world";
+
+            root.AppendChild(neighbours);
+            neighbours.AppendChild(neighbour);
+            neighbour.SetAttribute("Name", "Milano");
+            //neighbour.AppendChild(textNode);
+
+            //textNode.Value = "replacing hello world";
+            xmlDoc.Save(filename);
+
+
+            // Read a document
+            XmlTextReader textReader = new XmlTextReader(filename);
+            // Read until end of file
+            while (textReader.Read())
+            {
+                // Do something
+                //Console.WriteLine(textReader.Value);   
+            }
+
+        }
+
     } //End Launcher
 } //End Namespace
+
+
+/*
+public string CallNeighbour()
+{
+    EndpointAddress n_address = new EndpointAddress("http://localhost:1111/Milano");
+    WSDualHttpBinding  n_binding = new WSDualHttpBinding();
+    channelFactory = new ChannelFactory<IDarPooling>(n_binding);
+    client = channelFactory.CreateChannel(n_address);
+    return client.SayHello();
+}
+*/
+/*      public string SayHello() 
+      {
+          Console.WriteLine("I received a request");
+          return "Hi, dummy";
+      }
+      */
+
+/*
+public static void TestNeighbour(string message)
+{
+
+    ServiceNodeCore n0 = (ServiceNodeCore) nodes[0];
+    ServiceNodeCore n1 = (ServiceNodeCore)nodes[1];
+            
+    Console.WriteLine(n0.NodeName + " is calling Milano....");
+    string mex = n0.CallNeighbour();
+    Console.WriteLine("Got :" + mex);
+}
+*/

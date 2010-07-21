@@ -15,7 +15,7 @@ namespace Communication
         private Location location;
         private string nodeName;
 
-        public Node(Location nodeLocation, string nodeName)
+        public Node(string nodeName, Location nodeLocation)
         {
             this.location = nodeLocation;
             this.nodeName = nodeName;
@@ -38,8 +38,8 @@ namespace Communication
 
     public class UserNode : Node
     {
-        public UserNode(Location nodeLocation, string nodeName) :
-            base(nodeLocation, nodeName)
+        public UserNode(string nodeName, Location nodeLocation) :
+            base(nodeName, nodeLocation)
         {
         }
 
@@ -50,8 +50,8 @@ namespace Communication
         private List<ServiceNode> neighbours;
         private List<UserNode> localUsers;
 
-        public ServiceNode(Location nodeLocation, string nodeName) :
-            base(nodeLocation, nodeName)
+        public ServiceNode(string nodeName, Location nodeLocation) :
+            base(nodeName, nodeLocation)
         {
             neighbours = new List<ServiceNode>();
             localUsers = new List<UserNode>();
