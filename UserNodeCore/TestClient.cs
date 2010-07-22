@@ -54,7 +54,7 @@ namespace Client
             Console.ReadLine();
             //proxy.GetData("Gimme Trips");
             catania1.ConnectToService();
-            milano1.ConnectToService();
+            //milano1.ConnectToService();
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
             Console.ReadLine();
             
