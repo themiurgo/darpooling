@@ -44,5 +44,5 @@ namespace Communication
     public class LoginUserCommand : Command { }
     public class LogoutUserCommand : Command { }
     public class InsertTripCommand : Command { }
-    public class SearchTripCOmmand : Command { }
+    public class SearchTripCommand : Command { }
 }

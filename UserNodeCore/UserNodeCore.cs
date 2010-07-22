@@ -59,7 +59,7 @@ namespace Client
         /// <param name="clientNode">represents the UserNode and its settings.</param>
         public UserNodeCore(UserNode clientNode)
         {
-            state = new DisconnectedState();
+            state = new UnjointState();
             userNode = clientNode;
             Initialize();
         }

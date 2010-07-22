@@ -17,7 +17,7 @@ namespace Client
         bool SearchTrip(UserNodeCore context);
     }
 
-    public class DisconnectedState : IState
+    public class UnjointState : IState
     {
         public bool Join(UserNodeCore context, string address)
         {
@@ -34,7 +34,7 @@ namespace Client
             // ... Here should create proxy ...
 
             // Change state to connected
-            context.State = new ConnectedState();
+            context.State = new JointState();
             return true;
         }
 
@@ -64,7 +64,7 @@ namespace Client
         }
     }
 
-    public class ConnectedState : IState
+    public class JointState : IState
     {
         public bool Join(UserNodeCore context, string address)
         {
@@ -73,7 +73,7 @@ namespace Client
 
         public bool Unjoin(UserNodeCore context)
         {
-            context.State = new DisconnectedState();
+            context.State = new UnjointState();
             return true;
         }
 
@@ -108,7 +108,7 @@ namespace Client
 
         public bool Unjoin(UserNodeCore context)
         {
-            context.State = new DisconnectedState();
+            context.State = new UnjointState();
             return true;
         }
 

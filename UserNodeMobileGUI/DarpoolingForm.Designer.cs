@@ -29,12 +29,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.mainMenu1 = new System.Windows.Forms.MainMenu();
-            this.Menu = this.mainMenu1;
+            this.SuspendLayout();
+            // 
+            // DarpoolingForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(131F, 131F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.Text = "DarpoolingForm";
             this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(240, 266);
+            this.KeyPreview = true;
+            this.Menu = this.mainMenu1;
+            this.Name = "DarpoolingForm";
+            this.Text = "DarpoolingForm";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DarpoolingForm_KeyDown);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
