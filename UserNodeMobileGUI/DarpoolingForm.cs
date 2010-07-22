@@ -15,7 +15,7 @@ namespace UserNodeMobileGUI
 
         public DarpoolingForm()
         {
-            Client.UserNodeCore = new Client.UserNodeCore(
+           // Client.UserNodeCore = new Client.UserNodeCore();
             // InitializeComponent();
         }
     }
