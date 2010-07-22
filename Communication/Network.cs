@@ -137,6 +137,8 @@ namespace Communication
             this.issuer = issuer;
         }
 
+        
+
     }
 
     public class SearchTripQueryMessage : QueryMessage
