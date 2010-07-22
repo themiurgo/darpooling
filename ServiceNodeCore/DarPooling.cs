@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 
 using System.Xml;
+using System.Xml.Serialization;
+using System.Xml.Linq;
+using System.IO;
 
 using System.ServiceModel;
 using System.ServiceModel.Channels;
@@ -75,6 +78,39 @@ namespace DarPoolingNode
             serviceHost.Close();
             if (channelFactory != null)
                 channelFactory.Close();
+        }
+
+
+        public static void WriteToXML(List<Movie> movies)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Movie>));
+            string filename = @"..\..\..\config\localDB.xml";
+
+            TextWriter textWriter = new StreamWriter(filename);
+            serializer.Serialize(textWriter,movies);
+            textWriter.Close();            
+
+        }
+
+        public static List<Customer> ReadFromXML()
+        { 
+            string filename = @"..\..\..\config\localDB.xml";
+            XDocument doc = XDocument.Load(filename);
+
+            return (from c in doc.Descendants("Customer")
+                           orderby c.Attribute("Surname")
+                           select new Customer()
+                           {
+                               ID = Convert.ToInt32(c.Attribute("ID").Value),
+                               Forename = c.Element("Forename").Value,
+                               Surname = c.Element("Surname").Value,
+                               DOB = c.Element("DOB").Value,
+                               Location = c.Element("Location").Value
+                           }).ToList();
+
+            //foreach (var name in petNames)
+            //    Console.WriteLine("Name: {0}", name);
+
         }
 
         // Properties
@@ -174,14 +210,39 @@ namespace DarPoolingNode
         static void Main(string[] args)
         {
             Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
-            StartBackboneNodes();
+            //StartBackboneNodes();
             
             //WriteXML();
-            
+            //Serialize();
+            List<Customer> list = ServiceNodeCore.ReadFromXML();
+            foreach (Customer c in list)
+                Console.WriteLine("Customer name is: {0}", c.Forename);
             Console.ReadLine();
-            CloseBackboneNodes();
+            //CloseBackboneNodes();
         }
+
+
+        public static void Serialize()
+        {
+            Movie movie = new Movie();
+            movie.Title = "Starship Troopers";
+            movie.ReleaseDate = DateTime.Parse("11/7/1997");
+            movie.Rating = 6.9f;
+
+            Movie movie2 = new Movie();
+            movie2.Title = "Ace Ventura: When Nature Calls";
+            movie2.ReleaseDate = DateTime.Parse("11/10/1995");
+            movie2.Rating = 5.4f;
+
+            List<Movie> movies = new List<Movie>() { movie, movie2 };
+
+            
+            
+            ServiceNodeCore.WriteToXML(movies);
+            Console.WriteLine("XLM written");
         
+        }
+
 
         public static void StartBackboneNodes()
         {

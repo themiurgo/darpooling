@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
+using System.Xml;
 using System.Runtime.Serialization;
+
 
 namespace Communication
 {
@@ -136,11 +139,36 @@ namespace Communication
         String notes;
         Boolean modifiable;
     }
-
+    
     public class TripSpecifier
     {
         private Location source;
         private Location destination;
     }
+
+    public class Movie
+    {
+        [XmlElement("MovieName")]
+        public string Title
+        { get; set; }
+
+        [XmlElement("MovieRating")]
+        public float Rating
+        { get; set; }
+
+        [XmlElement("MovieReleaseDate")]
+        public DateTime ReleaseDate
+        { get; set; }
+    }
+
+    public class Customer
+    {
+        public int ID { get; set; }
+        public string Forename { get; set; }
+        public string Surname { get; set; }
+        public string DOB { get; set; }
+        public string Location { get; set; }
+    }
+
 
 } //End Namespace
