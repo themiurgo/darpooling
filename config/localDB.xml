@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Customers>
+ <Customer ID="1">
+  <Forename>Joe</Forename>
+  <Surname>Stevens</Surname>
+  <DOB>31/01/1983</DOB>
+  <Location>Sydney</Location>
+ </Customer>
+ <Customer ID="2">
+  <Forename>Tom</Forename>
+  <Surname>Male</Surname>
+  <DOB>02/02/1977</DOB>
+  <Location>Brisbane</Location>
+ </Customer>
+ <Customer ID="3">
+  <Forename>Emily </Forename>
+  <Surname>Stevens</Surname>
+  <DOB>14/01/1988</DOB>
+  <Location>Sydney</Location>
+ </Customer>
+ <Customer ID="4">
+  <Forename>Lee</Forename>
+  <Surname>Phipps</Surname>
+  <DOB>05/12/1982</DOB>
+  <Location>Melbourne</Location>
+ </Customer>
+ <Customer ID="5">
+  <Forename>Saul</Forename>
+  <Surname>Stevens</Surname>
+  <DOB>02/08/1984</DOB>
+  <Location>Perth</Location>
+ </Customer>
+</Customers>
