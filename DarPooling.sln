@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserNodeGUI", "UserNodeGUI\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserNodeCore", "UserNodeCore\UserNodeCore.csproj", "{B4DA5967-AA86-466F-B27B-216682D67932}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserNodeMobileGUI", "UserNodeMobileGUI\UserNodeMobileGUI.csproj", "{69514DF5-3B90-4E01-8535-56B30A81DD42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,12 @@ Global
 		{B4DA5967-AA86-466F-B27B-216682D67932}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4DA5967-AA86-466F-B27B-216682D67932}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4DA5967-AA86-466F-B27B-216682D67932}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69514DF5-3B90-4E01-8535-56B30A81DD42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69514DF5-3B90-4E01-8535-56B30A81DD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69514DF5-3B90-4E01-8535-56B30A81DD42}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{69514DF5-3B90-4E01-8535-56B30A81DD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69514DF5-3B90-4E01-8535-56B30A81DD42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69514DF5-3B90-4E01-8535-56B30A81DD42}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
