@@ -105,7 +105,7 @@ namespace Client
         /// <param name="serviceNodeAddress">address of the ServiceNode</param>
         public void Join(string serviceNodeAddress)
         {
-            state.Join(this, serviceNodeAddress);
+            // PUT JOIN HERE.
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Client
 
         public void LoginUser(string username, string pw_hash)
         {
-            state.LoginUser(this, username, pw_hash);
+            state.Join(this, username, pw_hash);
         }
 
         public void InsertTrip(Trip trip)

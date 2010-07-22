@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using System.Runtime.Serialization;
 
 namespace Communication
@@ -10,8 +9,6 @@ namespace Communication
     /// <summary>
     /// This assembly contains Location, User, Trip
     /// </summary>
-
-
     public class Location
     {
         private string name;
@@ -55,7 +52,11 @@ namespace Communication
             set { longitude = value; }
         }
 
-        // Methods
+        /// <summary>
+        /// Return distance in km to another Location.
+        /// </summary>
+        /// <param name="other">the other location</param>
+        /// <returns></returns>
         public double distance(Location other)
         {
             double a1 = this.latitude;
@@ -70,6 +71,22 @@ namespace Communication
             double ret = Math.Acos(Math.Cos(a1) * Math.Cos(b1) * Math.Cos(a2) * Math.Cos(b2) + Math.Cos(a1) * Math.Sin(b1) * Math.Cos(a2) * Math.Sin(b2) + Math.Sin(a1) * Math.Sin(a2)) * earthRadius;
             //Console.WriteLine("{0}", ret);
             return ret;
+        }
+    }
+
+    public class LocationRange : Location
+    {
+        private int range;
+
+        public LocationRange(double latitude, double longitude, int range) :
+            base(latitude, longitude)
+        {
+            this.range = range;
+        }
+
+        public bool contains(Location other)
+        {
+            return this.distance(other) < range;
         }
     }
 
@@ -118,6 +135,12 @@ namespace Communication
         int freeSits;
         String notes;
         Boolean modifiable;
+    }
+
+    public class TripSpecifier
+    {
+        private Location source;
+        private Location destination;
     }
 
 } //End Namespace
