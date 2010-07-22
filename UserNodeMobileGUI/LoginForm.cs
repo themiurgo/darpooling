@@ -26,7 +26,8 @@ namespace UserNodeMobileGUI
         private void loginMenuItem_Click(object sender, EventArgs e)
         {
             // Login procedure;
-            Form searchForm = new SearchTripForm();
+            UserNodeCore.UserNodeCore core = new UserNodeCore.UserNodeCore(new Communication.UserNode("username"));
+            Form searchForm = new SearchTripForm(core);
             searchForm.Show();
         }
 

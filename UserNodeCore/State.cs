@@ -5,7 +5,7 @@ using System.Text;
 using Communication;
 using System.ServiceModel;
 
-namespace Client
+namespace UserNodeCore
 {
     public interface IState
     {
