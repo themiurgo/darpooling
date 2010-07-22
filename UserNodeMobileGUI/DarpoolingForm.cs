@@ -11,11 +11,12 @@ namespace UserNodeMobileGUI
 {
     public partial class DarpoolingForm : Form
     {
+        private UserNodeCore.UserNodeCore core;
 
-
-        public DarpoolingForm()
+        public DarpoolingForm(UserNodeCore.UserNodeCore core)
         {
-           // Client.UserNodeCore = new Client.UserNodeCore();
+            this.core = core;
+            //UserNodeCore.UserNodeCore = new Client.UserNodeCore();
             // InitializeComponent();
         }
 

@@ -8,7 +8,7 @@ using System.ServiceModel.Channels;
 using Communication;
 using System.Threading;
 
-namespace Client
+namespace UserNodeCore
 {
     /// <summary>
     /// This class implements the Callback interface, i.e. the set

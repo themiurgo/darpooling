@@ -9,9 +9,10 @@ using System.Windows.Forms;
 
 namespace UserNodeMobileGUI
 {
-    public partial class SearchTripForm : Form
+    public partial class SearchTripForm : DarpoolingForm
     {
-        public SearchTripForm()
+        public SearchTripForm(UserNodeCore.UserNodeCore core) :
+            base(core)
         {
             InitializeComponent();
         }

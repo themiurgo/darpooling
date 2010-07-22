@@ -8,7 +8,7 @@ using System.ServiceModel.Channels;
 using Communication;
 using System.Threading;
 
-namespace Client
+namespace UserNodeCore
 {
 
 
