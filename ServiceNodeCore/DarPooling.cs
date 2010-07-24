@@ -104,37 +104,32 @@ namespace DarPoolingNode
             Console.WriteLine("Trip Saved!");
         }
 
-         public static void WriteToXML()
-         {
-             /*XmlSerializer serializer = new XmlSerializer(typeof(List<Movie>));
-             string filename = @"..\..\..\config\localDB.xml";
-
-             TextWriter textWriter = new StreamWriter(filename);
-             serializer.Serialize(textWriter,movies);
-             textWriter.Close();            
-             */
-        }
-
-        public static void ReadFromXML()
-        { 
-           /* string filename = @"..\..\..\config\localDB.xml";
+        public static List<Trip> GetTrip()
+        {
+            string filename = @"..\..\..\config\trip.xml";
             XDocument doc = XDocument.Load(filename);
 
-            return (from c in doc.Descendants("Customer")
-                           orderby c.Attribute("Surname")
-                           select new Customer()
-                           {
-                               ID = Convert.ToInt32(c.Attribute("ID").Value),
-                               Forename = c.Element("Forename").Value,
-                               Surname = c.Element("Surname").Value,
-                               DOB = c.Element("DOB").Value,
-                               Location = c.Element("Location").Value
-                           }).ToList();
-            */
-            //foreach (var name in petNames)
-            //    Console.WriteLine("Name: {0}", name);
+            return (from t in doc.Descendants("Trip")
+                    orderby t.Element("ID")
+                    select new Trip()
+                    {
+                        ID = Convert.ToInt32(t.Element("ID").Value),
+                        Owner = t.Element("Owner").Value,
+                        DepartureName = t.Element("DepartureName").Value,
+                        DepartureDateTime = Convert.ToDateTime(t.Element("DepartureDateTime").Value),
+                        ArrivalName = t.Element("ArrivalName").Value,
+                        ArrivalDateTime = Convert.ToDateTime(t.Element("ArrivalDateTime").Value),
+                        Smoke = Convert.ToBoolean(t.Element("Smoke").Value),
+                        Music = Convert.ToBoolean(t.Element("Music").Value),
+                        Cost = Convert.ToDouble(t.Element("Cost").Value),
+                        FreeSits = Convert.ToInt32(t.Element("FreeSits").Value),
+                        Notes = t.Element("Notes").Value,
+                        Modifiable = Convert.ToBoolean(t.Element("Modifiable").Value)
+                    }).ToList();
 
+        
         }
+         
 
         // Properties
         public string NodeName
@@ -337,11 +332,27 @@ namespace DarPoolingNode
                 Music = false,
                 Cost = 10,
                 FreeSits = 4,
-                Notes = "",
+                Notes = "none",
                 Modifiable = false
             };
 
+            // Create a new XML file
+            string filename = @"..\..\..\config\trip.xml";
+            XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
+            textWriter.Formatting = Formatting.Indented;
+            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+            textWriter.WriteComment("Trips DB for a DarPooling Service Node");
+            textWriter.WriteStartElement("Trips");
+            textWriter.Close();
+
             ServiceNodeCore.SaveTrip(trip1);
+            //Trip queryTrip = new Trip {DepartureName="Catania"};
+            List<Trip> list = ServiceNodeCore.GetTrip();
+            Console.WriteLine("Retrieved {0} trip(s).", list.Count);
+            foreach (Trip t in list)
+            {
+                t.PrintFullInfo();
+            }
 
         }
 
