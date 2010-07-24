@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--Configuration File for a DarPooling Service Node-->
-<configuration>
-  <neighbours>
-    <neighbour Name="Milano" />
-  </neighbours>
-</configuration>
