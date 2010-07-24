@@ -80,21 +80,44 @@ namespace DarPoolingNode
                 channelFactory.Close();
         }
 
-
-        public static void WriteToXML(List<Movie> movies)
+        public static void SaveTrip(Trip t)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Movie>));
-            string filename = @"..\..\..\config\localDB.xml";
+            string filename = @"..\..\..\config\trip.xml";
+            XDocument doc = XDocument.Load(filename);
 
-            TextWriter textWriter = new StreamWriter(filename);
-            serializer.Serialize(textWriter,movies);
-            textWriter.Close();            
-
+            XElement newTrip = new XElement("Trip",
+                new XElement("ID", t.ID),
+                new XElement("Owner", t.Owner),
+                new XElement("DepartureName", t.DepartureName),
+                new XElement("DepartureDateTime", t.DepartureDateTime),
+                new XElement("ArrivalName", t.ArrivalName),
+                new XElement("ArrivalDateTime", t.ArrivalDateTime),
+                new XElement("Smoke", t.Smoke),
+                new XElement("Music", t.Music),
+                new XElement("Cost", t.Cost),
+                new XElement("FreeSits", t.FreeSits),
+                new XElement("Notes", t.Notes),
+                new XElement("Modifiable", t.Modifiable)
+                );
+            doc.Element("Trips").Add(newTrip);
+            doc.Save(filename);
+            Console.WriteLine("Trip Saved!");
         }
 
-        public static List<Customer> ReadFromXML()
+         public static void WriteToXML()
+         {
+             /*XmlSerializer serializer = new XmlSerializer(typeof(List<Movie>));
+             string filename = @"..\..\..\config\localDB.xml";
+
+             TextWriter textWriter = new StreamWriter(filename);
+             serializer.Serialize(textWriter,movies);
+             textWriter.Close();            
+             */
+        }
+
+        public static void ReadFromXML()
         { 
-            string filename = @"..\..\..\config\localDB.xml";
+           /* string filename = @"..\..\..\config\localDB.xml";
             XDocument doc = XDocument.Load(filename);
 
             return (from c in doc.Descendants("Customer")
@@ -107,7 +130,7 @@ namespace DarPoolingNode
                                DOB = c.Element("DOB").Value,
                                Location = c.Element("Location").Value
                            }).ToList();
-
+            */
             //foreach (var name in petNames)
             //    Console.WriteLine("Name: {0}", name);
 
@@ -212,36 +235,14 @@ namespace DarPoolingNode
             Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
             //StartBackboneNodes();
             
-            //WriteXML();
-            //Serialize();
-            List<Customer> list = ServiceNodeCore.ReadFromXML();
-            foreach (Customer c in list)
-                Console.WriteLine("Customer name is: {0}", c.Forename);
+            //List<Customer> list = ServiceNodeCore.ReadFromXML();
+            //foreach (Customer c in list)
+            //    Console.WriteLine("Customer name is: {0}", c.Forename);
+            InitTripXML();
             Console.ReadLine();
             //CloseBackboneNodes();
         }
 
-
-        public static void Serialize()
-        {
-            Movie movie = new Movie();
-            movie.Title = "Starship Troopers";
-            movie.ReleaseDate = DateTime.Parse("11/7/1997");
-            movie.Rating = 6.9f;
-
-            Movie movie2 = new Movie();
-            movie2.Title = "Ace Ventura: When Nature Calls";
-            movie2.ReleaseDate = DateTime.Parse("11/10/1995");
-            movie2.Rating = 5.4f;
-
-            List<Movie> movies = new List<Movie>() { movie, movie2 };
-
-            
-            
-            ServiceNodeCore.WriteToXML(movies);
-            Console.WriteLine("XLM written");
-        
-        }
 
 
         public static void StartBackboneNodes()
@@ -315,77 +316,34 @@ namespace DarPoolingNode
             }
         }
 
-        public static void WriteXML()
+        /* This methods initializes the DB with sample Trips */
+        public static void InitTripXML()
         {
+            User massimo = new User("Massimo", "MAXXI");
+            User michela = new User("Michela", "Mia");
+            User daniele = new User("Daniele", "Shaoran");
+            User antonio = new User("Antonio", "4nt0");
+            User federica = new User("Federica", "Fede");
 
-            string filename = @"..\..\..\config\chiasso.xml";
-            XmlDocument xmlDoc = new XmlDocument();
-
-            // Create a new XML file
-            XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
-            textWriter.Formatting = Formatting.Indented;
-            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-            textWriter.WriteComment("Configuration File for a DarPooling Service Node");
-            textWriter.WriteStartElement("configuration");
-            textWriter.Close();
-
-            xmlDoc.Load(filename);
-            XmlNode root = xmlDoc.DocumentElement;
-            XmlElement neighbours = xmlDoc.CreateElement("neighbours");
-            XmlElement neighbour = xmlDoc.CreateElement("neighbour");
-            //XmlText textNode = xmlDoc.CreateTextNode("hello");
-            //textNode.Value = "hello, world";
-
-            root.AppendChild(neighbours);
-            neighbours.AppendChild(neighbour);
-            neighbour.SetAttribute("Name", "Milano");
-            //neighbour.AppendChild(textNode);
-
-            //textNode.Value = "replacing hello world";
-            xmlDoc.Save(filename);
-
-
-            // Read a document
-            XmlTextReader textReader = new XmlTextReader(filename);
-            // Read until end of file
-            while (textReader.Read())
+            Trip trip1 = new Trip
             {
-                // Do something
-                //Console.WriteLine(textReader.Value);   
-            }
+                ID = 0,
+                Owner = massimo.UserName,
+                DepartureName = "Catania",
+                DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
+                ArrivalName = "Messina",
+                ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
+                Smoke = false,
+                Music = false,
+                Cost = 10,
+                FreeSits = 4,
+                Notes = "",
+                Modifiable = false
+            };
+
+            ServiceNodeCore.SaveTrip(trip1);
 
         }
 
     } //End Launcher
 } //End Namespace
-
-
-/*
-public string CallNeighbour()
-{
-    EndpointAddress n_address = new EndpointAddress("http://localhost:1111/Milano");
-    WSDualHttpBinding  n_binding = new WSDualHttpBinding();
-    channelFactory = new ChannelFactory<IDarPooling>(n_binding);
-    client = channelFactory.CreateChannel(n_address);
-    return client.SayHello();
-}
-*/
-/*      public string SayHello() 
-      {
-          Console.WriteLine("I received a request");
-          return "Hi, dummy";
-      }
-      */
-
-/*
-public static void TestNeighbour(string message)
-{
-
-    ServiceNodeCore n0 = (ServiceNodeCore) nodes[0];
-    ServiceNodeCore n1 = (ServiceNodeCore)nodes[1];
-            
-    Console.WriteLine(n0.NodeName + " is calling Milano....");
-    string mex = n0.CallNeighbour();
-    Console.WriteLine("Got :" + mex);
-}
-*/

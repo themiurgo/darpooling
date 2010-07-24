@@ -98,8 +98,8 @@ namespace Communication
     {
         enum Sex { f, m };
         int userId;
+        [DataMember]
         String username;
-
         [DataMember]
         String name;
 
@@ -115,6 +115,12 @@ namespace Communication
             this.name = name;
         }
 
+        public User(String name, String username)
+        {
+            this.name = name;
+            this.username = username;
+        }
+
         public String Name
         {
             get
@@ -122,22 +128,46 @@ namespace Communication
                 return name;
             }
         }
+
+        public String UserName
+        {
+            get { return username;}
+            private set { username = value; }
+        }
     }
 
+    [DataContract]
     public class Trip
     {
-        Int32 id;
-        DateTime departureDateTime;
-        DateTime arrivalDateTime;
-        String departureName;
-        String arrivalName;
-        Boolean smoke;
-        Boolean music;
-        Double cost;
-        User owner;
-        int freeSits;
-        String notes;
-        Boolean modifiable;
+        [DataMember]
+        public Int32 ID { get; set; }
+        [DataMember]
+        public String Owner { get; set; }
+
+        [DataMember]
+        public String DepartureName { get; set; }
+        [DataMember]
+        public DateTime DepartureDateTime { get; set; }
+
+        [DataMember]
+        public String ArrivalName { get; set; }
+        [DataMember]
+        public DateTime ArrivalDateTime { get; set; }
+        
+        [DataMember]
+        public Boolean Smoke { get; set; }
+        [DataMember]
+        public Boolean Music { get; set; }
+        
+        [DataMember]
+        public Double Cost { get; set; }
+        [DataMember]
+        public int FreeSits { get; set; }
+        [DataMember]
+        public String Notes { get; set; }
+        
+        [DataMember]
+        public Boolean Modifiable { get; set; }
     }
     
     public class TripSpecifier
@@ -146,7 +176,7 @@ namespace Communication
         private Location destination;
     }
 
-    public class Movie
+/*    public class Movie
     {
         [XmlElement("MovieName")]
         public string Title
@@ -169,6 +199,6 @@ namespace Communication
         public string DOB { get; set; }
         public string Location { get; set; }
     }
-
+*/
 
 } //End Namespace
