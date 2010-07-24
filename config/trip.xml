@@ -15,4 +15,18 @@
     <Notes>none</Notes>
     <Modifiable>false</Modifiable>
   </Trip>
+  <Trip>
+    <ID>0</ID>
+    <Owner>MAXXI</Owner>
+    <DepartureName>Catania</DepartureName>
+    <DepartureDateTime>2010-07-30T08:00:00</DepartureDateTime>
+    <ArrivalName>Messina</ArrivalName>
+    <ArrivalDateTime>2010-07-30T10:30:00</ArrivalDateTime>
+    <Smoke>false</Smoke>
+    <Music>false</Music>
+    <Cost>10</Cost>
+    <FreeSits>4</FreeSits>
+    <Notes>none</Notes>
+    <Modifiable>false</Modifiable>
+  </Trip>
 </Trips>
