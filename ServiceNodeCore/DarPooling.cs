@@ -83,6 +83,8 @@ namespace DarPoolingNode
         public static void SaveTrip(Trip t)
         {
             string filename = @"..\..\..\config\trip.xml";
+
+            
             XDocument doc = XDocument.Load(filename);
 
             XElement newTrip = new XElement("Trip",
@@ -101,6 +103,7 @@ namespace DarPoolingNode
                 );
             doc.Element("Trips").Add(newTrip);
             doc.Save(filename);
+           
             Console.WriteLine("Trip Saved!");
         }
 
@@ -110,7 +113,7 @@ namespace DarPoolingNode
             XDocument doc = XDocument.Load(filename);
 
             return (from t in doc.Descendants("Trip")
-                    orderby t.Element("ID")
+                    orderby t.Element("ID").Value
                     select new Trip()
                     {
                         ID = Convert.ToInt32(t.Element("ID").Value),
@@ -344,7 +347,8 @@ namespace DarPoolingNode
             textWriter.WriteComment("Trips DB for a DarPooling Service Node");
             textWriter.WriteStartElement("Trips");
             textWriter.Close();
-
+            
+            ServiceNodeCore.SaveTrip(trip1);
             ServiceNodeCore.SaveTrip(trip1);
             //Trip queryTrip = new Trip {DepartureName="Catania"};
             List<Trip> list = ServiceNodeCore.GetTrip();
