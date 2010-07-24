@@ -6,6 +6,8 @@ using System.Xml.Serialization;
 using System.Xml;
 using System.Runtime.Serialization;
 
+using System.Reflection;
+
 
 namespace Communication
 {
@@ -140,7 +142,7 @@ namespace Communication
     public class Trip
     {
         [DataMember]
-        public Int32 ID { get; set; }
+        public int ID { get; set; }
         [DataMember]
         public String Owner { get; set; }
 
@@ -168,6 +170,35 @@ namespace Communication
         
         [DataMember]
         public Boolean Modifiable { get; set; }
+
+        public void PrintFullInfo()
+        {
+            Console.WriteLine("** Full Trip Info **");
+            Type t = typeof(Trip);
+
+            PropertyInfo[] props = t.GetProperties();
+
+            foreach ( PropertyInfo p in props)
+            {
+                MethodInfo get = p.GetGetMethod();
+                Console.WriteLine("{0} : {1}",p.Name,p.GetValue(this,null));
+            }
+
+            /*Console.WriteLine("These are the Trip info");
+            Console.WriteLine("Id: ", ID);
+            Console.WriteLine(": ",Owner);
+            DepartureName);
+            DepartureDateTime);
+            ArrivalName);
+            ArrivalDateTime);
+            Smoke);
+            Music);
+            Cost);
+            FreeSits);
+            Notes);
+            Modifiable = Convert.ToBoolean(t.Attribute("Modifiable").Value)
+             * */
+        }
     }
     
     public class TripSpecifier
