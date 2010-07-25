@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +15,7 @@ using Communication;
 //using System.ServiceModel.Channels;
 //using System.IO;
 //using System.Threading;
-
+//using System.Collections;
 
 namespace ServiceNodeCore
 {
@@ -34,6 +33,9 @@ namespace ServiceNodeCore
 
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
+
+        private XDocument tripsDB;
+        private const string tripsDBPath = @"..\..\..\config\trip.xml";
         
         public const string baseHTTPAddress = "http://localhost:1111/";
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
@@ -41,12 +43,13 @@ namespace ServiceNodeCore
 
         public ServiceNodeCore(ServiceNode sn)
         {
-            serviceNode =sn;
+            serviceNode = sn;
         }
 
 
         public void StartService()
         {
+            Console.Write("Starting " + NodeName + " node... ");
             /* Address */
             Uri http_uri = new Uri(baseHTTPAddress + NodeName);
             Uri tcp_uri = new Uri(baseTCPAddress + NodeName);
@@ -68,24 +71,22 @@ namespace ServiceNodeCore
             
             /* Run the service */
             serviceHost.Open();
-            Console.WriteLine(NodeName + "\t\tnode is now active.");        
+            Console.WriteLine("OK!");        
         }
 
 
         public void StopService()
         {
-            Console.WriteLine("Closing the service host...");
+            Console.Write("Stopping " + NodeName + " node... ");
             serviceHost.Close();
             if (channelFactory != null)
                 channelFactory.Close();
+            Console.WriteLine("Stopped"); 
         }
 
-        public static void SaveTrip(Trip t)
+        public void SaveTrip(Trip t)
         {
-            string filename = @"..\..\..\config\trip.xml";
-
-            
-            XDocument doc = XDocument.Load(filename);
+            tripsDB = XDocument.Load(tripsDBPath);
 
             XElement newTrip = new XElement("Trip",
                 new XElement("ID", t.ID),
@@ -101,18 +102,17 @@ namespace ServiceNodeCore
                 new XElement("Notes", t.Notes),
                 new XElement("Modifiable", t.Modifiable)
                 );
-            doc.Element("Trips").Add(newTrip);
-            doc.Save(filename);
+            tripsDB.Element("Trips").Add(newTrip);
+            tripsDB.Save(tripsDBPath);
            
             Console.WriteLine("Trip Saved!");
         }
 
-        public static List<Trip> GetTrip()
+        public List<Trip> GetTrip()
         {
-            string filename = @"..\..\..\config\trip.xml";
-            XDocument doc = XDocument.Load(filename);
+            tripsDB = XDocument.Load(tripsDBPath);
 
-            return (from t in doc.Descendants("Trip")
+            return (from t in tripsDB.Descendants("Trip")
                     orderby t.Element("ID").Value
                     select new Trip()
                     {
@@ -129,12 +129,10 @@ namespace ServiceNodeCore
                         Notes = t.Element("Notes").Value,
                         Modifiable = Convert.ToBoolean(t.Element("Modifiable").Value)
                     }).ToList();
-
-        
         }
-         
 
-        // Properties
+
+        #region Properties
         public string NodeName
         {
             get { return serviceNode.NodeName; }
@@ -156,6 +154,8 @@ namespace ServiceNodeCore
         {
             get { return serviceNode; }
         }
+        #endregion
+
 
         #region ServiceNode methods
 
@@ -193,74 +193,63 @@ namespace ServiceNodeCore
     }
 
     
-    
-    
     /* Start the SNs */
     public class Launcher
     {
-        private static ArrayList nodes = new ArrayList();
+        private static List<ServiceNodeCore> sncList = new List<ServiceNodeCore>();
         private static Dictionary<string,Location> nameLoc = new Dictionary<string,Location>(); 
-        //private static ArrayList nodeNames = new ArrayList();
     
         static void Main(string[] args)
         {
-            Console.WriteLine("**** Starting the Backbone Nodes... ****\n");
-            //StartBackboneNodes();
-            
-            //List<Customer> list = ServiceNodeCore.ReadFromXML();
-            //foreach (Customer c in list)
-            //    Console.WriteLine("Customer name is: {0}", c.Forename);
-            InitTripXML();
+            InitializeService();
+            StartService();
             Console.ReadLine();
-            //CloseBackboneNodes();
+            StopService();
         }
 
-
-
-        public static void StartBackboneNodes()
+        public static void InitializeService()
         {
-            string[] locNames = new string[] {"Chiasso", "Milano", "Roma", "Napoli", "Catania" };
+            InitializeNodes();
+            InitializeUserDB();
+            InitializeTripDB();         
+        }
+
+        public static void InitializeNodes()
+        {
+            Console.WriteLine("**** DarPooling Service Nodes ****\n");
+
+            string[] locNames = new string[] { "Chiasso", "Milano", "Roma", "Napoli", "Catania" };
             string[] coords;
             double latitude;
             double longitude;
             Location location;
-            
+
             /* Obtain the Location of the Node */
-            Console.Write("Getting coordinates from GMap server....   ");
+            Console.Write("Retrieving Coordinates from GMap Server....   ");
             foreach (string locName in locNames)
             {
                 coords = GMapsAPI.addrToLatLng(locName);
                 latitude = double.Parse(coords[0]);
                 longitude = double.Parse(coords[1]);
                 location = new Location(locName, latitude, longitude);
-                nameLoc.Add(locName,location);
+                nameLoc.Add(locName, location);
             }
             Console.WriteLine("Done!");
 
-            /* Service nodes */
+            /* Service Node(s) */
             ServiceNode chiassoSN = new ServiceNode("Chiasso", nameLoc["Chiasso"]);
             ServiceNode milanoSN = new ServiceNode("Milano", nameLoc["Milano"]);
             ServiceNode romaSN = new ServiceNode("Roma", nameLoc["Roma"]);
             ServiceNode napoliSN = new ServiceNode("Napoli", nameLoc["Napoli"]);
             ServiceNode cataniaSN = new ServiceNode("Catania", nameLoc["Catania"]);
             ServiceNode catania2SN = new ServiceNode("Catania2", nameLoc["Catania"]);
-            /* Service node core */
+            /* Service Node Core(s) */
             ServiceNodeCore chiasso = new ServiceNodeCore(chiassoSN);
-            ServiceNodeCore milano  = new ServiceNodeCore(milanoSN);
-            ServiceNodeCore roma    = new ServiceNodeCore(romaSN);
-            ServiceNodeCore napoli  = new ServiceNodeCore(napoliSN);                                                             
+            ServiceNodeCore milano = new ServiceNodeCore(milanoSN);
+            ServiceNodeCore roma = new ServiceNodeCore(romaSN);
+            ServiceNodeCore napoli = new ServiceNodeCore(napoliSN);
             ServiceNodeCore catania = new ServiceNodeCore(cataniaSN);
-            ServiceNodeCore catania2= new ServiceNodeCore(catania2SN);
-
-            /* Set of Backbone Nodes */
-            ServiceNodeCore[] nodes = 
-                new ServiceNodeCore[] { chiasso, milano, roma, napoli, catania, catania2
-                                      };
-
-            Console.WriteLine("\nStarting the Service...");
-            foreach (ServiceNodeCore node in nodes)
-                { node.StartService(); }
-            Console.WriteLine("\nAll Service nodes are now Online");
+            ServiceNodeCore catania2 = new ServiceNodeCore(catania2SN);
 
             /* Set Topology */
             chiasso.addNeighbour(milano);
@@ -270,23 +259,45 @@ namespace ServiceNodeCore
             napoli.addNeighbour(catania2);
             catania.addNeighbour(catania2);
 
-            Console.WriteLine("\nRetrieving information....");
-            foreach (ServiceNodeCore n in nodes)
-            {
-                Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I have {3} neighbours", n.NodeName, n.NodeLocation.Latitude, n.NodeLocation.Longitude, n.NumNeighbours);
-            }
-            Console.WriteLine("\nWaiting for incoming requests...");
-    
-        }
-  
+            /* Set of Backbone Nodes */
+            ServiceNodeCore[] nodes =
+                new ServiceNodeCore[] { chiasso, milano, roma, napoli, catania, catania2
+                                      };
+
+            sncList.AddRange(nodes);
         
-        public static void CloseBackboneNodes()
+        }
+
+        public static void InitializeUserDB()
         {
-            foreach(ServiceNodeCore node in nodes)
+
+        }
+
+        public static void InitializeTripDB()
+        {
+
+        }
+
+        public static void StartService()
+        {
+            Console.WriteLine("\nStarting the Service Nodes...");
+            foreach (ServiceNodeCore node in sncList)
+            { 
+                node.StartService(); 
+            }
+            Console.WriteLine("ALL Service Nodes are now ONLINE");
+        }
+
+        public static void StopService()
+        {
+            Console.WriteLine("Stopping the Service Nodes...");
+            foreach (ServiceNodeCore node in sncList)
             {
                 node.StopService();
             }
+            Console.WriteLine("ALL Service Nodes are now OFFLINE Quitting...");
         }
+
 
         /* This methods initializes the DB with sample Trips */
         public static void InitTripXML()
@@ -322,16 +333,26 @@ namespace ServiceNodeCore
             textWriter.WriteStartElement("Trips");
             textWriter.Close();
             
+/*            ServiceNodeCore.SaveTrip(trip1);
             ServiceNodeCore.SaveTrip(trip1);
-            ServiceNodeCore.SaveTrip(trip1);
-            //Trip queryTrip = new Trip {DepartureName="Catania"};
+            Trip queryTrip = new Trip {DepartureName="Catania"};
             List<Trip> list = ServiceNodeCore.GetTrip();
             Console.WriteLine("Retrieved {0} trip(s).", list.Count);
             foreach (Trip t in list)
             {
                 t.PrintFullInfo();
             }
+*/
+        }
 
+        public static void PrintDebug()
+        {
+            Console.WriteLine("NODE INFO");
+            foreach (ServiceNodeCore n in sncList)
+            {
+                Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I have {3} neighbours", n.NodeName, n.NodeLocation.Latitude, n.NodeLocation.Longitude, n.NumNeighbours);
+            }
+        
         }
 
     } //End Launcher
