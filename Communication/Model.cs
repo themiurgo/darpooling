@@ -98,44 +98,39 @@ namespace Communication
     [DataContract]
     public class User
     {
-        enum Sex { f, m };
-        int userId;
+        public enum Sex { f, m }
+        
         [DataMember]
-        String username;
+        public int UserID { get; private set; }
         [DataMember]
-        String name;
-
-        Sex sex;
-        DateTime birthDate;
-        String email;
-        Boolean smoker;
-        DateTime signupDate;
-        String whereabouts;
+        public String UserName { get; private set; }
+        
+        [DataMember]
+        public String Name { get; set; }
+        [DataMember]
+        public Sex UserSex { get; set; }
+        [DataMember]
+        public DateTime BirthDate { get; set; }
+        [DataMember]
+        public String Email { get; set; }
+        [DataMember]
+        public Boolean Smoker { get; set; }
+        [DataMember]
+        public DateTime SignupDate { get; set; }
+        [DataMember]
+        public String Whereabouts { get; set; }
 
         public User(String name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
         public User(String name, String username)
         {
-            this.name = name;
-            this.username = username;
+            this.Name = name;
+            this.UserName = username;
         }
 
-        public String Name
-        {
-            get
-            {
-                return name;
-            }
-        }
-
-        public String UserName
-        {
-            get { return username;}
-            private set { username = value; }
-        }
     }
 
     [DataContract]

@@ -35,7 +35,10 @@ namespace ServiceNodeCore
         private ChannelFactory<IDarPooling> channelFactory;
 
         private XDocument tripsDB;
-        private const string tripsDBPath = @"..\..\..\config\trip.xml";
+        private static XDocument usersDB;
+        private static string usersDBPath = @"..\..\..\config\users.xml";
+        private string tripsDBPath;
+        private const string tripsDBRootPath = @"..\..\..\config\";
         
         public const string baseHTTPAddress = "http://localhost:1111/";
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
@@ -44,6 +47,8 @@ namespace ServiceNodeCore
         public ServiceNodeCore(ServiceNode sn)
         {
             serviceNode = sn;
+            tripsDBPath = tripsDBRootPath + "trips_" + sn.NodeName.ToUpper() + ".xml"; 
+
         }
 
 
@@ -82,6 +87,30 @@ namespace ServiceNodeCore
             if (channelFactory != null)
                 channelFactory.Close();
             Console.WriteLine("Stopped"); 
+        }
+
+        public static void SaveUser(User u)
+        {
+            usersDB = XDocument.Load(usersDBPath);
+
+            XElement newUser = new XElement("User",
+                new XElement("Name", u.Name),
+                new XElement("UserName", u.UserName)
+                /*new XElement("", u),
+                new XElement("", u),
+                new XElement("", u),
+                new XElement("", u),
+                new XElement("", u),
+                new XElement("", u),
+                new XElement("", u),
+                new XElement("", u),
+                new XElement("", u),
+                new XElement("", u)*/
+                );
+            usersDB.Element("Users").Add(newUser);
+            usersDB.Save(usersDBPath);
+
+            //Console.WriteLine("User Saved!");
         }
 
         public void SaveTrip(Trip t)
@@ -197,6 +226,7 @@ namespace ServiceNodeCore
     public class Launcher
     {
         private static List<ServiceNodeCore> sncList = new List<ServiceNodeCore>();
+        private static List<User> userList = new List<User>();
         private static Dictionary<string,Location> nameLoc = new Dictionary<string,Location>(); 
     
         static void Main(string[] args)
@@ -218,7 +248,7 @@ namespace ServiceNodeCore
         {
             Console.WriteLine("**** DarPooling Service Nodes ****\n");
 
-            string[] locNames = new string[] { "Chiasso", "Milano", "Roma", "Napoli", "Catania" };
+            string[] locNames = new string[] { "Aosta", "Milano", "Roma", "Napoli", "Catania" };
             string[] coords;
             double latitude;
             double longitude;
@@ -237,14 +267,14 @@ namespace ServiceNodeCore
             Console.WriteLine("Done!");
 
             /* Service Node(s) */
-            ServiceNode chiassoSN = new ServiceNode("Chiasso", nameLoc["Chiasso"]);
+            ServiceNode aostaSN = new ServiceNode("Aosta", nameLoc["Aosta"]);
             ServiceNode milanoSN = new ServiceNode("Milano", nameLoc["Milano"]);
             ServiceNode romaSN = new ServiceNode("Roma", nameLoc["Roma"]);
             ServiceNode napoliSN = new ServiceNode("Napoli", nameLoc["Napoli"]);
             ServiceNode cataniaSN = new ServiceNode("Catania", nameLoc["Catania"]);
             ServiceNode catania2SN = new ServiceNode("Catania2", nameLoc["Catania"]);
             /* Service Node Core(s) */
-            ServiceNodeCore chiasso = new ServiceNodeCore(chiassoSN);
+            ServiceNodeCore aosta = new ServiceNodeCore(aostaSN);
             ServiceNodeCore milano = new ServiceNodeCore(milanoSN);
             ServiceNodeCore roma = new ServiceNodeCore(romaSN);
             ServiceNodeCore napoli = new ServiceNodeCore(napoliSN);
@@ -252,7 +282,7 @@ namespace ServiceNodeCore
             ServiceNodeCore catania2 = new ServiceNodeCore(catania2SN);
 
             /* Set Topology */
-            chiasso.addNeighbour(milano);
+            aosta.addNeighbour(milano);
             milano.addNeighbour(roma);
             roma.addNeighbour(napoli);
             napoli.addNeighbour(catania);
@@ -261,7 +291,7 @@ namespace ServiceNodeCore
 
             /* Set of Backbone Nodes */
             ServiceNodeCore[] nodes =
-                new ServiceNodeCore[] { chiasso, milano, roma, napoli, catania, catania2
+                new ServiceNodeCore[] { aosta, milano, roma, napoli, catania, catania2
                                       };
 
             sncList.AddRange(nodes);
@@ -270,6 +300,34 @@ namespace ServiceNodeCore
 
         public static void InitializeUserDB()
         {
+            Console.Write("Initializing Users DB... ");
+            string usersDBPath = @"..\..\..\config\users.xml";
+
+            XmlTextWriter textWriter = new XmlTextWriter(usersDBPath, System.Text.Encoding.UTF8);
+            textWriter.Formatting = Formatting.Indented;
+            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+            textWriter.WriteComment("Users DB for the DarPooling Service");
+            textWriter.WriteStartElement("Users");
+            textWriter.Close();
+
+            User massimo = new User("Massimo", "MAXXI");
+            User michela = new User("Michela", "Mia");
+            User daniele = new User("Daniele", "Shaoran");
+            User antonio = new User("Antonio", "4nt0");
+            User federica = new User("Federica", "Fede");
+
+            /* Set of Backbone Nodes */
+            User[] users =
+                new User[] { massimo, michela, daniele, antonio, federica
+                                      };
+
+            userList.AddRange(users);
+
+            foreach (User u in userList)
+            {
+                ServiceNodeCore.SaveUser(u);
+            }
+            Console.WriteLine("Done!");
 
         }
 
