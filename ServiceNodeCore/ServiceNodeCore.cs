@@ -22,6 +22,8 @@ namespace ServiceNodeCore
 
     public class ServiceNodeCore
     {
+        #region Class Fields
+
         private ServiceNode serviceNode;
         private ServiceHost serviceHost;
 
@@ -43,12 +45,12 @@ namespace ServiceNodeCore
         public const string baseHTTPAddress = "http://localhost:1111/";
         public const string baseTCPAddress = "net.tcp://localhost:1112/";
 
+        #endregion
 
         public ServiceNodeCore(ServiceNode sn)
         {
             serviceNode = sn;
             tripsDBPath = tripsDBRootPath + "trips_" + sn.NodeName.ToUpper() + ".xml"; 
-
         }
 
 
@@ -79,7 +81,6 @@ namespace ServiceNodeCore
             Console.WriteLine("OK!");        
         }
 
-
         public void StopService()
         {
             Console.Write("Stopping " + NodeName + " node... ");
@@ -88,6 +89,7 @@ namespace ServiceNodeCore
                 channelFactory.Close();
             Console.WriteLine("Stopped"); 
         }
+
 
         public static void SaveUser(User u)
         {
@@ -137,7 +139,7 @@ namespace ServiceNodeCore
             Console.WriteLine("Trip Saved!");
         }
 
-        public List<Trip> GetTrip()
+        public List<Trip> GetTrip(Trip queryTrip)
         {
             tripsDB = XDocument.Load(tripsDBPath);
 
@@ -162,6 +164,12 @@ namespace ServiceNodeCore
 
 
         #region Properties
+
+        public string TripsDBPath
+        {
+            get { return tripsDBPath; }
+        }
+
         public string NodeName
         {
             get { return serviceNode.NodeName; }
@@ -234,6 +242,8 @@ namespace ServiceNodeCore
             InitializeService();
             StartService();
             Console.ReadLine();
+            TestService();
+            Console.ReadLine();
             StopService();
         }
 
@@ -241,9 +251,10 @@ namespace ServiceNodeCore
         {
             InitializeNodes();
             InitializeUserDB();
-            InitializeTripDB();         
+            InitializeTripDB();
         }
 
+        
         public static void InitializeNodes()
         {
             Console.WriteLine("**** DarPooling Service Nodes ****\n");
@@ -291,13 +302,14 @@ namespace ServiceNodeCore
 
             /* Set of Backbone Nodes */
             ServiceNodeCore[] nodes =
-                new ServiceNodeCore[] { aosta, milano, roma, napoli, catania, catania2
+                new ServiceNodeCore[] { aosta //, milano, roma, napoli, catania, catania2
                                       };
 
             sncList.AddRange(nodes);
-        
-        }
 
+        }
+       
+        
         public static void InitializeUserDB()
         {
             Console.Write("Initializing Users DB... ");
@@ -330,46 +342,27 @@ namespace ServiceNodeCore
             Console.WriteLine("Done!");
 
         }
-
+  
+   
         public static void InitializeTripDB()
         {
+            Console.Write("Initializing Trips DB... ");
 
-        }
-
-        public static void StartService()
-        {
-            Console.WriteLine("\nStarting the Service Nodes...");
-            foreach (ServiceNodeCore node in sncList)
-            { 
-                node.StartService(); 
-            }
-            Console.WriteLine("ALL Service Nodes are now ONLINE");
-        }
-
-        public static void StopService()
-        {
-            Console.WriteLine("Stopping the Service Nodes...");
-            foreach (ServiceNodeCore node in sncList)
+            foreach (ServiceNodeCore snc in sncList)
             {
-                node.StopService();
+                string filename = snc.TripsDBPath;
+                XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
+                textWriter.Formatting = Formatting.Indented;
+                textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+                textWriter.WriteComment("Trips DB for "+ snc.NodeName + " DarPooling Service Node");
+                textWriter.WriteStartElement("Trips");
+                textWriter.Close();
             }
-            Console.WriteLine("ALL Service Nodes are now OFFLINE Quitting...");
-        }
-
-
-        /* This methods initializes the DB with sample Trips */
-        public static void InitTripXML()
-        {
-            User massimo = new User("Massimo", "MAXXI");
-            User michela = new User("Michela", "Mia");
-            User daniele = new User("Daniele", "Shaoran");
-            User antonio = new User("Antonio", "4nt0");
-            User federica = new User("Federica", "Fede");
 
             Trip trip1 = new Trip
             {
                 ID = 0,
-                Owner = massimo.UserName,
+                Owner = userList.ElementAt(0).UserName,
                 DepartureName = "Catania",
                 DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
                 ArrivalName = "Messina",
@@ -382,30 +375,53 @@ namespace ServiceNodeCore
                 Modifiable = false
             };
 
-            // Create a new XML file
-            string filename = @"..\..\..\config\trip.xml";
-            XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
-            textWriter.Formatting = Formatting.Indented;
-            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-            textWriter.WriteComment("Trips DB for a DarPooling Service Node");
-            textWriter.WriteStartElement("Trips");
-            textWriter.Close();
-            
-/*            ServiceNodeCore.SaveTrip(trip1);
-            ServiceNodeCore.SaveTrip(trip1);
-            Trip queryTrip = new Trip {DepartureName="Catania"};
-            List<Trip> list = ServiceNodeCore.GetTrip();
+            ServiceNodeCore randomNode = sncList.ElementAt(0);
+            randomNode.SaveTrip(trip1);
+
+            Console.WriteLine("Done!");
+        }
+
+
+        public static void TestService()
+        {
+            ServiceNodeCore randomNode = sncList.ElementAt(0);
+            Trip queryTrip = new Trip { DepartureName = "Catania" };
+            List<Trip> list = randomNode.GetTrip(queryTrip);
             Console.WriteLine("Retrieved {0} trip(s).", list.Count);
             foreach (Trip t in list)
             {
                 t.PrintFullInfo();
             }
-*/
         }
+
+
+        public static void StartService()
+        {
+            Console.WriteLine("\nStarting the Service Nodes...");
+            foreach (ServiceNodeCore node in sncList)
+            { 
+                node.StartService(); 
+            }
+            Console.WriteLine("ALL Service Nodes are now ONLINE");
+            PrintDebug();
+        }
+
+
+        public static void StopService()
+        {
+            Console.WriteLine("Stopping the Service Nodes...");
+            foreach (ServiceNodeCore node in sncList)
+            {
+                node.StopService();
+            }
+            Console.WriteLine("ALL Service Nodes are now OFFLINE Quitting...");
+        }
+
+
 
         public static void PrintDebug()
         {
-            Console.WriteLine("NODE INFO");
+            Console.WriteLine("\nNODE INFO");
             foreach (ServiceNodeCore n in sncList)
             {
                 Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I have {3} neighbours", n.NodeName, n.NodeLocation.Latitude, n.NodeLocation.Longitude, n.NumNeighbours);
