@@ -136,15 +136,16 @@ namespace ServiceNodeCore
             tripsDB.Element("Trips").Add(newTrip);
             tripsDB.Save(tripsDBPath);
            
-            Console.WriteLine("Trip Saved!");
+           // Console.WriteLine("Trip Saved!");
         }
 
-        public List<Trip> GetTrip(Trip queryTrip)
+        public List<Trip> GetTrip(Trip filterTrip)
         {
             tripsDB = XDocument.Load(tripsDBPath);
 
-            return (from t in tripsDB.Descendants("Trip")
-                    orderby t.Element("ID").Value
+            var baseQuery = (from t in tripsDB.Descendants("Trip")
+                    where t.Element("DepartureName").Value.Equals(filterTrip.DepartureName) &&
+                          Convert.ToInt32(t.Element("FreeSits").Value) > 0
                     select new Trip()
                     {
                         ID = Convert.ToInt32(t.Element("ID").Value),
@@ -159,8 +160,55 @@ namespace ServiceNodeCore
                         FreeSits = Convert.ToInt32(t.Element("FreeSits").Value),
                         Notes = t.Element("Notes").Value,
                         Modifiable = Convert.ToBoolean(t.Element("Modifiable").Value)
-                    }).ToList();
+                    });
+
+            IEnumerable<Trip> filteredQuery = FilterQuery(filterTrip, baseQuery);
+            return filteredQuery.ToList();
+
         }
+
+        private IEnumerable<Trip> FilterQuery(Trip filterTrip, IEnumerable<Trip> filteringQuery)
+        {
+
+            /* Prefiltering */
+            filteringQuery = from i in filteringQuery
+                             where i.Smoke == filterTrip.Smoke && i.Music == filterTrip.Music
+                             select i;
+
+            if (filterTrip.Owner != null)
+            {
+                filteringQuery = from i in filteringQuery
+                                  where i.Owner == filterTrip.Owner
+                                  select i;
+            }
+
+
+            IEnumerable<Trip> filteredQuery = filteringQuery;
+            return filteredQuery;
+        }
+
+   /*     private IQueryable<Trip> GetCustomerNamesInState (string state)
+        {
+            tripsDB = XDocument.Load(tripsDBPath);
+
+            return (from t in tripsDB.Descendants("Trip")
+                    orderby t.Element("ID").Value
+                    select new Trip()
+
+
+            var basicQuery = 
+                    return
+      from c in Customer
+      where c.State == state
+      select new NameDetails
+      {
+         FirstName = c.FirstName,
+         LastName = c.LastName
+      };*/
+
+
+
+        
 
 
         #region Properties
@@ -368,7 +416,7 @@ namespace ServiceNodeCore
                 ArrivalName = "Messina",
                 ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
                 Smoke = false,
-                Music = false,
+                Music = true,
                 Cost = 10,
                 FreeSits = 4,
                 Notes = "none",
@@ -385,9 +433,10 @@ namespace ServiceNodeCore
         public static void TestService()
         {
             ServiceNodeCore randomNode = sncList.ElementAt(0);
-            Trip queryTrip = new Trip { DepartureName = "Catania" };
+            Trip queryTrip = new Trip { DepartureName = "Catania", Owner="MAXXI" };
+            //queryTrip.PrintFullInfo();
             List<Trip> list = randomNode.GetTrip(queryTrip);
-            Console.WriteLine("Retrieved {0} trip(s).", list.Count);
+            Console.WriteLine("Retrieved {0} trip(s).", list.Count());
             foreach (Trip t in list)
             {
                 t.PrintFullInfo();
@@ -421,7 +470,7 @@ namespace ServiceNodeCore
 
         public static void PrintDebug()
         {
-            Console.WriteLine("\nNODE INFO");
+            Console.WriteLine("\n**** DEBUG **** \nNODE INFO");
             foreach (ServiceNodeCore n in sncList)
             {
                 Console.WriteLine("I'm {0}. My Coords are : {1} and {2}. I have {3} neighbours", n.NodeName, n.NodeLocation.Latitude, n.NodeLocation.Longitude, n.NumNeighbours);
