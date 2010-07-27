@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DarPooling.cs" />
+    <Compile Include="Launcher.cs" />
     <Compile Include="ServiceNodeCore.cs" />
     <Compile Include="GMapsAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
