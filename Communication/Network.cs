@@ -41,7 +41,7 @@ namespace Communication
 
     public class UserNode : Node
     {
-        private string userLocation;
+        private string userLocationName;
 
         public UserNode(string userName, Location nodeLocation) :
             base(userName, nodeLocation)
@@ -53,15 +53,15 @@ namespace Communication
         {
         }
 
-        public UserNode(string userName, string userLocation) :
+        public UserNode(string userName, string userLocationName) :
             base(userName)
         {
-            this.userLocation = userLocation;
+            this.userLocationName = userLocationName;
         }
 
-        public string UserLocation
+        public string UserLocationName
         {
-            get { return userLocation; }
+            get { return userLocationName; }
         }
 
     }

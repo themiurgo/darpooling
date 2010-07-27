@@ -12,16 +12,28 @@ namespace Communication
     {
         [DataMember]
         private string comment;
+        [DataMember]
+        private User user;
 
         public Result(string comment)
         {
             this.comment = comment;
         }
 
+        public Result(User user)
+        {
+            this.user = user;
+        }
+
         // Properties
         public string Comment
         {
             get { return comment; }
+        }
+
+        public User User
+        {
+            get { return this.user; }
         }
 
     }
