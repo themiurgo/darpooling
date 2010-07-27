@@ -101,9 +101,9 @@ namespace Communication
         public enum Sex { f, m }
         
         [DataMember]
-        public int UserID { get; private set; }
+        public int UserID { get; set; }
         [DataMember]
-        public String UserName { get; private set; }
+        public String UserName { get; set; }
         
         [DataMember]
         public String Name { get; set; }
@@ -119,6 +119,10 @@ namespace Communication
         public DateTime SignupDate { get; set; }
         [DataMember]
         public String Whereabouts { get; set; }
+
+        public User()
+        { 
+        }
 
         public User(String name)
         {
@@ -165,6 +169,9 @@ namespace Communication
         
         [DataMember]
         public Boolean Modifiable { get; set; }
+
+        public Trip() { }
+
 
         public void PrintFullInfo()
         {
