@@ -67,7 +67,7 @@ namespace UserNodeCore
         private void Initialize()
         {
             /* Address */
-            serviceAddress = new EndpointAddress("http://localhost:1111/" + userNode.UserLocation);
+            serviceAddress = new EndpointAddress("http://localhost:1111/" + userNode.UserLocationName);
             /* Binding */
             binding = new WSDualHttpBinding();
             binding.ClientBaseAddress = new Uri("http://localhost:2222/" + userNode.NodeName); //Callback address
@@ -80,7 +80,7 @@ namespace UserNodeCore
 
         public void ConnectToService()
         {
-            serviceProxy.GetData("Give me the trips in " + userNode.UserLocation.ToUpper() + " !!");
+            serviceProxy.GetData("Give me the trips in " + userNode.UserLocationName.ToUpper() + " !!");
         }
 
         public UserNode UserNode
