@@ -80,7 +80,7 @@ namespace UserNodeCore
 
         public void ConnectToService()
         {
-            serviceProxy.GetData("Give me the trips in " + userNode.UserLocationName.ToUpper() + " !!");
+            serviceProxy.GetData(userNode.User);
         }
 
         public UserNode UserNode

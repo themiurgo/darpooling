@@ -42,6 +42,7 @@ namespace Communication
     public class UserNode : Node
     {
         private string userLocationName;
+        private User user;
 
         public UserNode(string userName, Location nodeLocation) :
             base(userName, nodeLocation)
@@ -53,6 +54,13 @@ namespace Communication
         {
         }
 
+        public UserNode(User user, string userLocationName) : base(user.UserName)
+        {
+            this.user = user;
+            this.userLocationName = userLocationName;
+        }
+
+
         public UserNode(string userName, string userLocationName) :
             base(userName)
         {
@@ -62,6 +70,12 @@ namespace Communication
         public string UserLocationName
         {
             get { return userLocationName; }
+        }
+
+        public User User
+        {
+            get { return this.user; }
+            set { this.user = value; }
         }
 
     }

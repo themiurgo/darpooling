@@ -15,8 +15,8 @@ namespace UserNodeCore
     {
         private static List<UserNodeCore> uncList = new List<UserNodeCore>();
         private static List<User> userList = new List<User>();
-        private static List<Trip> tripList = new List<Trip>();
-        private static Dictionary<string, Location> nameLoc = new Dictionary<string, Location>();
+        //private static List<Trip> tripList = new List<Trip>();
+        //private static Dictionary<string, Location> nameLoc = new Dictionary<string, Location>();
 
         static void Main(string[] args)
         {
@@ -30,9 +30,10 @@ namespace UserNodeCore
 
         static void InitializeClient()
         {
+            CreateUsers();
             
             /* Clients */
-            UserNode catania1UN = new UserNode("Shaoran", "Catania");
+            UserNode catania1UN = new UserNode(userList.ElementAt(1), "Catania");
             UserNode milano1UN = new UserNode("4nT0", "Milano");
 
             UserNodeCore catania1 = new UserNodeCore(catania1UN);
@@ -44,6 +45,38 @@ namespace UserNodeCore
 
             uncList.AddRange(userNodes);
         
+        }
+
+        public static void CreateUsers()
+        {
+            User daniele = new User
+            {
+                UserName = "Shaoran",
+                Name = "Daniele",
+                UserSex = User.Sex.m,
+                BirthDate = new DateTime(1986, 04, 08),
+                Email = "danielemar86@gmail.com",
+                Smoker = false,
+                SignupDate = DateTime.Today.AddDays(-30)
+            };
+
+            User ubuntu = new User
+            {   
+                UserName = "ubuntu",
+                Name = "Ubuntu",
+                UserSex = User.Sex.m,
+                BirthDate = new DateTime(1987, 06, 12),
+                Email = "chief@ubuntu.org",
+                Smoker = false,
+                SignupDate = DateTime.Today.AddDays(-30),
+                Whereabouts = "Linux for human being"
+            };
+
+            User[] users =
+                new User[] { daniele, ubuntu
+                           };
+
+            userList.AddRange(users);
         }
 
 
