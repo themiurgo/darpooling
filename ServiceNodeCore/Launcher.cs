@@ -105,7 +105,7 @@ namespace ServiceNodeCore
 
             foreach (User u in userList)
             {
-                ServiceNodeCore.SaveUser(u);
+                DarPoolingService.SaveUser(u);
             }
             Console.WriteLine("Done!");
 

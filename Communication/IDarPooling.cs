@@ -31,8 +31,12 @@ namespace Communication
         [OperationContract]
         Result GetResult();
 
+        /// <summary>
+        /// This method is used for testing purposes.
+        /// </summary>
+        /// <param name="value"></param>
         [OperationContract(IsOneWay = true)]
-        void GetData(string value);
+        void GetData(User u);
     }
 
 }//End Namespace

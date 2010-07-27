@@ -26,6 +26,7 @@ namespace ServiceNodeCore
 
         private ServiceNode serviceNode;
         private ServiceHost serviceHost;
+        private DarPoolingService serviceImpl;
 
         /* Service Settings */
         private Type contract;
@@ -36,11 +37,11 @@ namespace ServiceNodeCore
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
 
-        private static int userCounter;
+        //private static int userCounter;
         private int tripCounter;
         private XDocument tripsDB;
-        private static XDocument usersDB;
-        private static string usersDBPath = @"..\..\..\config\users.xml";
+        //private static XDocument usersDB;
+        //private static string usersDBPath = @"..\..\..\config\users.xml";
         private string tripsDBPath;
         private const string tripsDBRootPath = @"..\..\..\config\";
         
@@ -53,7 +54,8 @@ namespace ServiceNodeCore
         {
             serviceNode = sn;
             tripsDBPath = tripsDBRootPath + "trips_" + sn.NodeName.ToUpper() + ".xml";
-            userCounter = -1;
+            serviceImpl = new DarPoolingService();
+            //userCounter = -1;
             tripCounter = -1;
         }
 
@@ -94,30 +96,6 @@ namespace ServiceNodeCore
             Console.WriteLine("Stopped"); 
         }
 
-
-        public static void SaveUser(User u)
-        {
-            usersDB = XDocument.Load(usersDBPath);
-
-            userCounter++;
-            u.UserID = userCounter;
-
-            XElement newUser = new XElement("User",
-                new XElement("UserID", u.UserID),
-                new XElement("UserName", u.UserName),
-                new XElement("Name", u.Name),
-                new XElement("Sex", u.UserSex),
-                new XElement("BirthDate", u.BirthDate),
-                new XElement("Email", u.Email),
-                new XElement("Smoker", u.Smoker),
-                new XElement("SignupDate", u.SignupDate),
-                new XElement("Whereabouts", u.Whereabouts)
-                );
-            usersDB.Element("Users").Add(newUser);
-            usersDB.Save(usersDBPath);
-
-            //Console.WriteLine("User Saved!");
-        }
 
         public void SaveTrip(Trip t)
         {
@@ -280,3 +258,26 @@ namespace ServiceNodeCore
     
 
 } //End Namespace
+/* public static void SaveUser(User u)
+  {
+      usersDB = XDocument.Load(usersDBPath);
+
+      userCounter++;
+      u.UserID = userCounter;
+
+      XElement newUser = new XElement("User",
+          new XElement("UserID", u.UserID),
+          new XElement("UserName", u.UserName),
+          new XElement("Name", u.Name),
+          new XElement("Sex", u.UserSex),
+          new XElement("BirthDate", u.BirthDate),
+          new XElement("Email", u.Email),
+          new XElement("Smoker", u.Smoker),
+          new XElement("SignupDate", u.SignupDate),
+          new XElement("Whereabouts", u.Whereabouts)
+          );
+      usersDB.Element("Users").Add(newUser);
+      usersDB.Save(usersDBPath);
+
+      //Console.WriteLine("User Saved!");
+  }*/
