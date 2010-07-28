@@ -7,6 +7,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 
+using System.Security.Cryptography;
+
 using Communication;
 using System.Threading;
 using System.ServiceModel;
@@ -20,6 +22,7 @@ namespace ServiceNodeCore
     {
         private static int userCounter;
         private static XDocument usersDB;
+        private string samplePassw;
         private static string usersDBPath = @"..\..\..\config\users.xml";
 
 
@@ -73,6 +76,19 @@ namespace ServiceNodeCore
         
         }
 
+        private static string EncodePassword(string password)
+        {
+            Byte[] originalBytes;
+            Byte[] encodedBytes;
+            MD5 md5;
+            md5 = new MD5CryptoServiceProvider();
+
+            originalBytes = ASCIIEncoding.Default.GetBytes(password);
+            encodedBytes = md5.ComputeHash(originalBytes);
+            string encodedPassword = System.Text.RegularExpressions.Regex.Replace(BitConverter.ToString(encodedBytes), "-", "").ToLower();
+            return encodedPassword;
+        }
+
         public static void SaveUser(User u)
         {
             usersDB = XDocument.Load(usersDBPath);
@@ -83,6 +99,7 @@ namespace ServiceNodeCore
             XElement newUser = new XElement("User",
                 new XElement("UserID", u.UserID),
                 new XElement("UserName", u.UserName),
+                //new XElement("Password", EncodePassword("ciccio")),
                 new XElement("Name", u.Name),
                 new XElement("Sex", u.UserSex),
                 new XElement("BirthDate", u.BirthDate),
