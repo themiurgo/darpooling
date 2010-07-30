@@ -23,6 +23,7 @@ namespace ServiceNodeCore
     {
         private ServiceNodeCore _receiver;
         private static int userCounter;
+        private int commandCounter;
         private static XDocument usersDB;
         //private string samplePassw;
         private static string usersDBPath = @"..\..\..\config\users.xml";
@@ -34,6 +35,7 @@ namespace ServiceNodeCore
         public DarPoolingService(ServiceNodeCore receiver)
         {
             userCounter = -1;
+            commandCounter = -1;
             _receiver = receiver;
         }
 
@@ -45,14 +47,24 @@ namespace ServiceNodeCore
 
             _receiver.PrintStat();
             command.Receiver = _receiver;
-            if ( command.Receiver !=null)
-                command.Execute();
-            command.CommandID = 20;
+            command.Callback = new AsyncCallback(ReturnResult);
+            //if ( command.Receiver !=null)
+            command.Execute();
+            commandCounter++;
+            command.CommandID = commandCounter;
 
             Console.WriteLine("The Command ID is: {0}",command.CommandID);
 
             result = new Result("I received your request");
             OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(result);
+        }
+
+        public void ReturnResult(IAsyncResult itfAR)
+        {
+            // Retrieve the informational object and cast it to string.
+            Command originator = (Command)itfAR.AsyncState;
+            //Console.WriteLine(msg);
+            Console.WriteLine("Command {0} completed!!", originator.CommandID);
         }
 
         public void HandleTrip(Command tripCommand)

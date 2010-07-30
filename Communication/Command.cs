@@ -25,10 +25,9 @@ namespace Communication
     [KnownType(typeof(LoginUserCommand))]
     public abstract class Command : ICommand
     {
-        protected int commandID;
+        protected int _commandID;
         protected IDarPoolingOperations _receiver;
-
-
+        protected AsyncCallback _callback;
 
         public virtual void Execute()
         {
@@ -36,8 +35,8 @@ namespace Communication
 
         public int CommandID
         {
-            get { return commandID; }
-            set { commandID = value; }
+            get { return _commandID; }
+            set { _commandID = value; }
         
         }
 
@@ -45,6 +44,11 @@ namespace Communication
         {
             get { return _receiver; }
             set { _receiver = value; }
+        }
+
+        public AsyncCallback Callback
+        {
+            set { _callback = value; }
         }
     }
 
@@ -55,6 +59,7 @@ namespace Communication
         private string _password;
         public delegate void Login(string x, string y);
         Login login;
+        
 
         public LoginUserCommand(string username, string password)
         {
@@ -65,9 +70,12 @@ namespace Communication
         public override void Execute()
         {
             login = new Login(_receiver.LoginUser);
-            login.BeginInvoke(_username, _password, null, null);
+            login.BeginInvoke(_username, _password, _callback, this);
             //_receiver.LoginUser(_username, _password);
         }
+
+
+
     }
 
 
