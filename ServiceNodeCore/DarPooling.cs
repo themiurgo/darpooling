@@ -18,28 +18,46 @@ namespace ServiceNodeCore
     /// <summary>
     /// This class implements the interface of the Darpooling service
     /// </summary>
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class DarPoolingService : IDarPooling
     {
+        private ServiceNodeCore _receiver;
         private static int userCounter;
         private static XDocument usersDB;
-        private string samplePassw;
+        //private string samplePassw;
         private static string usersDBPath = @"..\..\..\config\users.xml";
 
 
-        public DarPoolingService()
+        //public DarPoolingService() { }
+
+        public DarPoolingService(ServiceNodeCore receiver)
         {
             userCounter = -1;
+            _receiver = receiver;
         }
 
-        public void SendCommand(Communication.Command command)
+        public void HandleUser(Command command)
         {
+            Result result;
 
+            Console.WriteLine("Got the request");
+            _receiver.PrintStat();
+            command.Receiver = _receiver;
+            if ( command.Receiver !=null)
+                command.Execute();
+            command.CommandID = 20;
+
+            Console.WriteLine("The Command ID is: {0}",command.CommandID);
+
+            result = new Result("I received your request");
+            OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(result);
         }
 
-        public Communication.Result GetResult()
-        {
-            return new Result("");
+        public void HandleTrip(Command tripCommand)
+        { 
+        
         }
+
 
         public void GetData(User u)
         {

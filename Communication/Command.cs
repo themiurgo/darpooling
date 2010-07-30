@@ -7,6 +7,12 @@ using System.Runtime.Serialization;
 
 namespace Communication
 {
+
+    public interface IDarPoolingOperations
+    {
+        void LoginUser(string username, string password);
+    }
+
     public interface ICommand
     {
         void Execute();
@@ -16,14 +22,49 @@ namespace Communication
     /// The command class allows arbitrary commands to be executed.
     /// </summary>
     [DataContract]
+    [KnownType(typeof(LoginUserCommand))]
     public abstract class Command : ICommand
     {
-        private ServiceNode remoteServiceNode;
+        protected int commandID;
+        protected IDarPoolingOperations _receiver;
 
-        public void Execute()
+        public virtual void Execute()
         {
         }
+
+        public int CommandID
+        {
+            get { return commandID; }
+            set { commandID = value; }
+        
+        }
+
+        public IDarPoolingOperations Receiver 
+        {
+            get { return _receiver; }
+            set { _receiver = value; }
+        }
     }
+
+    [DataContract]
+    public class LoginUserCommand : Command 
+    {
+        private string _username;
+        private string _password;
+
+        public LoginUserCommand(string username, string password)
+        {
+            _username = username;
+            _password = password;
+        }
+
+        public override void Execute()
+        {
+            _receiver.LoginUser(_username, _password);
+        }
+    }
+
+
 
     public class JoinCommand : Command
     {
@@ -41,7 +82,7 @@ namespace Communication
     }
     public class UnjoinCommand : Command { }
     public class RegisterUserCommand : Command { }
-    public class LoginUserCommand : Command { }
+    
     public class LogoutUserCommand : Command { }
     public class InsertTripCommand : Command { }
     public class SearchTripCommand : Command { }

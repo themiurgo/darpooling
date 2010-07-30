@@ -7,6 +7,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 
+using System.Threading;
+
 using System.ServiceModel;
 using System.ServiceModel.Description;
 
@@ -20,7 +22,7 @@ using Communication;
 namespace ServiceNodeCore
 {
 
-    public class ServiceNodeCore
+    public class ServiceNodeCore : IDarPoolingOperations
     {
         #region Class Fields
 
@@ -54,11 +56,15 @@ namespace ServiceNodeCore
         {
             serviceNode = sn;
             tripsDBPath = tripsDBRootPath + "trips_" + sn.NodeName.ToUpper() + ".xml";
-            serviceImpl = new DarPoolingService();
+            serviceImpl = new DarPoolingService(this);
             //userCounter = -1;
             tripCounter = -1;
         }
 
+        public void PrintStat()
+        {
+            Console.WriteLine("Sono un servicenodeCore");
+        }
 
         public void StartService()
         {
@@ -76,7 +82,7 @@ namespace ServiceNodeCore
             mex_behavior.HttpGetEnabled = true;
             
             /* Hosting the service */
-            serviceHost = new ServiceHost(typeof(DarPoolingService), http_uri);
+            serviceHost = new ServiceHost(serviceImpl, http_uri);
             serviceHost.AddServiceEndpoint(contract, http_binding, "");
             serviceHost.AddServiceEndpoint(contract, tcp_binding, tcp_uri);
             serviceHost.Description.Behaviors.Add(mex_behavior);
@@ -94,6 +100,12 @@ namespace ServiceNodeCore
             if (channelFactory != null)
                 channelFactory.Close();
             Console.WriteLine("Stopped"); 
+        }
+
+        public void LoginUser(string username, string password)
+        {
+            Console.WriteLine("Eh eh eh.... sei bloccato!!");
+            Thread.Sleep(4000);
         }
 
 
