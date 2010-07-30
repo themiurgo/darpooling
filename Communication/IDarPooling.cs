@@ -25,11 +25,11 @@ namespace Communication
     [ServiceContract(Namespace="http://www.darpooling.org",CallbackContract = typeof(IDarPoolingCallback), SessionMode=SessionMode.Required)]
     public interface IDarPooling
     {
-        [OperationContract]
-        void SendCommand(Command command);
+        [OperationContract(IsOneWay=true)]
+        void HandleUser(Command c);
 
-        [OperationContract]
-        Result GetResult();
+        [OperationContract(IsOneWay=true)]
+        void HandleTrip(Command tripCommand);
 
         /// <summary>
         /// This method is used for testing purposes.

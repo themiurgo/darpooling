@@ -104,7 +104,9 @@ namespace Communication
         public int UserID { get; set; }
         [DataMember]
         public String UserName { get; set; }
-        
+        [DataMember]
+        public String Password { get;  set; }
+
         [DataMember]
         public String Name { get; set; }
         [DataMember]
@@ -120,14 +122,9 @@ namespace Communication
         [DataMember]
         public String Whereabouts { get; set; }
 
-        public User()
-        { 
-        }
+        public User(){ }
 
-        public User(String name)
-        {
-            this.Name = name;
-        }
+        public User(String name) : this(name,null)  {}
 
         public User(String name, String username)
         {

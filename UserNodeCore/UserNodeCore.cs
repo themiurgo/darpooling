@@ -78,9 +78,12 @@ namespace UserNodeCore
             serviceProxy = factory.CreateChannel();
         }
 
-        public void ConnectToService()
+        public void ConnectToService(Command c)
         {
-            serviceProxy.GetData(userNode.User);
+            //serviceProxy.GetData(userNode.User);
+            //Command c2 = new Command();
+            //Command c1 = new Command();
+            serviceProxy.HandleUser(c);
         }
 
         public UserNode UserNode

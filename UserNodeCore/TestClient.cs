@@ -52,6 +52,7 @@ namespace UserNodeCore
             User daniele = new User
             {
                 UserName = "Shaoran",
+                Password = "shaoran",
                 Name = "Daniele",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1986, 04, 08),
@@ -63,6 +64,7 @@ namespace UserNodeCore
             User ubuntu = new User
             {   
                 UserName = "ubuntu",
+                Password = "ubuntu",
                 Name = "Ubuntu",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1987, 06, 12),
@@ -87,8 +89,12 @@ namespace UserNodeCore
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
            
+            User testUser = userList.ElementAt(0);
             UserNodeCore testClient = uncList.ElementAt(0);
-            testClient.ConnectToService();
+
+            LoginUserCommand login = new LoginUserCommand(testUser.UserName, testUser.Password);
+
+            testClient.ConnectToService(login);
             //milano1.ConnectToService();
             
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
