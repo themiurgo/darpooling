@@ -28,6 +28,7 @@ namespace ServiceNodeCore
         //private string samplePassw;
         private static string usersDBPath = @"..\..\..\config\users.xml";
         private string testName = "Io sono Ping";
+        private Dictionary<int, IDarPoolingCallback> _commandIDCaller;
 
 
         //public DarPoolingService() { }
@@ -37,11 +38,12 @@ namespace ServiceNodeCore
             userCounter = -1;
             commandCounter = -1;
             _receiver = receiver;
+            _commandIDCaller = new Dictionary<int, IDarPoolingCallback>();
         }
 
         public void HandleUser(Command command)
         {
-            Result result;
+            
 
             Console.WriteLine("I am DarPoolingService (thread {0}). Calling Execute()",Thread.CurrentThread.ManagedThreadId);
 
@@ -55,17 +57,21 @@ namespace ServiceNodeCore
 
             //Console.WriteLine("The Command ID is: {0}",command.CommandID);
 
-            result = new Result("I received your request");
-            OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(result);
+            _commandIDCaller.Add(command.CommandID, OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>());
+            
+            //OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(result);
         }
 
         public void ReturnResult(IAsyncResult itfAR)
         {
+            LoginResult result;
+            result = new LoginResult("Good Night");
             Console.WriteLine("I am DarPoolingService (thread {0}) on ReturnResult()", Thread.CurrentThread.ManagedThreadId);
             // Retrieve the informational object and cast it to string.
             Command originator = (Command)itfAR.AsyncState;
             //Console.WriteLine(msg);
             Console.WriteLine("Command {0} completed in THREAD {1}!! ", originator.CommandID, Thread.CurrentThread.ManagedThreadId);
+            _commandIDCaller[originator.CommandID].GetResult(result);
         }
 
         public void HandleTrip(Command tripCommand)
@@ -80,11 +86,11 @@ namespace ServiceNodeCore
             Console.WriteLine("Satisfying Client Request...");
             if (CheckUser(u.UserName))
             {
-                res = new Result("Ok, you can register");
+                res = new LoginResult("Ok, you can register");
             }
             else
             {
-                res = new Result("Sorry, this username is already present!");
+                res = new LoginResult("Sorry, this username is already present!");
             }
             Thread.Sleep(2000);
             Console.WriteLine("Ready to send data back to Client...");
