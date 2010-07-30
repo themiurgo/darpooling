@@ -63,7 +63,7 @@ namespace ServiceNodeCore
 
         public void PrintStat()
         {
-            Console.WriteLine("Sono un servicenodeCore");
+            //Console.WriteLine("Sono un servicenodeCore");
         }
 
         public void StartService()
@@ -104,7 +104,7 @@ namespace ServiceNodeCore
 
         public void LoginUser(string username, string password)
         {
-            Console.WriteLine("Eh eh eh.... sei bloccato!!");
+            Console.WriteLine("I am ServiceNodeCore executing LoginUser()");
             Thread.Sleep(3000);
         }
 
