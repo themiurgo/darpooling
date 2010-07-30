@@ -43,7 +43,7 @@ namespace ServiceNodeCore
         {
             Result result;
 
-            Console.WriteLine("Got the request: {0}", testName);
+            Console.WriteLine("I am DarPoolingService (thread {0}). Calling Execute()",Thread.CurrentThread.ManagedThreadId);
 
             _receiver.PrintStat();
             command.Receiver = _receiver;
@@ -53,7 +53,7 @@ namespace ServiceNodeCore
             commandCounter++;
             command.CommandID = commandCounter;
 
-            Console.WriteLine("The Command ID is: {0}",command.CommandID);
+            //Console.WriteLine("The Command ID is: {0}",command.CommandID);
 
             result = new Result("I received your request");
             OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(result);
@@ -61,10 +61,11 @@ namespace ServiceNodeCore
 
         public void ReturnResult(IAsyncResult itfAR)
         {
+            Console.WriteLine("I am DarPoolingService (thread {0}) on ReturnResult()", Thread.CurrentThread.ManagedThreadId);
             // Retrieve the informational object and cast it to string.
             Command originator = (Command)itfAR.AsyncState;
             //Console.WriteLine(msg);
-            Console.WriteLine("Command {0} completed!!", originator.CommandID);
+            Console.WriteLine("Command {0} completed in THREAD {1}!! ", originator.CommandID, Thread.CurrentThread.ManagedThreadId);
         }
 
         public void HandleTrip(Command tripCommand)
