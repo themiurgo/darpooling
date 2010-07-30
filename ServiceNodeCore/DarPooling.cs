@@ -26,6 +26,7 @@ namespace ServiceNodeCore
         private static XDocument usersDB;
         //private string samplePassw;
         private static string usersDBPath = @"..\..\..\config\users.xml";
+        private string testName = "Io sono Ping";
 
 
         //public DarPoolingService() { }
@@ -40,7 +41,8 @@ namespace ServiceNodeCore
         {
             Result result;
 
-            Console.WriteLine("Got the request");
+            Console.WriteLine("Got the request: {0}", testName);
+
             _receiver.PrintStat();
             command.Receiver = _receiver;
             if ( command.Receiver !=null)

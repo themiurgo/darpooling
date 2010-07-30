@@ -33,14 +33,16 @@ namespace UserNodeCore
             CreateUsers();
             
             /* Clients */
-            UserNode catania1UN = new UserNode(userList.ElementAt(1), "Catania");
-            UserNode milano1UN = new UserNode("4nT0", "Milano");
+            UserNode catania1UN = new UserNode(userList.ElementAt(0), "Catania");
+            UserNode catania2UN = new UserNode(userList.ElementAt(1), "Catania");
+            //UserNode milano1UN = new UserNode("4nT0", "Milano");
 
             UserNodeCore catania1 = new UserNodeCore(catania1UN);
-            UserNodeCore milano1 = new UserNodeCore(milano1UN);
+            UserNodeCore catania2 = new UserNodeCore(catania2UN);
+            //UserNodeCore milano1 = new UserNodeCore(milano1UN);
 
             UserNodeCore[] userNodes = 
-                new UserNodeCore[] { catania1, milano1
+                new UserNodeCore[] { catania1, catania2
                                    };
 
             uncList.AddRange(userNodes);
@@ -89,17 +91,20 @@ namespace UserNodeCore
             Console.WriteLine("\n\nPress a key to start the communication");
             Console.ReadLine();
            
-            User testUser = userList.ElementAt(0);
-            UserNodeCore testClient = uncList.ElementAt(0);
+            User testUser1 = userList.ElementAt(0);
+            UserNodeCore testClient1 = uncList.ElementAt(0);
 
-            LoginUserCommand login = new LoginUserCommand(testUser.UserName, testUser.Password);
+            LoginUserCommand login = new LoginUserCommand(testUser1.UserName, testUser1.Password);
 
-            testClient.ConnectToService(login);
-            //milano1.ConnectToService();
-            
+            testClient1.ConnectToService(login);
             Console.WriteLine("\n\n\nClient is now ready to perform some other task");
+
+            User testUser2 = userList.ElementAt(1);
+            UserNodeCore testClient2 = uncList.ElementAt(1);
+            Console.WriteLine("\n\n\nProvo a connettermi....");
+            testClient2.ConnectToService(login);
+            Console.WriteLine("\n\n\nConnessione effettuata!");
             
-            //proxy.GetData("Gimme Trips");
         }
 
         static void EndCommunication()
