@@ -7,34 +7,45 @@ using System.Runtime.Serialization;
 
 namespace Communication
 {
+    public enum ResultState
+    { 
+        SUCCESS,
+        FAILURE
+    }
+
+
     [DataContract]
-    public class Result
+    [KnownType(typeof(LoginResult))]
+    public abstract class Result
     {
+        protected ResultState _state;
         [DataMember]
-        private string comment;
-        [DataMember]
-        private User user;
+        protected string _comment;
 
-        public Result(string comment)
+        public ResultState State
         {
-            this.comment = comment;
+            get { return _state; }
+            set { _state = value; }
         }
 
-        public Result(User user)
-        {
-            this.user = user;
-        }
-
-        // Properties
         public string Comment
         {
-            get { return comment; }
+            get { return _comment; }
+            set { _comment = value; }
         }
-
-        public User User
-        {
-            get { return this.user; }
-        }
-
     }
+
+    [DataContract]
+    public class LoginResult : Result
+    {
+
+        public LoginResult(string comment)
+        {
+            Console.WriteLine("Creating the result...");
+            _comment = comment;
+
+        }
+        
+    }
+
 }
