@@ -28,6 +28,8 @@ namespace Communication
         protected int commandID;
         protected IDarPoolingOperations _receiver;
 
+
+
         public virtual void Execute()
         {
         }
@@ -51,6 +53,8 @@ namespace Communication
     {
         private string _username;
         private string _password;
+        public delegate void Login(string x, string y);
+        Login login;
 
         public LoginUserCommand(string username, string password)
         {
@@ -60,7 +64,9 @@ namespace Communication
 
         public override void Execute()
         {
-            _receiver.LoginUser(_username, _password);
+            login = new Login(_receiver.LoginUser);
+            login.BeginInvoke(_username, _password, null, null);
+            //_receiver.LoginUser(_username, _password);
         }
     }
 
