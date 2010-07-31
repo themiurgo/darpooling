@@ -24,9 +24,15 @@ namespace ServiceNodeCore
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class DarPoolingService : IDarPooling
     {
+        // An istance of ServiceNodeCore is the receiver for all
+        // client commands.
         private ServiceNodeCore receiver;
-        private int commandIDCounter;
-        private Dictionary<int, IDarPoolingCallback> commandIDCaller;
+        // The numeric identifier for a received command
+        private int commandCounter;
+        // This dictionary let DarPoolingService to identify the client
+        // that has sent a particular command
+        private Dictionary<int, IDarPoolingCallback> commandClient;
+
 
         /// <summary>
         /// The default constructor has been marked as private to
@@ -34,34 +40,57 @@ namespace ServiceNodeCore
         /// </summary>
         private DarPoolingService() { }
 
+
         public DarPoolingService(ServiceNodeCore receiver)
         {
-            //userCounter = -1;
-            commandIDCounter = -1;
             this.receiver = receiver;
-            commandIDCaller = new Dictionary<int, IDarPoolingCallback>();
+            
+            commandCounter = -1;
+            commandClient = new Dictionary<int, IDarPoolingCallback>();
         }
 
+
+        #region IDarpooling implementation
+
+        /// <summary>
+        /// HandleUser is one of the method of the IDarpooling interface.
+        /// It receives a Command which deals with User management. 
+        /// After setting some command paramenters as specified below,
+        /// it invokes the Execute() method on the command itself.
+        /// </summary>
+        /// <param name="command">The Command sent by a client</param>
         public void HandleUser(Command command)
         {
+            Console.Write("{0} received a User request. Processing the request... ", receiver.NodeName.ToUpper());
+
+            // Assign an ID to the command, for later use;
+            commandCounter++;
+            command.CommandID = commandCounter;
             
-
-            Console.WriteLine("I am DarPoolingService (thread {0}). Calling Execute()",Thread.CurrentThread.ManagedThreadId);
-
-            receiver.PrintStat();
+            // Set a ServiceNodeCore as the receiver of the command;
             command.Receiver = receiver;
-            command.Callback = new AsyncCallback(ReturnResult);
-            //if ( command.Receiver !=null)
-            command.Execute();
-            commandIDCounter++;
-            command.CommandID = commandIDCounter;
-
-            //Console.WriteLine("The Command ID is: {0}",command.CommandID);
-
-            commandIDCaller.Add(command.CommandID, OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>());
             
-            //OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(result);
+            /// Set the callback method, i.e. the method that will be
+            /// invoked when the receiver finishes to compute the result
+            command.Callback = new AsyncCallback(ReturnResult);
+
+            // Invoke the Execute() method of the command
+            command.Execute();
+            
+            // Save information about the client that sent the command
+            IDarPoolingCallback client = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
+            commandClient.Add(command.CommandID, client);
+
+            Console.WriteLine("Done!");
         }
+
+        public void HandleTrip(Command tripCommand)
+        {
+
+        }
+
+        #endregion
+
 
         public void ReturnResult(IAsyncResult itfAR)
         {
@@ -74,13 +103,10 @@ namespace ServiceNodeCore
             // Now get the result.
             //AsyncResult ar = (AsyncResult)itfAR;
             result = originator.EndExecute(itfAR);
-            commandIDCaller[originator.CommandID].GetResult(result);
+            commandClient[originator.CommandID].GetResult(result);
         }
 
-        public void HandleTrip(Command tripCommand)
-        { 
-        
-        }
+
 
 
         public void GetData(User u)
