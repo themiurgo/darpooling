@@ -8,6 +8,8 @@ using System.Xml.Serialization;
 using System.Xml.Linq;
 
 using System.Security.Cryptography;
+using System.Runtime.Remoting.Messaging;
+
 
 using Communication;
 using System.Threading;
@@ -64,13 +66,15 @@ namespace ServiceNodeCore
 
         public void ReturnResult(IAsyncResult itfAR)
         {
-            LoginResult result;
-            result = new LoginResult("Good Night");
-            Console.WriteLine("I am DarPoolingService (thread {0}) on ReturnResult()", Thread.CurrentThread.ManagedThreadId);
-            // Retrieve the informational object and cast it to string.
+            Result result;
+            //Console.WriteLine("I am DarPoolingService (thread {0}) on ReturnResult()", Thread.CurrentThread.ManagedThreadId);
+            
+            // Retrieve the informational object
             Command originator = (Command)itfAR.AsyncState;
-            //Console.WriteLine(msg);
             Console.WriteLine("Command {0} completed in THREAD {1}!! ", originator.CommandID, Thread.CurrentThread.ManagedThreadId);
+            // Now get the result.
+            AsyncResult ar = (AsyncResult)itfAR;
+            result = originator.EndExecute(itfAR);
             _commandIDCaller[originator.CommandID].GetResult(result);
         }
 
