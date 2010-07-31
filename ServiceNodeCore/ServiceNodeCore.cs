@@ -102,10 +102,12 @@ namespace ServiceNodeCore
             Console.WriteLine("Stopped"); 
         }
 
-        public void LoginUser(string username, string password)
+        public Result LoginUser(string username, string password)
         {
             Console.WriteLine("I am ServiceNodeCore executing LoginUser()");
             Thread.Sleep(3000);
+            LoginResult l = new LoginResult("Speriamo bene");
+            return l;
         }
 
 

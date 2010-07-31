@@ -5,6 +5,8 @@ using System.Text;
 
 using System.Runtime.Serialization;
 
+// Daniele's Version
+
 namespace Communication
 {
     public enum ResultState

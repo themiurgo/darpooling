@@ -5,17 +5,21 @@ using System.Text;
 using System.ServiceModel;
 using System.Runtime.Serialization;
 
+using System.Runtime.Remoting.Messaging;
+using System.Threading;
+
 namespace Communication
 {
 
     public interface IDarPoolingOperations
     {
-        void LoginUser(string username, string password);
+        Result LoginUser(string username, string password);
     }
 
     public interface ICommand
     {
         void Execute();
+        Result EndExecute(IAsyncResult asyncValue);
     }
 
     /// <summary>
@@ -25,53 +29,69 @@ namespace Communication
     [KnownType(typeof(LoginUserCommand))]
     public abstract class Command : ICommand
     {
-        protected int _commandID;
-        protected IDarPoolingOperations _receiver;
-        protected AsyncCallback _callback;
+        protected int commandID;
+        protected IDarPoolingOperations receiver;
+        protected AsyncCallback callbackMethod;
+        protected Result result;
 
         public virtual void Execute()
         {
         }
 
+        public virtual Result EndExecute(IAsyncResult asyncValue)
+        {
+            return result;
+        }
+
         public int CommandID
         {
-            get { return _commandID; }
-            set { _commandID = value; }
+            get { return commandID; }
+            set { commandID = value; }
         
         }
 
         public IDarPoolingOperations Receiver 
         {
-            get { return _receiver; }
-            set { _receiver = value; }
+            get { return receiver; }
+            set { receiver = value; }
         }
 
         public AsyncCallback Callback
         {
-            set { _callback = value; }
+            set { callbackMethod = value; }
         }
     }
 
     [DataContract]
     public class LoginUserCommand : Command 
     {
-        private string _username;
-        private string _password;
-        public delegate void Login(string x, string y);
+        private string username;
+        private string password;
+        public delegate Result Login(string x, string y);
         Login login;
         
 
         public LoginUserCommand(string username, string password)
         {
-            _username = username;
-            _password = password;
+            this.username = username;
+            this.password = password;
         }
 
         public override void Execute()
         {
-            login = new Login(_receiver.LoginUser);
-            login.BeginInvoke(_username, _password, _callback, this);
-            //_receiver.LoginUser(_username, _password);
+            login = new Login(receiver.LoginUser);
+            login.BeginInvoke(username, password, callbackMethod, this);
+        }
+
+        public override Result EndExecute(IAsyncResult asyncValue)
+        {
+            // Obtaining the AsyncResult object
+            AsyncResult asyncResult = (AsyncResult)asyncValue;
+            // Obtaining the delegate
+            Login l = (Login) asyncResult.AsyncDelegate;
+            // Obtaining the return value of the invoked method
+            result = l.EndInvoke(asyncValue);
+            return result;
         }
 
 
@@ -89,7 +109,7 @@ namespace Communication
             this.node = node;
         }
 
-        public void Execute()
+        public override void Execute()
         {
 
         }
