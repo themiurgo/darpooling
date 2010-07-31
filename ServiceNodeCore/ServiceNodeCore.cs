@@ -8,16 +8,12 @@ using System.Xml.Serialization;
 using System.Xml.Linq;
 
 using System.Threading;
+using System.Security.Cryptography;
 
 using System.ServiceModel;
 using System.ServiceModel.Description;
 
 using Communication;
-//using System.Runtime.Serialization;
-//using System.ServiceModel.Channels;
-//using System.IO;
-//using System.Threading;
-//using System.Collections;
 
 namespace ServiceNodeCore
 {
@@ -39,11 +35,11 @@ namespace ServiceNodeCore
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
 
-        //private static int userCounter;
         private int tripCounter;
         private XDocument tripsDB;
-        //private static XDocument usersDB;
-        //private static string usersDBPath = @"..\..\..\config\users.xml";
+        private static int userCounter;
+        private static XDocument usersDB;
+        private static string usersDBPath = @"..\..\..\config\users.xml";
         private string tripsDBPath;
         private const string tripsDBRootPath = @"..\..\..\config\";
         
@@ -57,8 +53,64 @@ namespace ServiceNodeCore
             serviceNode = sn;
             tripsDBPath = tripsDBRootPath + "trips_" + sn.NodeName.ToUpper() + ".xml";
             serviceImpl = new DarPoolingService(this);
-            //userCounter = -1;
+            userCounter = -1;
             tripCounter = -1;
+        }
+
+        public static void SaveUser(User u)
+        {
+            usersDB = XDocument.Load(usersDBPath);
+
+            userCounter++;
+            u.UserID = userCounter;
+
+            XElement newUser = new XElement("User",
+                new XElement("UserID", u.UserID),
+                new XElement("UserName", u.UserName),
+                //new XElement("Password", EncodePassword("ciccio")),
+                new XElement("Name", u.Name),
+                new XElement("Sex", u.UserSex),
+                new XElement("BirthDate", u.BirthDate),
+                new XElement("Email", u.Email),
+                new XElement("Smoker", u.Smoker),
+                new XElement("SignupDate", u.SignupDate),
+                new XElement("Whereabouts", u.Whereabouts)
+                );
+            usersDB.Element("Users").Add(newUser);
+            usersDB.Save(usersDBPath);
+
+            //Console.WriteLine("User Saved!");
+        }
+
+        private bool CheckUser(string username)
+        {
+            usersDB = XDocument.Load(usersDBPath);
+
+            var baseQuery = (from u in usersDB.Descendants("User")
+                             where u.Element("UserName").Value.Equals(username)
+                             select u);
+            if (baseQuery.Count() == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        private static string EncodePassword(string password)
+        {
+            Byte[] originalBytes;
+            Byte[] encodedBytes;
+            MD5 md5;
+            md5 = new MD5CryptoServiceProvider();
+
+            originalBytes = ASCIIEncoding.Default.GetBytes(password);
+            encodedBytes = md5.ComputeHash(originalBytes);
+            string encodedPassword = System.Text.RegularExpressions.Regex.Replace(BitConverter.ToString(encodedBytes), "-", "").ToLower();
+            return encodedPassword;
         }
 
         public void PrintStat()
