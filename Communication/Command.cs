@@ -29,7 +29,7 @@ namespace Communication
     /// The command class allows arbitrary commands to be executed.
     /// </summary>
     [DataContract]
-    [KnownType(typeof(LoginUserCommand))]
+    [KnownType(typeof(JoinCommand))]
     public abstract class Command : ICommand
     {
         protected int commandID;
@@ -59,24 +59,26 @@ namespace Communication
     }
 
     [DataContract]
-    public class LoginUserCommand : Command 
+    public class JoinCommand : Command 
     {
-        private string username;
-        private string password;
+        public UserNode Node { get; set; }
+        public string Username { get; set; }
+        public string PasswordHash { get; set; }
         public delegate Result Login(string x, string y);
         Login login;
         
-        public LoginUserCommand(string username, string password)
+        public JoinCommand(UserNode node, string username, string passwordHash)
         {
-            this.username = username;
-            this.password = password;
+            Node = node;
+            Username = username;
+            PasswordHash = passwordHash;
         }
 
         public override Result Execute()
         {
-            login = new Login(_receiver.Join);
-            login.BeginInvoke(username, password, callbackMethod, this);
-            return new LoginResult("ciao");
+            login = new Login(receiver.Join);
+            login.BeginInvoke(Username, PasswordHash, callbackMethod, this);
+            return new LoginOkResult();
         }
 
         public override Result EndExecute(IAsyncResult asyncValue)
@@ -91,30 +93,53 @@ namespace Communication
         }
     }
 
-    public class JoinCommand : Command
-    {
-        public UserNode Node { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
-
-        public JoinCommand(UserNode node, string username, string passwordHash)
-        {
-            Node = node;
-            Username = username;
-            PasswordHash = passwordHash;
-        }
-
-        public override Result Execute()
-        {
-
-        }
-    }
-
     public class UnjoinCommand : Command
     {
+        public override Result Execute()
+        {
+            throw new NotImplementedException();
+        }
 
+        public override Result EndExecute(IAsyncResult asyncValue)
+        {
+            throw new NotImplementedException();
+        }
     }
-    public class RegisterUserCommand : Command { }   
-    public class InsertTripCommand : Command { }
-    public class SearchTripCommand : Command { }
+    public class RegisterUserCommand : Command
+    {
+        public override Result Execute()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Result EndExecute(IAsyncResult asyncValue)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class InsertTripCommand : Command
+    {
+        public override Result Execute()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Result EndExecute(IAsyncResult asyncValue)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class SearchTripCommand : Command
+    {
+        public override Result Execute()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Result EndExecute(IAsyncResult asyncValue)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
