@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 using Communication;
 
-namespace ClientGUI
+namespace UserNodeGUI
 {
     static class Program
     {

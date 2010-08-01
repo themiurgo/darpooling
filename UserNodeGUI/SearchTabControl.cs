@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ClientGUI
+namespace UserNodeGUI
 {
     class SearchPage : TabPage
     {

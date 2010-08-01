@@ -10,15 +10,18 @@ using System.Threading;
 
 namespace Communication
 {
-
     public interface IDarPoolingOperations
     {
-        Result LoginUser(string username, string password);
+        Result Join(string username, string password);
+        Result Unjoin(string username);
+        Result RegisterUser(string username, string password);
+        Result InsertTrip(Trip trip);
+        // Result SearchTrip();
     }
 
     public interface ICommand
     {
-        void Execute();
+        Result Execute();
         Result EndExecute(IAsyncResult asyncValue);
     }
 
@@ -34,20 +37,13 @@ namespace Communication
         protected AsyncCallback callbackMethod;
         protected Result result;
 
-        public virtual void Execute()
-        {
-        }
-
-        public virtual Result EndExecute(IAsyncResult asyncValue)
-        {
-            return result;
-        }
+        public abstract Result Execute();
+        public abstract Result EndExecute(IAsyncResult asyncValue);
 
         public int CommandID
         {
             get { return commandID; }
             set { commandID = value; }
-        
         }
 
         public IDarPoolingOperations Receiver 
@@ -70,17 +66,17 @@ namespace Communication
         public delegate Result Login(string x, string y);
         Login login;
         
-
         public LoginUserCommand(string username, string password)
         {
             this.username = username;
             this.password = password;
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            login = new Login(receiver.LoginUser);
+            login = new Login(_receiver.Join);
             login.BeginInvoke(username, password, callbackMethod, this);
+            return new LoginResult("ciao");
         }
 
         public override Result EndExecute(IAsyncResult asyncValue)
@@ -93,31 +89,32 @@ namespace Communication
             result = l.EndInvoke(asyncValue);
             return result;
         }
-
-
-
     }
-
-
 
     public class JoinCommand : Command
     {
-        private UserNode node;
+        public UserNode Node { get; set; }
+        public string Username { get; set; }
+        public string PasswordHash { get; set; }
 
-        public JoinCommand(UserNode node)
+        public JoinCommand(UserNode node, string username, string passwordHash)
         {
-            this.node = node;
+            Node = node;
+            Username = username;
+            PasswordHash = passwordHash;
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
 
         }
     }
-    public class UnjoinCommand : Command { }
-    public class RegisterUserCommand : Command { }
-    
-    public class LogoutUserCommand : Command { }
+
+    public class UnjoinCommand : Command
+    {
+
+    }
+    public class RegisterUserCommand : Command { }   
     public class InsertTripCommand : Command { }
     public class SearchTripCommand : Command { }
 }

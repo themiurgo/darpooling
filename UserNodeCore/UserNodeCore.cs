@@ -21,17 +21,7 @@ namespace UserNodeCore
         {
             Console.WriteLine("Service says: " + result.Comment);
         }
-
-        public void GetUsers(User[] result)
-        { 
-            Console.WriteLine("These are the users that the Service has returned:");
-            foreach (User user in result)
-            {
-                Console.WriteLine("Name: {0}", user.Name);
-            }
-        }
     }
-
 
     /// <summary>
     /// UserNodeCore class is composed of informations of UserNode plus the status
@@ -42,16 +32,8 @@ namespace UserNodeCore
     {
         private UserNode userNode;
         private IState state;
-
-        /* Service settings */
-        EndpointAddress serviceAddress;
-        WSDualHttpBinding binding;
-        IDarPoolingCallback callback;
-        DuplexChannelFactory<IDarPooling> factory;
-        IDarPooling serviceProxy;
- 
-        //private Uri serviceAddress;
-        //private Uri callbackAddress;
+        private List<List<Trip>> results;
+        private IDarPooling serviceProxy;
 
         /// <summary>
         /// Setup a new UserNodeCore.
@@ -59,37 +41,22 @@ namespace UserNodeCore
         /// <param name="clientNode">represents the UserNode and its settings.</param>
         public UserNodeCore(UserNode clientNode)
         {
+            results = new List<List<Trip>>();
             state = new UnjointState();
             userNode = clientNode;
             Initialize();
-        }
-
-        private void Initialize()
-        {
-            /* Address */
-            serviceAddress = new EndpointAddress("http://localhost:1111/" + userNode.UserLocationName);
-            /* Binding */
-            binding = new WSDualHttpBinding();
-            binding.ClientBaseAddress = new Uri("http://localhost:2222/" + userNode.NodeName); //Callback address
-            /* (Callback) contract  */
-            callback = new ClientCallback();
-            /** Channels */
-            factory = new DuplexChannelFactory<IDarPooling>(callback, binding, serviceAddress);
-            serviceProxy = factory.CreateChannel();
-        }
-
-        public void ConnectToService(Command c)
-        {
-            //serviceProxy.GetData(userNode.User);
-            //Command c2 = new Command();
-            //Command c1 = new Command();
-            serviceProxy.HandleUser(c);
         }
 
         public UserNode UserNode
         {
             get { return userNode; }
             set { }
+        }
+
+        public IDarPooling ServiceProxy
+        {
+            get { return serviceProxy; }
+            set { serviceProxy = value; }
         }
 
         /// <summary>
@@ -106,9 +73,11 @@ namespace UserNodeCore
         /// Join (connect) to the network, through a ServiceNode.
         /// </summary>
         /// <param name="serviceNodeAddress">address of the ServiceNode</param>
-        public void Join(string serviceNodeAddress)
+        public void Join(string username, string password,
+            string serviceNodeAddress, string callbackAddress)
         {
-            // PUT JOIN HERE.
+            state.Join(this, username, password, serviceNodeAddress,
+                callbackAddress);
         }
 
         /// <summary>
@@ -117,11 +86,6 @@ namespace UserNodeCore
         public void Unjoin()
         {
             state.Unjoin(this);
-        }
-
-        public void LoginUser(string username, string pw_hash)
-        {
-            state.Join(this, username, pw_hash);
         }
 
         public void InsertTrip(Trip trip)

@@ -7,15 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ClientGUI
+namespace UserNodeGUI
 {
     public partial class MainWindow : Form
     {
-        ConnectDialog connectDialog = new ConnectDialog();
+        UserNodeCore.UserNodeCore core;
 
         public MainWindow()
         {
             InitializeComponent();
+            core = new UserNodeCore.UserNodeCore(new Communication.UserNode("prova"));
+            SearchPanel.Hide();
+            ResultTabControl.Hide();
         }
                 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -25,12 +28,12 @@ namespace ClientGUI
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            connectDialog.ShowDialog();
+            (new ConnectDialog(core)).ShowDialog();
         }
 
         private void searchButton_Click(object sender, EventArgs e)
         {
-            searchTabControl.Controls.Add(new TabPage());
-        }  
+            ResultTabControl.Controls.Add(new TabPage());
+        }
     }
 }

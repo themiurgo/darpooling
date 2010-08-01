@@ -1,4 +1,4 @@
-﻿namespace ClientGUI
+﻿namespace UserNodeGUI
 {
     partial class ConnectDialog
     {
@@ -28,80 +28,83 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.UsernameLabel = new System.Windows.Forms.Label();
+            this.UsernameTextbox = new System.Windows.Forms.TextBox();
+            this.PasswordLabel = new System.Windows.Forms.Label();
+            this.PasswordTextBox = new System.Windows.Forms.TextBox();
+            this.AddressLabel = new System.Windows.Forms.Label();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.CancelButton = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.AccountGroupBox = new System.Windows.Forms.GroupBox();
+            this.ProviderTextBox = new System.Windows.Forms.TextBox();
+            this.ProviderLabel = new System.Windows.Forms.Label();
+            this.ServiceGroupBox = new System.Windows.Forms.GroupBox();
+            this.FavouriteCheckBox = new System.Windows.Forms.CheckBox();
+            this.AddressComboBox = new System.Windows.Forms.ComboBox();
+            this.AccountGroupBox.SuspendLayout();
+            this.ServiceGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // UsernameLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Username";
+            this.UsernameLabel.AutoSize = true;
+            this.UsernameLabel.Location = new System.Drawing.Point(12, 22);
+            this.UsernameLabel.Name = "UsernameLabel";
+            this.UsernameLabel.Size = new System.Drawing.Size(55, 13);
+            this.UsernameLabel.TabIndex = 0;
+            this.UsernameLabel.Text = "Username";
             // 
-            // textBox1
+            // UsernameTextbox
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.UsernameTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(78, 19);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(230, 20);
-            this.textBox1.TabIndex = 1;
+            this.UsernameTextbox.Location = new System.Drawing.Point(78, 19);
+            this.UsernameTextbox.Name = "UsernameTextbox";
+            this.UsernameTextbox.Size = new System.Drawing.Size(255, 20);
+            this.UsernameTextbox.TabIndex = 1;
             // 
-            // label2
+            // PasswordLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 48);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Password";
+            this.PasswordLabel.AutoSize = true;
+            this.PasswordLabel.Location = new System.Drawing.Point(12, 48);
+            this.PasswordLabel.Name = "PasswordLabel";
+            this.PasswordLabel.Size = new System.Drawing.Size(53, 13);
+            this.PasswordLabel.TabIndex = 2;
+            this.PasswordLabel.Text = "Password";
             // 
-            // textBox2
+            // PasswordTextBox
             // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.PasswordTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(78, 45);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(230, 20);
-            this.textBox2.TabIndex = 3;
+            this.PasswordTextBox.Location = new System.Drawing.Point(78, 45);
+            this.PasswordTextBox.Name = "PasswordTextBox";
+            this.PasswordTextBox.Size = new System.Drawing.Size(255, 20);
+            this.PasswordTextBox.TabIndex = 3;
             // 
-            // label3
+            // AddressLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(45, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Address";
+            this.AddressLabel.AutoSize = true;
+            this.AddressLabel.Location = new System.Drawing.Point(12, 22);
+            this.AddressLabel.Name = "AddressLabel";
+            this.AddressLabel.Size = new System.Drawing.Size(45, 13);
+            this.AddressLabel.TabIndex = 5;
+            this.AddressLabel.Text = "Address";
             // 
             // ConnectButton
             // 
             this.ConnectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ConnectButton.Location = new System.Drawing.Point(176, 194);
+            this.ConnectButton.Location = new System.Drawing.Point(201, 238);
             this.ConnectButton.Name = "ConnectButton";
             this.ConnectButton.Size = new System.Drawing.Size(75, 23);
             this.ConnectButton.TabIndex = 6;
             this.ConnectButton.Text = "Connect";
             this.ConnectButton.UseVisualStyleBackColor = true;
+            this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
             // CancelButton
             // 
             this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CancelButton.Location = new System.Drawing.Point(257, 194);
+            this.CancelButton.Location = new System.Drawing.Point(282, 238);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 7;
@@ -109,89 +112,112 @@
             this.CancelButton.UseVisualStyleBackColor = true;
             this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
-            // groupBox1
+            // AccountGroupBox
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.AccountGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(320, 79);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Account Details";
+            this.AccountGroupBox.Controls.Add(this.ProviderTextBox);
+            this.AccountGroupBox.Controls.Add(this.ProviderLabel);
+            this.AccountGroupBox.Controls.Add(this.UsernameLabel);
+            this.AccountGroupBox.Controls.Add(this.UsernameTextbox);
+            this.AccountGroupBox.Controls.Add(this.PasswordTextBox);
+            this.AccountGroupBox.Controls.Add(this.PasswordLabel);
+            this.AccountGroupBox.Location = new System.Drawing.Point(12, 12);
+            this.AccountGroupBox.Name = "AccountGroupBox";
+            this.AccountGroupBox.Size = new System.Drawing.Size(345, 115);
+            this.AccountGroupBox.TabIndex = 8;
+            this.AccountGroupBox.TabStop = false;
+            this.AccountGroupBox.Text = "Account Details";
             // 
-            // groupBox2
+            // ProviderTextBox
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.ProviderTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.checkBox1);
-            this.groupBox2.Controls.Add(this.comboBox1);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(12, 97);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(320, 72);
-            this.groupBox2.TabIndex = 9;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "ServiceNode";
+            this.ProviderTextBox.Location = new System.Drawing.Point(78, 72);
+            this.ProviderTextBox.Name = "ProviderTextBox";
+            this.ProviderTextBox.Size = new System.Drawing.Size(255, 20);
+            this.ProviderTextBox.TabIndex = 5;
             // 
-            // comboBox1
+            // ProviderLabel
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.ProviderLabel.AutoSize = true;
+            this.ProviderLabel.Location = new System.Drawing.Point(12, 75);
+            this.ProviderLabel.Name = "ProviderLabel";
+            this.ProviderLabel.Size = new System.Drawing.Size(46, 13);
+            this.ProviderLabel.TabIndex = 4;
+            this.ProviderLabel.Text = "Provider";
+            // 
+            // ServiceGroupBox
+            // 
+            this.ServiceGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(78, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(230, 21);
-            this.comboBox1.TabIndex = 10;
+            this.ServiceGroupBox.Controls.Add(this.FavouriteCheckBox);
+            this.ServiceGroupBox.Controls.Add(this.AddressComboBox);
+            this.ServiceGroupBox.Controls.Add(this.AddressLabel);
+            this.ServiceGroupBox.Location = new System.Drawing.Point(12, 133);
+            this.ServiceGroupBox.Name = "ServiceGroupBox";
+            this.ServiceGroupBox.Size = new System.Drawing.Size(345, 72);
+            this.ServiceGroupBox.TabIndex = 9;
+            this.ServiceGroupBox.TabStop = false;
+            this.ServiceGroupBox.Text = "ServiceNode";
             // 
-            // checkBox1
+            // FavouriteCheckBox
             // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(213, 46);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(101, 17);
-            this.checkBox1.TabIndex = 11;
-            this.checkBox1.Text = "Add to favourite";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.FavouriteCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.FavouriteCheckBox.AutoSize = true;
+            this.FavouriteCheckBox.Location = new System.Drawing.Point(238, 46);
+            this.FavouriteCheckBox.Name = "FavouriteCheckBox";
+            this.FavouriteCheckBox.Size = new System.Drawing.Size(101, 17);
+            this.FavouriteCheckBox.TabIndex = 11;
+            this.FavouriteCheckBox.Text = "Add to favourite";
+            this.FavouriteCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // AddressComboBox
+            // 
+            this.AddressComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddressComboBox.FormattingEnabled = true;
+            this.AddressComboBox.Location = new System.Drawing.Point(78, 19);
+            this.AddressComboBox.Name = "AddressComboBox";
+            this.AddressComboBox.Size = new System.Drawing.Size(255, 21);
+            this.AddressComboBox.TabIndex = 10;
             // 
             // ConnectDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(344, 229);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(369, 273);
+            this.Controls.Add(this.ServiceGroupBox);
+            this.Controls.Add(this.AccountGroupBox);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.ConnectButton);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ConnectDialog";
             this.Text = "ConnectDialog";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.Load += new System.EventHandler(this.ConnectDialog_Load);
+            this.AccountGroupBox.ResumeLayout(false);
+            this.AccountGroupBox.PerformLayout();
+            this.ServiceGroupBox.ResumeLayout(false);
+            this.ServiceGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label UsernameLabel;
+        private System.Windows.Forms.TextBox UsernameTextbox;
+        private System.Windows.Forms.Label PasswordLabel;
+        private System.Windows.Forms.TextBox PasswordTextBox;
+        private System.Windows.Forms.Label AddressLabel;
         private System.Windows.Forms.Button ConnectButton;
         private System.Windows.Forms.Button CancelButton;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.GroupBox AccountGroupBox;
+        private System.Windows.Forms.GroupBox ServiceGroupBox;
+        private System.Windows.Forms.ComboBox AddressComboBox;
+        private System.Windows.Forms.CheckBox FavouriteCheckBox;
+        private System.Windows.Forms.TextBox ProviderTextBox;
+        private System.Windows.Forms.Label ProviderLabel;
     }
 }

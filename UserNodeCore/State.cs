@@ -10,40 +10,77 @@ namespace UserNodeCore
     public interface IState
     {
         bool RegisterUser(UserNodeCore context, string username, string pw_hash);
-        bool Join(UserNodeCore context, string username, string pw_hash);
+        bool Join(UserNodeCore context, string username, string password, string serviceNodeAddress, string callbackAddress);
         bool Unjoin(UserNodeCore context);
         bool InsertTrip(UserNodeCore context, Communication.Trip trip);
         bool SearchTrip(UserNodeCore context);
     }
 
+    /// <summary>
+    /// The initial state of any UserNode.
+    /// 
+    /// From here you can just:
+    /// - Register a new User
+    /// - Join (login) the network
+    /// </summary>
     public class UnjointState : IState
     {
-        public bool RegisterUser(UserNodeCore context, string username, string pw_hash)
+        public bool RegisterUser(UserNodeCore context, string username,
+            string pw_hash)
         {
-            return false;
+            Command c = new Communication.RegisterUserCommand();
+            return true;
         }
 
-        public bool Join(UserNodeCore context, string username, string pw_hash)
+        public bool Join(UserNodeCore context, string username, string password,
+            string serviceNodeAddress, string callbackAddress)
         {
-            return false;
+            // First of all, set up the connection
+            EndpointAddress endPointAddress = EndpointAddress(serviceNodeAddress);
+            WSDualHttpBinding binding = new WSDualHttpBinding();
+            binding.ClientBaseAddress = new Uri(callbackAddress);
+            DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
+                    new ClientCallback(), binding, endPointAddress);
+
+            context.ServiceProxy = factory.CreateChannel();
+
+            // Now, hopefully you have a working ServiceProxy
+            // Send JoinCommand and have luck
+            string passwordHash = password;
+            //Command c = 
+
+            // Finally, if Join is NOT successfull, remove reference
+            // context.ServiceProxy = null;
+            return true;
         }
 
         public bool Unjoin(UserNodeCore context)
         {
+            // Not Possible
             return false;
         }
 
         public bool InsertTrip(UserNodeCore context, Communication.Trip trip)
         {
+            // Not possible
             return false;
         }
 
         public bool SearchTrip(UserNodeCore context)
         {
+            // Not possible
             return false;
         }
     }
 
+    /// <summary>
+    /// The connected state of a UserNode.
+    /// 
+    /// From here you can:
+    /// - Unjoin (disconnect) from the network
+    /// - Insert a new trip
+    /// - Search trips
+    /// </summary>
     public class JointState : IState
     {
         public bool Unjoin(UserNodeCore context)
@@ -57,37 +94,8 @@ namespace UserNodeCore
             return false;
         }
 
-        public bool Join(UserNodeCore context, string username, string pw_hash)
-        {
-            Console.WriteLine("LOGIN");
-            return false;
-        }
-
-        public bool InsertTrip(UserNodeCore context, Communication.Trip Trip)
-        {
-            return true;
-        }
-
-        public bool SearchTrip(UserNodeCore context)
-        {
-            return true;
-        }
-    }
-
-    public class LoggedState : IState
-    {
-        public bool Unjoin(UserNodeCore context)
-        {
-            context.State = new UnjointState();
-            return true;
-        }
-
-        public bool RegisterUser(UserNodeCore context, string username, string pw_hash)
-        {
-            return false;
-        }
-
-        public bool Join(UserNodeCore context, string username, string pw_hash)
+        public bool Join(UserNodeCore context, string username, string password,
+            string serviceNodeAddress, string callbackAddress)
         {
             return false;
         }

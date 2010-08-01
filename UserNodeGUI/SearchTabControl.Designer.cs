@@ -1,4 +1,4 @@
-﻿namespace ClientGUI
+﻿namespace UserNodeGUI
 {
     partial class SearchTabControl
     {

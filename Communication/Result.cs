@@ -5,49 +5,31 @@ using System.Text;
 
 using System.Runtime.Serialization;
 
-// Daniele's Version
-
 namespace Communication
 {
-    public enum ResultState
-    { 
-        SUCCESS,
-        FAILURE
-    }
-
-
     [DataContract]
-    [KnownType(typeof(LoginResult))]
+    [KnownType(typeof(LoginOkResult))]
     public abstract class Result
     {
-        protected ResultState _state;
         [DataMember]
-        protected string _comment;
-
-        public ResultState State
-        {
-            get { return _state; }
-            set { _state = value; }
-        }
+        protected string comment;
 
         public string Comment
         {
-            get { return _comment; }
-            set { _comment = value; }
+            get { return comment; }
+            set { comment = value; }
         }
     }
 
     [DataContract]
-    public class LoginResult : Result
+    public class LoginOkResult : Result { }
+
+    /// <summary>
+    /// A result that does nothing. Used for debugging/testing.
+    /// </summary>
+    [DataContract]
+    public class NullResult : Result
     {
-
-        public LoginResult(string comment)
-        {
-            Console.WriteLine("Creating the result...");
-            _comment = comment;
-
-        }
-        
+        public NullResult() { }
     }
-
 }

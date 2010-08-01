@@ -93,7 +93,7 @@ namespace ServiceNodeCore
         {
             Console.Write("Initializing Users DB... ");
             string usersDBPath = @"..\..\..\config\users.xml";
-
+            // FIXME
             XmlTextWriter textWriter = new XmlTextWriter(usersDBPath, System.Text.Encoding.UTF8);
             textWriter.Formatting = Formatting.Indented;
             textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
