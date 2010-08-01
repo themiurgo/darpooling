@@ -44,7 +44,6 @@ namespace UserNodeCore
             results = new List<List<Trip>>();
             state = new UnjointState();
             userNode = clientNode;
-            Initialize();
         }
 
         public UserNode UserNode
@@ -96,6 +95,14 @@ namespace UserNodeCore
         public void SearchTrip()
         {
             state.SearchTrip(this);
+        }
+
+        public static void Main()
+        {
+            UserNodeCore user = new UserNodeCore(new UserNode("prova"));
+            user.Join("ciao", "cdscd", "http://localhost:1111",
+                "http://localhost:2222");
+            Console.ReadLine();
         }
     }
 }
