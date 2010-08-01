@@ -94,16 +94,19 @@ namespace ServiceNodeCore
 
         public void ReturnResult(IAsyncResult itfAR)
         {
-            Result result;
-            //Console.WriteLine("I am DarPoolingService (thread {0}) on ReturnResult()", Thread.CurrentThread.ManagedThreadId);
+            // Used to store the Result of a particular command
+            Result tempResult;
             
-            // Retrieve the informational object
+            // Retrieve the command which started the request
             Command originator = (Command)itfAR.AsyncState;
-            Console.WriteLine("Command {0} completed in THREAD {1}!! ", originator.CommandID, Thread.CurrentThread.ManagedThreadId);
-            // Now get the result.
-            //AsyncResult ar = (AsyncResult)itfAR;
-            result = originator.EndExecute(itfAR);
-            commandClient[originator.CommandID].GetResult(result);
+            
+            // Obtain the Result of the command
+            tempResult = originator.EndExecute(itfAR);
+            
+            Console.Write("Client request n° {0} has been completed. Sending the result to Client...", originator.CommandID);
+            // Retrieve the Client who sent the command
+            commandClient[originator.CommandID].GetResult(tempResult);
+            Console.WriteLine("Done!");
         }
 
 

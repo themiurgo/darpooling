@@ -158,8 +158,35 @@ namespace ServiceNodeCore
         {
             Console.WriteLine("I am ServiceNodeCore executing LoginUser()");
             Thread.Sleep(3000);
-            LoginResult l = new LoginResult("Speriamo bene");
-            return l;
+
+            if (true)
+            {
+                LoginOkResult success = new LoginOkResult();
+                success.Comment = "Ok, you are now logged in";
+                return success;
+            }
+            else
+            {
+                LoginErrorResult failure = new LoginErrorResult();
+                failure.Comment = "Invalid Username or Password";
+                return failure;
+            }
+
+        }
+
+
+        public Result Unjoin(string username) 
+        { 
+            return new NullResult(); 
+        }
+        
+        public Result RegisterUser(string username, string password) 
+        {
+            return new NullResult();
+        }
+        public Result InsertTrip(Trip trip) 
+        {
+            return new NullResult();        
         }
 
 
