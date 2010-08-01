@@ -36,7 +36,7 @@ namespace UserNodeGUI
         private void ConnectButton_Click(object sender, EventArgs e)
         {
             core.Join(UsernameTextbox.Text, PasswordTextBox.Text,
-                AddressComboBox.Text);
+                AddressComboBox.Text, "http://localhost:2222");
         }
     }
 }

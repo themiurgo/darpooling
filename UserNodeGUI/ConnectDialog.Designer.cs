@@ -34,7 +34,7 @@
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
             this.AddressLabel = new System.Windows.Forms.Label();
             this.ConnectButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancButton = new System.Windows.Forms.Button();
             this.AccountGroupBox = new System.Windows.Forms.GroupBox();
             this.ProviderTextBox = new System.Windows.Forms.TextBox();
             this.ProviderLabel = new System.Windows.Forms.Label();
@@ -101,16 +101,16 @@
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
-            // CancelButton
+            // CancButton
             // 
-            this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CancelButton.Location = new System.Drawing.Point(282, 238);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 7;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancButton.Location = new System.Drawing.Point(282, 238);
+            this.CancButton.Name = "CancButton";
+            this.CancButton.Size = new System.Drawing.Size(75, 23);
+            this.CancButton.TabIndex = 7;
+            this.CancButton.Text = "Cancel";
+            this.CancButton.UseVisualStyleBackColor = true;
+            this.CancButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // AccountGroupBox
             // 
@@ -189,7 +189,7 @@
             this.ClientSize = new System.Drawing.Size(369, 273);
             this.Controls.Add(this.ServiceGroupBox);
             this.Controls.Add(this.AccountGroupBox);
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancButton);
             this.Controls.Add(this.ConnectButton);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -212,7 +212,7 @@
         private System.Windows.Forms.TextBox PasswordTextBox;
         private System.Windows.Forms.Label AddressLabel;
         private System.Windows.Forms.Button ConnectButton;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancButton;
         private System.Windows.Forms.GroupBox AccountGroupBox;
         private System.Windows.Forms.GroupBox ServiceGroupBox;
         private System.Windows.Forms.ComboBox AddressComboBox;
