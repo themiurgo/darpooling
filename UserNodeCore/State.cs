@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Communication;
 using System.ServiceModel;
+using System.Security.Cryptography;
 
 namespace UserNodeCore
 {
@@ -36,7 +37,7 @@ namespace UserNodeCore
             string serviceNodeAddress, string callbackAddress)
         {
             // First of all, set up the connection
-            EndpointAddress endPointAddress = EndpointAddress(serviceNodeAddress);
+            EndpointAddress endPointAddress = new EndpointAddress(serviceNodeAddress);
             WSDualHttpBinding binding = new WSDualHttpBinding();
             binding.ClientBaseAddress = new Uri(callbackAddress);
             DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
@@ -46,8 +47,9 @@ namespace UserNodeCore
 
             // Now, hopefully you have a working ServiceProxy
             // Send JoinCommand and have luck
-            string passwordHash = password;
-            //Command c = 
+            string passwordHash = Communication.Tools.HashString(password);
+            Console.WriteLine(passwordHash);
+            Command c = new JoinCommand(context.UserNode, username, password); 
 
             // Finally, if Join is NOT successfull, remove reference
             // context.ServiceProxy = null;

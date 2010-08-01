@@ -32,7 +32,7 @@ namespace UserNodeCore
     {
         private UserNode userNode;
         private IState state;
-        private List<List<Trip>> results;
+        private List<SearchTripResult> results;
         private IDarPooling serviceProxy;
 
         /// <summary>
@@ -41,10 +41,9 @@ namespace UserNodeCore
         /// <param name="clientNode">represents the UserNode and its settings.</param>
         public UserNodeCore(UserNode clientNode)
         {
-            results = new List<List<Trip>>();
+            results = new List<SearchTripResult>();
             state = new UnjointState();
             userNode = clientNode;
-            Initialize();
         }
 
         public UserNode UserNode
@@ -96,6 +95,14 @@ namespace UserNodeCore
         public void SearchTrip()
         {
             state.SearchTrip(this);
+        }
+
+        public static void Main()
+        {
+            UserNodeCore user = new UserNodeCore(new UserNode("prova"));
+            user.Join("ciao", "cdscd", "http://localhost:1111",
+                "http://localhost:2222");
+            Console.ReadLine();
         }
     }
 }
