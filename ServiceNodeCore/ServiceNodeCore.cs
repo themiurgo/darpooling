@@ -154,7 +154,7 @@ namespace ServiceNodeCore
             Console.WriteLine("Stopped"); 
         }
 
-        public Result LoginUser(string username, string password)
+        public Result Join(string username, string password)
         {
             Console.WriteLine("I am ServiceNodeCore executing LoginUser()");
             Thread.Sleep(3000);

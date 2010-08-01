@@ -13,9 +13,6 @@ namespace Communication
     public interface IDarPoolingCallback
     {
         [OperationContract(IsOneWay = true)]
-        void GetUsers(User[] result);
-
-        [OperationContract(IsOneWay = true)]
         void GetResult(Result result);
     }
 
