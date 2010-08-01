@@ -32,7 +32,7 @@ namespace UserNodeCore
     {
         private UserNode userNode;
         private IState state;
-        private List<List<Trip>> results;
+        private List<SearchTripResult> results;
         private IDarPooling serviceProxy;
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace UserNodeCore
         /// <param name="clientNode">represents the UserNode and its settings.</param>
         public UserNodeCore(UserNode clientNode)
         {
-            results = new List<List<Trip>>();
+            results = new List<SearchTripResult>();
             state = new UnjointState();
             userNode = clientNode;
         }
