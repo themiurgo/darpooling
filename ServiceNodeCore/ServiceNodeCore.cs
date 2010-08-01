@@ -20,10 +20,14 @@ namespace ServiceNodeCore
 
     public class ServiceNodeCore : IDarPoolingOperations
     {
-        #region Class Fields
+        #region ServiceNodeCore Fields
 
+        // The ServiceNode instance contains information about
+        // location (coordinates) and topology (neighbours).
         private ServiceNode serviceNode;
+        // Provide an endpoint for the DarPooling Service.
         private ServiceHost serviceHost;
+        // Reference of the implementor of the DarPooling service.
         private DarPoolingService serviceImpl;
 
         /* Service Settings */
@@ -35,89 +39,52 @@ namespace ServiceNodeCore
         private IDarPooling client;
         private ChannelFactory<IDarPooling> channelFactory;
 
+        // The root directory for all local databases
+        // FIXME: The directory should be automatically created, if it is not found.
+        // TODO: Every service node should have its own subdirectory
+        private const string databaseRootPath = @"..\..\..\config\";
+        // Paths for the local DB of users and trips
+        private string userDatabasePath;
+        private string tripDatabasePath;
+        // Represent the ID for users and trips respectively.
+        // TODO: the ID could be automatically generated from the DB.
+        private int userCounter;
         private int tripCounter;
-        private XDocument tripsDB;
-        private static int userCounter;
-        private static XDocument usersDB;
-        private static string usersDBPath = @"..\..\..\config\users.xml";
-        private string tripsDBPath;
-        private const string tripsDBRootPath = @"..\..\..\config\";
+        // Represent the XML document of the database.
+        private XDocument userDatabase;
+        private XDocument tripDatabase;
         
-        public const string baseHTTPAddress = "http://localhost:1111/";
-        public const string baseTCPAddress = "net.tcp://localhost:1112/";
+        // The root http and tcp addresses, which are the same for every
+        // service instance.
+        private const string baseHTTPAddress = "http://localhost:1111/";
+        private const string baseTCPAddress = "net.tcp://localhost:1112/";
 
         #endregion
 
-        public ServiceNodeCore(ServiceNode sn)
+        /// <summary>
+        /// Create a ServiceNodeCore and initialize its fields.
+        /// </summary>
+        /// <param name="serviceNode">represents the ServiceNode and its settings.</param>
+        public ServiceNodeCore(ServiceNode serviceNode)
         {
-            serviceNode = sn;
-            tripsDBPath = tripsDBRootPath + "trips_" + sn.NodeName.ToUpper() + ".xml";
+            // Create a new instance of the service implementor.
             serviceImpl = new DarPoolingService(this);
+
+            this.serviceNode = serviceNode;
+
+            // Set up the files of the local databases. 
+            string suffix = NodeName.ToUpper();
+            tripDatabasePath = databaseRootPath + "trips_" + suffix + ".xml";
+            userDatabasePath = databaseRootPath + "users_" + suffix + ".xml";
             userCounter = -1;
             tripCounter = -1;
         }
 
-        public static void SaveUser(User u)
-        {
-            usersDB = XDocument.Load(usersDBPath);
 
-            userCounter++;
-            u.UserID = userCounter;
-
-            XElement newUser = new XElement("User",
-                new XElement("UserID", u.UserID),
-                new XElement("UserName", u.UserName),
-                //new XElement("Password", EncodePassword("ciccio")),
-                new XElement("Name", u.Name),
-                new XElement("Sex", u.UserSex),
-                new XElement("BirthDate", u.BirthDate),
-                new XElement("Email", u.Email),
-                new XElement("Smoker", u.Smoker),
-                new XElement("SignupDate", u.SignupDate),
-                new XElement("Whereabouts", u.Whereabouts)
-                );
-            usersDB.Element("Users").Add(newUser);
-            usersDB.Save(usersDBPath);
-
-            //Console.WriteLine("User Saved!");
-        }
-
-        private bool CheckUser(string username)
-        {
-            usersDB = XDocument.Load(usersDBPath);
-
-            var baseQuery = (from u in usersDB.Descendants("User")
-                             where u.Element("UserName").Value.Equals(username)
-                             select u);
-            if (baseQuery.Count() == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-
-        private static string EncodePassword(string password)
-        {
-            Byte[] originalBytes;
-            Byte[] encodedBytes;
-            MD5 md5;
-            md5 = new MD5CryptoServiceProvider();
-
-            originalBytes = ASCIIEncoding.Default.GetBytes(password);
-            encodedBytes = md5.ComputeHash(originalBytes);
-            string encodedPassword = System.Text.RegularExpressions.Regex.Replace(BitConverter.ToString(encodedBytes), "-", "").ToLower();
-            return encodedPassword;
-        }
-
-        public void PrintStat()
-        {
-            //Console.WriteLine("Sono un servicenodeCore");
-        }
-
+        /// <summary>
+        /// Provide address, binding and behavior for the DarPooling service and then 
+        /// start it.
+        /// </summary>
         public void StartService()
         {
             Console.Write("Starting " + NodeName + " node... ");
@@ -132,27 +99,76 @@ namespace ServiceNodeCore
             /* Behavior */
             mex_behavior = new ServiceMetadataBehavior();
             mex_behavior.HttpGetEnabled = true;
-            
+
             /* Hosting the service */
             serviceHost = new ServiceHost(serviceImpl, http_uri);
             serviceHost.AddServiceEndpoint(contract, http_binding, "");
             serviceHost.AddServiceEndpoint(contract, tcp_binding, tcp_uri);
             serviceHost.Description.Behaviors.Add(mex_behavior);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
-            
+
             /* Run the service */
             serviceHost.Open();
-            Console.WriteLine("OK!");        
+            Console.WriteLine("OK!");
         }
 
+        /// <summary>
+        /// End the service. The node will go offline.
+        /// </summary>
         public void StopService()
         {
             Console.Write("Stopping " + NodeName + " node... ");
             serviceHost.Close();
             if (channelFactory != null)
                 channelFactory.Close();
-            Console.WriteLine("Stopped"); 
+            Console.WriteLine("Stopped");
         }
+
+
+
+        public void SaveUser(User u)
+        {
+            userDatabase = XDocument.Load(userDatabasePath);
+
+            userCounter++;
+            u.UserID = userCounter;
+
+            XElement newUser = new XElement("User",
+                new XElement("UserID", u.UserID),
+                new XElement("UserName", u.UserName),
+                new XElement("Name", u.Name),
+                new XElement("Sex", u.UserSex),
+                new XElement("BirthDate", u.BirthDate),
+                new XElement("Email", u.Email),
+                new XElement("Smoker", u.Smoker),
+                new XElement("SignupDate", u.SignupDate),
+                new XElement("Whereabouts", u.Whereabouts)
+                );
+
+            userDatabase.Element("Users").Add(newUser);
+            userDatabase.Save(userDatabasePath);
+        }
+
+        private bool CheckUser(string username)
+        {
+            userDatabase = XDocument.Load(userDatabasePath);
+
+            var baseQuery = (from u in userDatabase.Descendants("User")
+                             where u.Element("UserName").Value.Equals(username)
+                             select u);
+            if (baseQuery.Count() == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+
+        #region DarPoolingOperations Implementation
 
         public Result Join(string username, string password)
         {
@@ -186,13 +202,14 @@ namespace ServiceNodeCore
         }
         public Result InsertTrip(Trip trip) 
         {
-            return new NullResult();        
+            return new NullResult();
         }
 
+        #endregion
 
         public void SaveTrip(Trip t)
         {
-            tripsDB = XDocument.Load(tripsDBPath);
+            tripDatabase = XDocument.Load(tripDatabasePath);
 
             tripCounter++;
             t.ID = tripCounter;
@@ -211,17 +228,17 @@ namespace ServiceNodeCore
                 new XElement("Notes", t.Notes),
                 new XElement("Modifiable", t.Modifiable)
                 );
-            tripsDB.Element("Trips").Add(newTrip);
-            tripsDB.Save(tripsDBPath);
+            tripDatabase.Element("Trips").Add(newTrip);
+            tripDatabase.Save(tripDatabasePath);
            
            // Console.WriteLine("Trip Saved!");
         }
 
         public List<Trip> GetTrip(Trip filterTrip)
         {
-            tripsDB = XDocument.Load(tripsDBPath);
+            tripDatabase = XDocument.Load(tripDatabasePath);
 
-            var baseQuery = (from t in tripsDB.Descendants("Trip")
+            var baseQuery = (from t in tripDatabase.Descendants("Trip")
                     where t.Element("DepartureName").Value.Equals(filterTrip.DepartureName) &&
                           Convert.ToInt32(t.Element("FreeSits").Value) > 0
                     select new Trip()
@@ -286,7 +303,7 @@ namespace ServiceNodeCore
 
         public string TripsDBPath
         {
-            get { return tripsDBPath; }
+            get { return tripDatabasePath; }
         }
 
         public string NodeName
@@ -351,26 +368,5 @@ namespace ServiceNodeCore
     
 
 } //End Namespace
-/* public static void SaveUser(User u)
-  {
-      usersDB = XDocument.Load(usersDBPath);
 
-      userCounter++;
-      u.UserID = userCounter;
 
-      XElement newUser = new XElement("User",
-          new XElement("UserID", u.UserID),
-          new XElement("UserName", u.UserName),
-          new XElement("Name", u.Name),
-          new XElement("Sex", u.UserSex),
-          new XElement("BirthDate", u.BirthDate),
-          new XElement("Email", u.Email),
-          new XElement("Smoker", u.Smoker),
-          new XElement("SignupDate", u.SignupDate),
-          new XElement("Whereabouts", u.Whereabouts)
-          );
-      usersDB.Element("Users").Add(newUser);
-      usersDB.Save(usersDBPath);
-
-      //Console.WriteLine("User Saved!");
-  }*/

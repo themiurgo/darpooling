@@ -20,7 +20,6 @@ namespace ServiceNodeCore
         {
             InitializeService();
             StartService();
-            Console.ReadLine();
             TestService();
             Console.ReadLine();
             StopService();
@@ -93,7 +92,7 @@ namespace ServiceNodeCore
         {
             Console.Write("Initializing Users DB... ");
             string usersDBPath = @"..\..\..\config\users.xml";
-            // FIXME
+            // FIXME  ?
             XmlTextWriter textWriter = new XmlTextWriter(usersDBPath, System.Text.Encoding.UTF8);
             textWriter.Formatting = Formatting.Indented;
             textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
@@ -105,7 +104,7 @@ namespace ServiceNodeCore
 
             foreach (User u in userList)
             {
-                ServiceNodeCore.SaveUser(u);
+                //ServiceNodeCore.SaveUser(u);
             }
             Console.WriteLine("Done!");
 
@@ -234,6 +233,7 @@ namespace ServiceNodeCore
 
         public static void TestService()
         {
+            /*
             ServiceNodeCore randomNode = sncList.ElementAt(0);
             Trip queryTrip = new Trip { DepartureName = "Catania", ArrivalDateTime = new DateTime(2010,08,4,19,0,0)};
             //queryTrip.PrintFullInfo();
@@ -243,7 +243,9 @@ namespace ServiceNodeCore
             foreach (Trip t in list)
             {
                 t.PrintFullInfo();
-            }
+            }*/
+
+            Console.WriteLine("\nWaiting for incoming request...");
         }
 
 
@@ -255,7 +257,7 @@ namespace ServiceNodeCore
                 node.StartService();
             }
             Console.WriteLine("ALL Service Nodes are now ONLINE");
-            PrintDebug();
+            //PrintDebug();
         }
 
 
