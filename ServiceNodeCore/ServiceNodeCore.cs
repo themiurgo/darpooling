@@ -75,26 +75,28 @@ namespace ServiceNodeCore
         /// <param name="serviceNode">represents the ServiceNode and its settings.</param>
         public ServiceNodeCore(ServiceNode serviceNode)
         {
+            this.serviceNode = serviceNode;
+            
             // Create a new instance of the service implementor.
             serviceImpl = new DarPoolingService(this);
 
-            this.serviceNode = serviceNode;
-
-            // Set up the files of the local databases. 
-            string prefix = NodeName.ToUpper();
-            tripDatabasePath = databaseRootPath + prefix + "_trips.xml";
-            userDatabasePath = databaseRootPath + prefix + "_users.xml";
-            InitializeDatabases();
+            InitializeXmlDatabases();
+            // TODO: the ID could be automatically generated from the DB.
             userCounter = -1;
             tripCounter = -1;
         }
 
 
-        private void InitializeDatabases()
+        /// <summary>
+        /// Create the files for User and Trip databases.
+        /// Set format
+        /// </summary>
+        private void InitializeXmlDatabases()
         {
             XmlTextWriter xmlWriter;
-
+            
             // Initialize the User DB
+            userDatabasePath = databaseRootPath + NodeName.ToUpper() + "_users.xml";
             xmlWriter = new XmlTextWriter(userDatabasePath, System.Text.Encoding.UTF8);
             xmlWriter.Formatting = Formatting.Indented;
             xmlWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
@@ -104,6 +106,7 @@ namespace ServiceNodeCore
             xmlWriter.Close();
 
             // Initialize the Trip DB
+            tripDatabasePath = databaseRootPath + NodeName.ToUpper() + "_trips.xml";
             xmlWriter = new XmlTextWriter(tripDatabasePath, System.Text.Encoding.UTF8);
             xmlWriter.Formatting = Formatting.Indented;
             xmlWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
@@ -167,6 +170,7 @@ namespace ServiceNodeCore
             XElement newUser = new XElement("User",
                 new XElement("UserID", u.UserID),
                 new XElement("UserName", u.UserName),
+                new XElement("Password", u.Password),
                 new XElement("Name", u.Name),
                 new XElement("Sex", u.UserSex),
                 new XElement("BirthDate", u.BirthDate),
@@ -180,6 +184,30 @@ namespace ServiceNodeCore
             userDatabase.Save(userDatabasePath);
         }
 
+        public void SaveTrip(Trip t)
+        {
+            tripDatabase = XDocument.Load(tripDatabasePath);
+
+            tripCounter++;
+            t.ID = tripCounter;
+
+            XElement newTrip = new XElement("Trip",
+                new XElement("ID", t.ID),
+                new XElement("Owner", t.Owner),
+                new XElement("DepartureName", t.DepartureName),
+                new XElement("DepartureDateTime", t.DepartureDateTime),
+                new XElement("ArrivalName", t.ArrivalName),
+                new XElement("ArrivalDateTime", t.ArrivalDateTime),
+                new XElement("Smoke", t.Smoke),
+                new XElement("Music", t.Music),
+                new XElement("Cost", t.Cost),
+                new XElement("FreeSits", t.FreeSits),
+                new XElement("Notes", t.Notes),
+                new XElement("Modifiable", t.Modifiable)
+                );
+            tripDatabase.Element("Trips").Add(newTrip);
+            tripDatabase.Save(tripDatabasePath);
+        }
 
         private bool CheckUser(string username)
         {
@@ -240,32 +268,7 @@ namespace ServiceNodeCore
         #endregion
 
 
-        public void SaveTrip(Trip t)
-        {
-            tripDatabase = XDocument.Load(tripDatabasePath);
 
-            tripCounter++;
-            t.ID = tripCounter;
-
-            XElement newTrip = new XElement("Trip",
-                new XElement("ID", t.ID),
-                new XElement("Owner", t.Owner),
-                new XElement("DepartureName", t.DepartureName),
-                new XElement("DepartureDateTime", t.DepartureDateTime),
-                new XElement("ArrivalName", t.ArrivalName),
-                new XElement("ArrivalDateTime", t.ArrivalDateTime),
-                new XElement("Smoke", t.Smoke),
-                new XElement("Music", t.Music),
-                new XElement("Cost", t.Cost),
-                new XElement("FreeSits", t.FreeSits),
-                new XElement("Notes", t.Notes),
-                new XElement("Modifiable", t.Modifiable)
-                );
-            tripDatabase.Element("Trips").Add(newTrip);
-            tripDatabase.Save(tripDatabasePath);
-           
-           // Console.WriteLine("Trip Saved!");
-        }
 
 
         public List<Trip> GetTrip(Trip filterTrip)
@@ -337,11 +340,6 @@ namespace ServiceNodeCore
 
         #region Properties
 
-        public string TripsDBPath
-        {
-            get { return tripDatabasePath; }
-        }
-
         public string NodeName
         {
             get { return serviceNode.NodeName; }
@@ -363,6 +361,7 @@ namespace ServiceNodeCore
         {
             get { return serviceNode; }
         }
+
         #endregion
 
 
