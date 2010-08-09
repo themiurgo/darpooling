@@ -28,3 +28,4 @@ syntax: glob
 *.scc
 *.sig
 _ReSharper*\*
+config\*.xml
