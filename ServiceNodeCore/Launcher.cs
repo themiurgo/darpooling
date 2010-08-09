@@ -28,8 +28,8 @@ namespace ServiceNodeCore
         public static void InitializeService()
         {
             InitializeNodes();
-            //InitializeUserDB();
-            //InitializeTripDB();
+            PopulateUserDB();
+            PopulateTripDB();
         }
 
         /// <summary>
@@ -91,32 +91,118 @@ namespace ServiceNodeCore
         }
 
 
-        public static void InitializeUserDB()
+        /// <summary>
+        /// Create some sample users and save them into
+        /// the user database of a ServiceNodeCore.
+        /// </summary>
+        public static void PopulateUserDB()
         {
-            CreateUsers();
+            Console.Write("Initializing Users DB... ");
 
+            // Create some sample user
+            User daniele = new User
+            {
+                UserName = "Shaoran",
+                Password = "shaoran",
+                Name = "Daniele",
+                UserSex = User.Sex.m,
+                BirthDate = new DateTime(1986, 04, 08),
+                Email = "danielemar86@gmail.com",
+                Smoker = false,
+                SignupDate = DateTime.Today.AddDays(-30),
+                Whereabouts = ""
+            };
+            User antonio = new User
+            {
+                UserName = "AnT0",
+                Password = "anto",
+                Name = "Antonio",
+                UserSex = User.Sex.m,
+                BirthDate = new DateTime(1987, 06, 12),
+                Email = "anto87@gmail.com",
+                Smoker = false,
+                SignupDate = DateTime.Today.AddDays(-30),
+                Whereabouts = ""
+            };
+
+            User[] users =new User[] { daniele, antonio };
+            userList.AddRange(users);
+
+            ServiceNodeCore firstNode = sncList.ElementAt(0);    
             foreach (User u in userList)
             {
-                //ServiceNodeCore.SaveUser(u);
+                firstNode.SaveUser(u);
             }
+
             Console.WriteLine("Done!");
 
         }
 
 
-
-
-        public static void InitializeTripDB()
+        /// <summary>
+        /// Create some sample trips and save them into
+        /// the trip database of a ServiceNodeCore. 
+        /// </summary>
+        public static void PopulateTripDB()
         {
             Console.Write("Initializing Trips DB... ");
 
-            CreateTrips();
+            #region Sample trips
+
+            Trip trip1 = new Trip
+            {
+                Owner = userList.ElementAt(0).UserName,
+                DepartureName = "Catania",
+                DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
+                ArrivalName = "Messina",
+                ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
+                Smoke = false,
+                Music = false,
+                Cost = 10,
+                FreeSits = 4,
+                Notes = "none",
+                Modifiable = false
+            };
+            Trip trip2 = new Trip
+            {
+                Owner = userList.ElementAt(0).UserName,
+                DepartureName = "Catania",
+                DepartureDateTime = new DateTime(2010, 8, 4, 8, 0, 0),
+                ArrivalName = "Messina",
+                ArrivalDateTime = new DateTime(2010, 8, 4, 10, 30, 0),
+                Smoke = false,
+                Music = false,
+                Cost = 100,
+                FreeSits = 2,
+                Notes = "none",
+                Modifiable = false
+            };
+            Trip trip3 = new Trip
+            {
+                Owner = userList.ElementAt(0).UserName,
+                DepartureName = "Catania",
+                DepartureDateTime = new DateTime(2010, 8, 4, 18, 0, 0),
+                ArrivalName = "Ragusa",
+                ArrivalDateTime = new DateTime(2010, 8, 4, 20, 30, 0),
+                Smoke = false,
+                Music = false,
+                Cost = 80,
+                FreeSits = 3,
+                Notes = "none",
+                Modifiable = false
+            };
+
+            #endregion
+
+            Trip[] trips = new Trip[] { trip1, trip2, trip3 };
+            tripList.AddRange(trips);
 
             ServiceNodeCore randomNode = sncList.ElementAt(0);
             foreach (Trip t in tripList)
             {
                 randomNode.SaveTrip(t);
             }
+
             Console.WriteLine("Done!");
         }
 
@@ -164,99 +250,12 @@ namespace ServiceNodeCore
         }
 
 
-        public static void CreateUsers()
-        {
-            User daniele = new User
-            {
-                //UserID = 0,
-                UserName = "Shaoran",
-                Name = "Daniele",
-                UserSex = User.Sex.m,
-                BirthDate = new DateTime(1986, 04, 08),
-                Email = "danielemar86@gmail.com",
-                Smoker = false,
-                SignupDate = DateTime.Today.AddDays(-30),
-                Whereabouts = ""
-
-            };
-
-            User antonio = new User
-            {
-                //UserID = 1,
-                UserName = "AnT0",
-                Name = "Antonio",
-                UserSex = User.Sex.m,
-                BirthDate = new DateTime(1987, 06, 12),
-                Email = "anto87@gmail.com",
-                Smoker = false,
-                SignupDate = DateTime.Today.AddDays(-30),
-                Whereabouts = ""
-            };
-
-            User[] users =
-                new User[] { daniele, antonio
-                           };
-
-            userList.AddRange(users);
-        }
-
         public static void CreateTrips()
         {
-            Trip trip1 = new Trip
-            {
-                //ID = 0,
-                Owner = userList.ElementAt(0).UserName,
-                DepartureName = "Catania",
-                DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
-                ArrivalName = "Messina",
-                ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
-                Smoke = false,
-                Music = false,
-                Cost = 10,
-                FreeSits = 4,
-                Notes = "none",
-                Modifiable = false
-            };
-
-            Trip trip2 = new Trip
-            {
-                //ID = 1,
-                Owner = userList.ElementAt(0).UserName,
-                DepartureName = "Catania",
-                DepartureDateTime = new DateTime(2010, 8, 4, 8, 0, 0),
-                ArrivalName = "Messina",
-                ArrivalDateTime = new DateTime(2010, 8, 4, 10, 30, 0),
-                Smoke = false,
-                Music = false,
-                Cost = 100,
-                FreeSits = 2,
-                Notes = "none",
-                Modifiable = false
-            };
-
-            Trip trip3 = new Trip
-            {
-                //ID = 2,
-                Owner = userList.ElementAt(0).UserName,
-                DepartureName = "Catania",
-                DepartureDateTime = new DateTime(2010, 8, 4, 18, 0, 0),
-                ArrivalName = "Ragusa",
-                ArrivalDateTime = new DateTime(2010, 8, 4, 20, 30, 0),
-                Smoke = false,
-                Music = false,
-                Cost = 80,
-                FreeSits = 3,
-                Notes = "none",
-                Modifiable = false
-            };
-
-            Trip[] trips =
-                new Trip[] { trip1, trip2, trip3
-                           };
-
-            tripList.AddRange(trips);
 
         }
+
+
 
         public static void PrintDebug()
         {
