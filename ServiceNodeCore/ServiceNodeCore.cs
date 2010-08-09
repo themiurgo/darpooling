@@ -81,17 +81,41 @@ namespace ServiceNodeCore
             this.serviceNode = serviceNode;
 
             // Set up the files of the local databases. 
-            string suffix = NodeName.ToUpper();
-            tripDatabasePath = databaseRootPath + "trips_" + suffix + ".xml";
-            userDatabasePath = databaseRootPath + "users_" + suffix + ".xml";
+            string prefix = NodeName.ToUpper();
+            tripDatabasePath = databaseRootPath + prefix + "_trips.xml";
+            userDatabasePath = databaseRootPath + prefix + "_users.xml";
+            InitializeDatabases();
             userCounter = -1;
             tripCounter = -1;
         }
 
 
+        private void InitializeDatabases()
+        {
+            XmlTextWriter xmlWriter;
+
+            // Initialize the User DB
+            xmlWriter = new XmlTextWriter(userDatabasePath, System.Text.Encoding.UTF8);
+            xmlWriter.Formatting = Formatting.Indented;
+            xmlWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+            xmlWriter.WriteComment("Users DB for " + this.NodeName  + " DarPooling Service Node");
+            // This is the root tag for all user
+            xmlWriter.WriteStartElement("Users");
+            xmlWriter.Close();
+
+            // Initialize the Trip DB
+            xmlWriter = new XmlTextWriter(tripDatabasePath, System.Text.Encoding.UTF8);
+            xmlWriter.Formatting = Formatting.Indented;
+            xmlWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+            xmlWriter.WriteComment("Trips DB for " + this.NodeName + " DarPooling Service Node");
+            xmlWriter.WriteStartElement("Trips");
+            xmlWriter.Close();
+        
+        }
+
+
         /// <summary>
-        /// Provide address, binding and behavior for the DarPooling service and then 
-        /// start it.
+        /// Set the parameters of the service and then host it.
         /// </summary>
         public void StartService()
         {
@@ -133,7 +157,6 @@ namespace ServiceNodeCore
         }
 
 
-
         public void SaveUser(User u)
         {
             userDatabase = XDocument.Load(userDatabasePath);
@@ -156,6 +179,7 @@ namespace ServiceNodeCore
             userDatabase.Element("Users").Add(newUser);
             userDatabase.Save(userDatabasePath);
         }
+
 
         private bool CheckUser(string username)
         {
@@ -215,6 +239,7 @@ namespace ServiceNodeCore
 
         #endregion
 
+
         public void SaveTrip(Trip t)
         {
             tripDatabase = XDocument.Load(tripDatabasePath);
@@ -241,6 +266,7 @@ namespace ServiceNodeCore
            
            // Console.WriteLine("Trip Saved!");
         }
+
 
         public List<Trip> GetTrip(Trip filterTrip)
         {
@@ -269,6 +295,7 @@ namespace ServiceNodeCore
             return filteredQuery.ToList();
 
         }
+
 
         private IEnumerable<Trip> FilterQuery(Trip filterTrip, IEnumerable<Trip> filteringQuery)
         {
@@ -306,6 +333,7 @@ namespace ServiceNodeCore
             IEnumerable<Trip> filteredQuery = filteringQuery;
             return filteredQuery;
         }
+
 
         #region Properties
 

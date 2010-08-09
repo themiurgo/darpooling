@@ -19,20 +19,23 @@ namespace ServiceNodeCore
         static void Main(string[] args)
         {
             InitializeService();
-            StartService();
-            TestService();
-            Console.ReadLine();
-            StopService();
+            //StartService();
+            //TestService();
+            //Console.ReadLine();
+            //StopService();
         }
 
         public static void InitializeService()
         {
             InitializeNodes();
-            InitializeUserDB();
-            InitializeTripDB();
+            //InitializeUserDB();
+            //InitializeTripDB();
         }
 
-
+        /// <summary>
+        /// Retrieve the coordinates from location names, build the ServiceNode
+        /// and ServiceNodeCore objects, set the topology of the net of service nodes.
+        /// </summary>
         public static void InitializeNodes()
         {
             Console.WriteLine("**** DarPooling Service Nodes ****\n");
@@ -43,7 +46,7 @@ namespace ServiceNodeCore
             double longitude;
             Location location;
 
-            /* Obtain the Location of the Node */
+            // Obtain the Location coordinates from the location name
             Console.Write("Retrieving Coordinates from GMap Server....   ");
             foreach (string locName in locNames)
             {
@@ -53,16 +56,17 @@ namespace ServiceNodeCore
                 location = new Location(locName, latitude, longitude);
                 nameLoc.Add(locName, location);
             }
+
             Console.WriteLine("Done!");
 
-            /* Service Node(s) */
+            // ServiceNode
             ServiceNode aostaSN = new ServiceNode("Aosta", nameLoc["Aosta"]);
             ServiceNode milanoSN = new ServiceNode("Milano", nameLoc["Milano"]);
             ServiceNode romaSN = new ServiceNode("Roma", nameLoc["Roma"]);
             ServiceNode napoliSN = new ServiceNode("Napoli", nameLoc["Napoli"]);
             ServiceNode cataniaSN = new ServiceNode("Catania", nameLoc["Catania"]);
             ServiceNode catania2SN = new ServiceNode("Catania2", nameLoc["Catania"]);
-            /* Service Node Core(s) */
+            // ServiceNodeCore
             ServiceNodeCore aosta = new ServiceNodeCore(aostaSN);
             ServiceNodeCore milano = new ServiceNodeCore(milanoSN);
             ServiceNodeCore roma = new ServiceNodeCore(romaSN);
@@ -70,7 +74,7 @@ namespace ServiceNodeCore
             ServiceNodeCore catania = new ServiceNodeCore(cataniaSN);
             ServiceNodeCore catania2 = new ServiceNodeCore(catania2SN);
 
-            /* Set Topology */
+            // Set Topology
             aosta.addNeighbour(milano);
             milano.addNeighbour(roma);
             roma.addNeighbour(napoli);
@@ -78,11 +82,10 @@ namespace ServiceNodeCore
             napoli.addNeighbour(catania2);
             catania.addNeighbour(catania2);
 
-            /* Set of Backbone Nodes */
+            // FIXME: this array is used only to save some lines of codes.
             ServiceNodeCore[] nodes =
                 new ServiceNodeCore[] { catania //, catania2, napoli, roma, milano, aosta 
                                       };
-
             sncList.AddRange(nodes);
 
         }
@@ -90,16 +93,6 @@ namespace ServiceNodeCore
 
         public static void InitializeUserDB()
         {
-            Console.Write("Initializing Users DB... ");
-            string usersDBPath = @"..\..\..\config\users.xml";
-            // FIXME  ?
-            XmlTextWriter textWriter = new XmlTextWriter(usersDBPath, System.Text.Encoding.UTF8);
-            textWriter.Formatting = Formatting.Indented;
-            textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-            textWriter.WriteComment("Users DB for the DarPooling Service");
-            textWriter.WriteStartElement("Users");
-            textWriter.Close();
-
             CreateUsers();
 
             foreach (User u in userList)
@@ -109,6 +102,67 @@ namespace ServiceNodeCore
             Console.WriteLine("Done!");
 
         }
+
+
+
+
+        public static void InitializeTripDB()
+        {
+            Console.Write("Initializing Trips DB... ");
+
+            CreateTrips();
+
+            ServiceNodeCore randomNode = sncList.ElementAt(0);
+            foreach (Trip t in tripList)
+            {
+                randomNode.SaveTrip(t);
+            }
+            Console.WriteLine("Done!");
+        }
+
+
+
+
+        public static void TestService()
+        {
+            /*
+            ServiceNodeCore randomNode = sncList.ElementAt(0);
+            Trip queryTrip = new Trip { DepartureName = "Catania", ArrivalDateTime = new DateTime(2010,08,4,19,0,0)};
+            //queryTrip.PrintFullInfo();
+            List<Trip> list = randomNode.GetTrip(queryTrip);
+            Console.WriteLine("Retrieved {0} trip(s).", list.Count());
+            Console.ReadLine();
+            foreach (Trip t in list)
+            {
+                t.PrintFullInfo();
+            }*/
+
+            Console.WriteLine("\nWaiting for incoming request...");
+        }
+
+
+        public static void StartService()
+        {
+            Console.WriteLine("\nStarting the Service Nodes...");
+            foreach (ServiceNodeCore node in sncList)
+            {
+                node.StartService();
+            }
+            Console.WriteLine("ALL Service Nodes are now ONLINE");
+            //PrintDebug();
+        }
+
+
+        public static void StopService()
+        {
+            Console.WriteLine("Stopping the Service Nodes...");
+            foreach (ServiceNodeCore node in sncList)
+            {
+                node.StopService();
+            }
+            Console.WriteLine("ALL Service Nodes are now OFFLINE Quitting...");
+        }
+
 
         public static void CreateUsers()
         {
@@ -144,32 +198,6 @@ namespace ServiceNodeCore
                            };
 
             userList.AddRange(users);
-        }
-
-
-        public static void InitializeTripDB()
-        {
-            Console.Write("Initializing Trips DB... ");
-
-            foreach (ServiceNodeCore snc in sncList)
-            {
-                string filename = snc.TripsDBPath;
-                XmlTextWriter textWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
-                textWriter.Formatting = Formatting.Indented;
-                textWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-                textWriter.WriteComment("Trips DB for " + snc.NodeName + " DarPooling Service Node");
-                textWriter.WriteStartElement("Trips");
-                textWriter.Close();
-            }
-
-            CreateTrips();
-
-            ServiceNodeCore randomNode = sncList.ElementAt(0);
-            foreach (Trip t in tripList)
-            {
-                randomNode.SaveTrip(t);
-            }
-            Console.WriteLine("Done!");
         }
 
         public static void CreateTrips()
@@ -229,49 +257,6 @@ namespace ServiceNodeCore
             tripList.AddRange(trips);
 
         }
-
-
-        public static void TestService()
-        {
-            /*
-            ServiceNodeCore randomNode = sncList.ElementAt(0);
-            Trip queryTrip = new Trip { DepartureName = "Catania", ArrivalDateTime = new DateTime(2010,08,4,19,0,0)};
-            //queryTrip.PrintFullInfo();
-            List<Trip> list = randomNode.GetTrip(queryTrip);
-            Console.WriteLine("Retrieved {0} trip(s).", list.Count());
-            Console.ReadLine();
-            foreach (Trip t in list)
-            {
-                t.PrintFullInfo();
-            }*/
-
-            Console.WriteLine("\nWaiting for incoming request...");
-        }
-
-
-        public static void StartService()
-        {
-            Console.WriteLine("\nStarting the Service Nodes...");
-            foreach (ServiceNodeCore node in sncList)
-            {
-                node.StartService();
-            }
-            Console.WriteLine("ALL Service Nodes are now ONLINE");
-            //PrintDebug();
-        }
-
-
-        public static void StopService()
-        {
-            Console.WriteLine("Stopping the Service Nodes...");
-            foreach (ServiceNodeCore node in sncList)
-            {
-                node.StopService();
-            }
-            Console.WriteLine("ALL Service Nodes are now OFFLINE Quitting...");
-        }
-
-
 
         public static void PrintDebug()
         {
