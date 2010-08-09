@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DarPooling.cs" />
+    <Compile Include="DarPoolingService.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="ServiceNodeCore.cs" />
     <Compile Include="GMapsAPI.cs" />

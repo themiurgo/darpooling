@@ -18,6 +18,16 @@ using Communication;
 namespace ServiceNodeCore
 {
 
+    /// <summary>
+    /// Class ServiceNodeCore has two main purposes:
+    /// 1) Hosting the DarPooling Service;
+    /// 2) Implementing the DarPooling Operations.
+    /// The execution of the Commands sent by Clients will
+    /// result in the invocation of a specific DarPooling
+    /// Operation; thus, the ServiceNodeCore is the class that
+    /// actually satisfies the Client request.
+    /// It holds the local Users and Trips databases.
+    /// </summary>
     public class ServiceNodeCore : IDarPoolingOperations
     {
         #region ServiceNodeCore Fields
@@ -25,31 +35,27 @@ namespace ServiceNodeCore
         // The ServiceNode instance contains information about
         // location (coordinates) and topology (neighbours).
         private ServiceNode serviceNode;
-        // Provide an endpoint for the DarPooling Service.
+        
+        // Provide a host for the DarPooling Service.
         private ServiceHost serviceHost;
-        // Reference of the implementor of the DarPooling service.
+        
+        // Reference of the implementor of the IDarPooling interface.
         private DarPoolingService serviceImpl;
-
-        /* Service Settings */
-        private Type contract;
-        private WSDualHttpBinding http_binding;
-        private NetTcpBinding tcp_binding;
-        private ServiceMetadataBehavior mex_behavior;
-
-        private IDarPooling client;
-        private ChannelFactory<IDarPooling> channelFactory;
 
         // The root directory for all local databases
         // FIXME: The directory should be automatically created, if it is not found.
         // TODO: Every service node should have its own subdirectory
         private const string databaseRootPath = @"..\..\..\config\";
+
         // Paths for the local DB of users and trips
         private string userDatabasePath;
         private string tripDatabasePath;
+        
         // Represent the ID for users and trips respectively.
         // TODO: the ID could be automatically generated from the DB.
         private int userCounter;
         private int tripCounter;
+        
         // Represent the XML document of the database.
         private XDocument userDatabase;
         private XDocument tripDatabase;
@@ -59,7 +65,9 @@ namespace ServiceNodeCore
         private const string baseHTTPAddress = "http://localhost:1111/";
         private const string baseTCPAddress = "net.tcp://localhost:1112/";
 
+
         #endregion
+
 
         /// <summary>
         /// Create a ServiceNodeCore and initialize its fields.
@@ -88,29 +96,29 @@ namespace ServiceNodeCore
         public void StartService()
         {
             Console.Write("Starting " + NodeName + " node... ");
-            /* Address */
+
+            // Set address, binding, contract and behavior of the Service
             Uri http_uri = new Uri(baseHTTPAddress + NodeName);
             Uri tcp_uri = new Uri(baseTCPAddress + NodeName);
-            /* Binding */
-            http_binding = new WSDualHttpBinding();
-            tcp_binding = new NetTcpBinding();
-            /* Contract */
-            contract = typeof(IDarPooling);
-            /* Behavior */
-            mex_behavior = new ServiceMetadataBehavior();
+            WSDualHttpBinding http_binding = new WSDualHttpBinding();
+            NetTcpBinding tcp_binding = new NetTcpBinding();
+            Type contract = typeof(IDarPooling);
+            ServiceMetadataBehavior mex_behavior = new ServiceMetadataBehavior();
             mex_behavior.HttpGetEnabled = true;
 
-            /* Hosting the service */
+            // Hosting the service
             serviceHost = new ServiceHost(serviceImpl, http_uri);
             serviceHost.AddServiceEndpoint(contract, http_binding, "");
             serviceHost.AddServiceEndpoint(contract, tcp_binding, tcp_uri);
             serviceHost.Description.Behaviors.Add(mex_behavior);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
 
-            /* Run the service */
+            // Run the service
             serviceHost.Open();
+
             Console.WriteLine("OK!");
         }
+
 
         /// <summary>
         /// End the service. The node will go offline.
@@ -119,8 +127,8 @@ namespace ServiceNodeCore
         {
             Console.Write("Stopping " + NodeName + " node... ");
             serviceHost.Close();
-            if (channelFactory != null)
-                channelFactory.Close();
+            //if (channelFactory != null)
+            //    channelFactory.Close();
             Console.WriteLine("Stopped");
         }
 
