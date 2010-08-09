@@ -91,6 +91,15 @@ namespace ServiceNodeCore
 
         #endregion
 
+        /// <summary>
+        /// An IDarpooling method, used only for testing
+        /// </summary>
+        /// <param name="u">A test param</param>
+        public void GetData(User u)
+        {
+            Console.WriteLine("GetData() on DarPoolingService does nothing...");
+        }
+
 
         public void ReturnResult(IAsyncResult itfAR)
         {
@@ -108,37 +117,6 @@ namespace ServiceNodeCore
             commandClient[originator.CommandID].GetResult(tempResult);
             Console.WriteLine("Done!");
         }
-
-
-
-
-        public void GetData(User u)
-        {
-            Console.WriteLine("GetData() on DarPoolingService does nothing...");
-            /*
-            Result res;
-            Console.WriteLine("Satisfying Client Request...");
-            if (CheckUser(u.UserName))
-            {
-                res = new LoginResult("Ok, you can register");
-            }
-            else
-            {
-                res = new LoginResult("Sorry, this username is already present!");
-            }
-            Thread.Sleep(2000);
-            Console.WriteLine("Ready to send data back to Client...");
-            OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>().GetResult(res);
-             */
-        }
-
-
-
-        
-
-        
-
-
 
 
     }
