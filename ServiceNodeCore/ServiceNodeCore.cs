@@ -47,19 +47,16 @@ namespace ServiceNodeCore
         // TODO: Every service node should have its own subdirectory
         private const string databaseRootPath = @"..\..\..\config\";
 
-        // Paths for the local DB of users and trips
+        // Path, document and lock for the USER database.
         private string userDatabasePath;
-        private string tripDatabasePath;
-        
-        // Represent the ID for users and trips respectively.
-        // TODO: the ID could be automatically generated from the DB.
-        private int userCounter;
-        private int tripCounter;
-        
-        // Represent the XML document of the database.
         private XDocument userDatabase;
+        private ReaderWriterLockSlim userLock = new ReaderWriterLockSlim();
+
+        // Path, document and lock for the TRIP database.
+        private string tripDatabasePath;
         private XDocument tripDatabase;
-        
+        private ReaderWriterLockSlim tripLock = new ReaderWriterLockSlim();
+                        
         // The root http and tcp addresses, which are the same for every
         // service instance.
         private const string baseHTTPAddress = "http://localhost:1111/";
@@ -81,9 +78,6 @@ namespace ServiceNodeCore
             serviceImpl = new DarPoolingService(this);
 
             InitializeXmlDatabases();
-            // TODO: the ID could be automatically generated from the DB.
-            userCounter = -1;
-            tripCounter = -1;
         }
 
 
@@ -160,57 +154,80 @@ namespace ServiceNodeCore
         }
 
 
-        public void SaveUser(User u)
+        public void SaveUser(User newUser)
         {
-            userDatabase = XDocument.Load(userDatabasePath);
 
-            userCounter++;
-            u.UserID = userCounter;
+            userLock.EnterWriteLock();
+            try
+            {
+                Console.WriteLine("Accessing critical section....");
+                Thread.Sleep(5000);
+                userDatabase = XDocument.Load(userDatabasePath);
 
-            XElement newUser = new XElement("User",
-                new XElement("UserID", u.UserID),
-                new XElement("UserName", u.UserName),
-                new XElement("Password", u.Password),
-                new XElement("Name", u.Name),
-                new XElement("Sex", u.UserSex),
-                new XElement("BirthDate", u.BirthDate),
-                new XElement("Email", u.Email),
-                new XElement("Smoker", u.Smoker),
-                new XElement("SignupDate", u.SignupDate),
-                new XElement("Whereabouts", u.Whereabouts)
-                );
+                int nextAvailableID = Convert.ToInt32(
+                                     (from user in userDatabase.Descendants("User")
+                                      orderby Convert.ToInt32(user.Element("UserID").Value) descending
+                                      select user.Element("UserID").Value).FirstOrDefault()) + 1;
 
-            userDatabase.Element("Users").Add(newUser);
-            userDatabase.Save(userDatabasePath);
+                newUser.UserID = nextAvailableID;
+
+                XElement newXmlUser = new XElement("User",
+                    new XElement("UserID", newUser.UserID),
+                    new XElement("UserName", newUser.UserName),
+                    new XElement("Password", newUser.Password),
+                    new XElement("Name", newUser.Name),
+                    new XElement("Sex", newUser.UserSex),
+                    new XElement("BirthDate", newUser.BirthDate),
+                    new XElement("Email", newUser.Email),
+                    new XElement("Smoker", newUser.Smoker),
+                    new XElement("SignupDate", newUser.SignupDate),
+                    new XElement("Whereabouts", newUser.Whereabouts)
+                    );
+
+                userDatabase.Element("Users").Add(newXmlUser);
+                userDatabase.Save(userDatabasePath);
+            }
+            finally
+            {
+                userLock.ExitWriteLock();
+                Console.WriteLine("Exiting critical section....");
+            }
+
         }
 
-        public void SaveTrip(Trip t)
+        public void SaveTrip(Trip newTrip)
         {
             tripDatabase = XDocument.Load(tripDatabasePath);
 
-            tripCounter++;
-            t.ID = tripCounter;
+            int nextAvailableID = Convert.ToInt32(
+                     (from trip in tripDatabase.Descendants("Trip")
+                      orderby Convert.ToInt32(trip.Element("ID").Value) descending
+                      select trip.Element("ID").Value).FirstOrDefault()) + 1;
 
-            XElement newTrip = new XElement("Trip",
-                new XElement("ID", t.ID),
-                new XElement("Owner", t.Owner),
-                new XElement("DepartureName", t.DepartureName),
-                new XElement("DepartureDateTime", t.DepartureDateTime),
-                new XElement("ArrivalName", t.ArrivalName),
-                new XElement("ArrivalDateTime", t.ArrivalDateTime),
-                new XElement("Smoke", t.Smoke),
-                new XElement("Music", t.Music),
-                new XElement("Cost", t.Cost),
-                new XElement("FreeSits", t.FreeSits),
-                new XElement("Notes", t.Notes),
-                new XElement("Modifiable", t.Modifiable)
+
+            newTrip.ID = nextAvailableID;
+
+            XElement newXmlTrip = new XElement("Trip",
+                new XElement("ID", newTrip.ID),
+                new XElement("Owner", newTrip.Owner),
+                new XElement("DepartureName", newTrip.DepartureName),
+                new XElement("DepartureDateTime", newTrip.DepartureDateTime),
+                new XElement("ArrivalName", newTrip.ArrivalName),
+                new XElement("ArrivalDateTime", newTrip.ArrivalDateTime),
+                new XElement("Smoke", newTrip.Smoke),
+                new XElement("Music", newTrip.Music),
+                new XElement("Cost", newTrip.Cost),
+                new XElement("FreeSits", newTrip.FreeSits),
+                new XElement("Notes", newTrip.Notes),
+                new XElement("Modifiable", newTrip.Modifiable)
                 );
-            tripDatabase.Element("Trips").Add(newTrip);
+            tripDatabase.Element("Trips").Add(newXmlTrip);
             tripDatabase.Save(tripDatabasePath);
         }
 
         private bool CheckUser(string username)
         {
+            //userLock.ExitReadLock
             userDatabase = XDocument.Load(userDatabasePath);
 
             var baseQuery = (from u in userDatabase.Descendants("User")
