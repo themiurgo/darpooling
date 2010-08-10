@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
+using System.Threading;
+
 using Communication;
 
 namespace ServiceNodeCore
@@ -21,7 +23,7 @@ namespace ServiceNodeCore
             InitializeService();
             //StartService();
             //TestService();
-            //Console.ReadLine();
+            Console.ReadLine();
             //StopService();
         }
 
@@ -29,7 +31,7 @@ namespace ServiceNodeCore
         {
             InitializeNodes();
             PopulateUserDB();
-            PopulateTripDB();
+            //PopulateTripDB();
         }
 
         /// <summary>
@@ -128,12 +130,21 @@ namespace ServiceNodeCore
             User[] users =new User[] { daniele, antonio };
             userList.AddRange(users);
 
-            ServiceNodeCore firstNode = sncList.ElementAt(0);    
-            foreach (User u in userList)
+            ServiceNodeCore firstNode = sncList.ElementAt(0);
+            Thread[] threads = new Thread[2];
+            //Console.WriteLine("Count:" + users.Count());
+            for (int i = 0; i < 2; ++i)
+            {
+                threads[i] = new Thread( () => firstNode.SaveUser(daniele) );
+                threads[i].Start();
+
+            }
+
+/*            foreach (User u in userList)
             {
                 firstNode.SaveUser(u);
             }
-
+            */
             Console.WriteLine("Done!");
 
         }
