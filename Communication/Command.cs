@@ -14,7 +14,7 @@ namespace Communication
     {
         Result Join(string username, string password);
         Result Unjoin(string username);
-        Result RegisterUser(string username, string password);
+        Result RegisterUser(User newUser);
         Result InsertTrip(Trip trip);
         // Result SearchTrip();
     }
@@ -83,11 +83,11 @@ namespace Communication
 
         public override Result EndExecute(IAsyncResult asyncValue)
         {
-            // Obtaining the AsyncResult object
+            // Obtain the AsyncResult object
             AsyncResult asyncResult = (AsyncResult)asyncValue;
-            // Obtaining the delegate
+            // Obtain the delegate
             Login l = (Login) asyncResult.AsyncDelegate;
-            // Obtaining the return value of the invoked method
+            // Obtain the return value of the invoked method
             result = l.EndInvoke(asyncValue);
             return result;
         }

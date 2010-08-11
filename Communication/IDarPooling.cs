@@ -28,12 +28,6 @@ namespace Communication
         [OperationContract(IsOneWay=true)]
         void HandleTrip(Command tripCommand);
 
-        /// <summary>
-        /// This method is used for testing purposes.
-        /// </summary>
-        /// <param name="value"></param>
-        [OperationContract(IsOneWay = true)]
-        void GetData(User u);
     }
 
 }//End Namespace
