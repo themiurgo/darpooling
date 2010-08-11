@@ -50,18 +50,23 @@ namespace ServiceNodeCore
         // Path, document and lock for the USER database.
         private string userDatabasePath;
         private XDocument userDatabase;
-        private ReaderWriterLockSlim userLock = new ReaderWriterLockSlim();
+        private ReaderWriterLockSlim userDatabaseLock = new ReaderWriterLockSlim();
 
         // Path, document and lock for the TRIP database.
         private string tripDatabasePath;
         private XDocument tripDatabase;
         private ReaderWriterLockSlim tripLock = new ReaderWriterLockSlim();
+
+        //Delegates that deal with DarPoolingService structures
+        private delegate void AddJoinedUser(string username);
+        private delegate void RemoveJoinedUser(string username);
+        private AddJoinedUser addJoinedUser;
+        private RemoveJoinedUser removeJoinedUser;
                         
         // The root http and tcp addresses, which are the same for every
         // service instance.
         private const string baseHTTPAddress = "http://localhost:1111/";
         private const string baseTCPAddress = "net.tcp://localhost:1112/";
-
 
         #endregion
 
@@ -76,6 +81,10 @@ namespace ServiceNodeCore
             
             // Create a new instance of the service implementor.
             serviceImpl = new DarPoolingService(this);
+
+            // Set the delegates
+            addJoinedUser = new AddJoinedUser(serviceImpl.AddJoinedUser);
+            removeJoinedUser = new RemoveJoinedUser(serviceImpl.RemoveJoinedUser);
 
             InitializeXmlDatabases();
         }
@@ -154,46 +163,161 @@ namespace ServiceNodeCore
         }
 
 
-        public void SaveUser(User newUser)
-        {
+        #region User-Related IDarPoolingOperations implementation
 
-            userLock.EnterWriteLock();
+        /// <summary>
+        /// Login the DarPooling Service network using username and password.
+        /// First, the method check if an user with the given credentials is
+        /// actually present in the database. Then, the client is added to the
+        /// list of joined users (mantained by DarPoolingService) and the join is
+        /// confirmed.
+        /// </summary>
+        /// <param name="username">The username provided by the client</param>
+        /// <param name="password">The password provided by the client</param>
+        /// <returns>
+        /// a Result instance that represent the result of the Join operation; Specifically:
+        ///  - a LoginErrorResult instance if the credentials don't match in the database
+        ///  - a LoginOkResult if the credentials are valid.
+        /// </returns>
+        public Result Join(string username, string password)
+        {
+            Result joinResult;
+
+            // Obtain the Read lock to determine if the user actually is registered
+            userDatabaseLock.EnterReadLock();
             try
             {
-                Console.WriteLine("Accessing critical section....");
-                Thread.Sleep(5000);
+                //Console.WriteLine("{0} thread obtain the read lock in Join()", Thread.CurrentThread.Name);
+                
                 userDatabase = XDocument.Load(userDatabasePath);
 
-                int nextAvailableID = Convert.ToInt32(
+                // Determine if the username and password have a match in the database
+                var registeredUserQuery = (from user in userDatabase.Descendants("User")
+                                           where user.Element("UserName").Value.Equals(username) &&
+                                                 user.Element("Password").Value.Equals(password)
+                                           select user);
+
+                // The provided username and password don't match in the database.
+                if (registeredUserQuery.Count() == 0)
+                {
+                    joinResult = new LoginErrorResult();
+                    joinResult.Comment = "Invalid username and/or password";
+                    return joinResult;
+                }
+                else
+                {   // Login successful
+                    //Console.WriteLine("Login successful");
+
+                    // Add the user to the list of joined users.
+                    IAsyncResult asyncResult = addJoinedUser.BeginInvoke(username, null, null);
+                    // Wait until the thread complete its execution.
+                    while (!asyncResult.IsCompleted) { }
+                    
+                    joinResult = new LoginOkResult();
+                    joinResult.Comment = "Ok, you are now logged in";
+                    return joinResult;
+                }
+            }
+            finally
+            {
+                //Console.WriteLine("{0} thread releases the read lock in Join()", Thread.CurrentThread.Name);
+                userDatabaseLock.ExitReadLock();
+            }
+        }
+
+        public Result Unjoin(string username)
+        {
+            Result unjoinResult;
+
+            //Remove the user from the list of joined users, held by DarPoolingService.
+            IAsyncResult asyncResult = removeJoinedUser.BeginInvoke(username, null, null);
+            // Wait until the thread complete its execution.
+            while (!asyncResult.IsCompleted) { }
+
+            unjoinResult = new UnjoinConfirmed();
+            unjoinResult.Comment = "Ok, you are now logged off from the system";
+            return unjoinResult;
+        }
+        
+        public Result RegisterUser(User newUser)
+        {
+            Result registerUserResult;
+
+            // Obtain the upgradeable lock on the db, i.e. first we start in 
+            // read mode, and eventually upgrade to write mode.
+            userDatabaseLock.EnterUpgradeableReadLock();
+            try
+            {
+                //Console.WriteLine("{0} thread obtains the upgradeable lock", Thread.CurrentThread.Name);
+
+                userDatabase = XDocument.Load(userDatabasePath);
+
+                // Determine if the username has been already taken
+                var sameUserName = (from u in userDatabase.Descendants("User")
+                                    where u.Element("UserName").Value.Equals(newUser.UserName)
+                                    select u);
+                // The username is already present. The user must choose another one.
+                if (sameUserName.Count() != 0)
+                {
+                    registerUserResult = new RegisterErrorResult();
+                    registerUserResult.Comment = "Sorry, this UserName is already present.";
+                    return registerUserResult;
+                }
+                else //Register the user
+                {
+                    // Extract the next ID from the database
+                    int nextAvailableID = Convert.ToInt32(
                                      (from user in userDatabase.Descendants("User")
                                       orderby Convert.ToInt32(user.Element("UserID").Value) descending
                                       select user.Element("UserID").Value).FirstOrDefault()) + 1;
 
-                newUser.UserID = nextAvailableID;
+                    newUser.UserID = nextAvailableID;
 
-                XElement newXmlUser = new XElement("User",
-                    new XElement("UserID", newUser.UserID),
-                    new XElement("UserName", newUser.UserName),
-                    new XElement("Password", newUser.Password),
-                    new XElement("Name", newUser.Name),
-                    new XElement("Sex", newUser.UserSex),
-                    new XElement("BirthDate", newUser.BirthDate),
-                    new XElement("Email", newUser.Email),
-                    new XElement("Smoker", newUser.Smoker),
-                    new XElement("SignupDate", newUser.SignupDate),
-                    new XElement("Whereabouts", newUser.Whereabouts)
+                    // Create the XML entity that represent the User in the database.
+                    XElement newXmlUser = new XElement("User",
+                        new XElement("UserID", newUser.UserID),
+                        new XElement("UserName", newUser.UserName),
+                        new XElement("Password", newUser.Password),
+                        new XElement("Name", newUser.Name),
+                        new XElement("Sex", newUser.UserSex),
+                        new XElement("BirthDate", newUser.BirthDate),
+                        new XElement("Email", newUser.Email),
+                        new XElement("Smoker", newUser.Smoker),
+                        new XElement("SignupDate", newUser.SignupDate),
+                        new XElement("Whereabouts", newUser.Whereabouts)
                     );
 
-                userDatabase.Element("Users").Add(newXmlUser);
-                userDatabase.Save(userDatabasePath);
-            }
-            finally
+                    //Register the user: upgrade to Write mode
+                    userDatabaseLock.EnterWriteLock();
+                    //Console.WriteLine("{0} thread obtains the write lock", Thread.CurrentThread.Name);
+                    try
+                    {
+                        userDatabase.Element("Users").Add(newXmlUser);
+                        userDatabase.Save(userDatabasePath);
+                    }
+                    finally
+                    {
+                        //Console.WriteLine("{0} thread releases the write lock", Thread.CurrentThread.Name);
+                        userDatabaseLock.ExitWriteLock();
+                    }
+
+                    registerUserResult = new RegisterOkResult();
+                    registerUserResult.Comment = "User successfully registered!";
+                    return registerUserResult;
+
+                } // End else
+
+            } // End try upgradable
+            finally 
             {
-                userLock.ExitWriteLock();
-                Console.WriteLine("Exiting critical section....");
+                //Console.WriteLine("{0} thread releases the upgradeable lock", Thread.CurrentThread.Name);
+                userDatabaseLock.ExitUpgradeableReadLock();
             }
 
         }
+
+        #endregion
+
 
         public void SaveTrip(Trip newTrip)
         {
@@ -224,65 +348,19 @@ namespace ServiceNodeCore
             tripDatabase.Element("Trips").Add(newXmlTrip);
             tripDatabase.Save(tripDatabasePath);
         }
-
-        private bool CheckUser(string username)
-        {
-            //userLock.ExitReadLock
-            userDatabase = XDocument.Load(userDatabasePath);
-
-            var baseQuery = (from u in userDatabase.Descendants("User")
-                             where u.Element("UserName").Value.Equals(username)
-                             select u);
-            if (baseQuery.Count() == 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-
-
-        #region DarPoolingOperations Implementation
-
-        public Result Join(string username, string password)
-        {
-            Console.WriteLine("I am ServiceNodeCore executing LoginUser()");
-            Thread.Sleep(3000);
-
-            if (true)
-            {
-                LoginOkResult success = new LoginOkResult();
-                success.Comment = "Ok, you are now logged in";
-                return success;
-            }
-            else
-            {
-                LoginErrorResult failure = new LoginErrorResult();
-                failure.Comment = "Invalid Username or Password";
-                return failure;
-            }
-
-        }
-
-
-        public Result Unjoin(string username) 
-        { 
-            return new NullResult(); 
-        }
         
-        public Result RegisterUser(string username, string password) 
-        {
-            return new NullResult();
-        }
+
         public Result InsertTrip(Trip trip) 
         {
             return new NullResult();
         }
 
-        #endregion
+
+        // Print some debug information
+        public void PrintDebug()
+        { 
+        
+        }
 
 
 
@@ -417,8 +495,4 @@ namespace ServiceNodeCore
 
     }
 
-    
-
 } //End Namespace
-
-

@@ -27,12 +27,17 @@ namespace ServiceNodeCore
         // An istance of ServiceNodeCore is the receiver for all
         // client commands.
         private ServiceNodeCore receiver;
+
         // The numeric identifier for a received command
         private int commandCounter;
+
         // This dictionary let DarPoolingService to identify the client
         // that has sent a particular command
         private Dictionary<int, IDarPoolingCallback> commandClient;
-
+        
+        // Keep track of the currently joined users.
+        private List<string> joinedUsersList;
+        private ReaderWriterLockSlim joinedUsersListLock;
 
         /// <summary>
         /// The default constructor has been marked as private to
@@ -47,10 +52,12 @@ namespace ServiceNodeCore
             
             commandCounter = -1;
             commandClient = new Dictionary<int, IDarPoolingCallback>();
+            joinedUsersList = new List<string>();
+            joinedUsersListLock = new ReaderWriterLockSlim();
         }
 
 
-        #region IDarpooling implementation
+
 
         /// <summary>
         /// HandleUser is one of the method of the IDarpooling interface.
@@ -89,34 +96,82 @@ namespace ServiceNodeCore
 
         }
 
-        #endregion
-
-        /// <summary>
-        /// An IDarpooling method, used only for testing
-        /// </summary>
-        /// <param name="u">A test param</param>
-        public void GetData(User u)
-        {
-            Console.WriteLine("GetData() on DarPoolingService does nothing...");
-        }
-
-
         public void ReturnResult(IAsyncResult itfAR)
         {
             // Used to store the Result of a particular command
             Result tempResult;
-            
+
             // Retrieve the command which started the request
             Command originator = (Command)itfAR.AsyncState;
-            
+
             // Obtain the Result of the command
             tempResult = originator.EndExecute(itfAR);
-            
+
             Console.Write("Client request n° {0} has been completed. Sending the result to Client...", originator.CommandID);
             // Retrieve the Client who sent the command
             commandClient[originator.CommandID].GetResult(tempResult);
             Console.WriteLine("Done!");
         }
+
+
+        // Add an user in the list of joined user
+        public void AddJoinedUser(string username)
+        {
+            //Obtain the write lock   
+            joinedUsersListLock.EnterWriteLock();
+            try
+            {
+                //Console.WriteLine("{0} thread obtains the write lock in AddJoinedUser()", Thread.CurrentThread.Name);
+                joinedUsersList.Add(username);
+            }
+            finally
+            {
+                joinedUsersListLock.ExitWriteLock();
+                //Console.WriteLine("{0} thread releases the write lock in AddJoinedUser()", Thread.CurrentThread.Name);
+            }
+        }
+
+
+        // Remove an user from the list of joined user
+        public void RemoveJoinedUser(string username)
+        {
+            //Obtain the write lock of the list
+            joinedUsersListLock.EnterWriteLock();
+            try
+            {
+                Console.WriteLine("{0} thread obtains the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
+                if (joinedUsersList.Remove(username))
+                {
+                    Console.WriteLine("User removed from the joined list");
+                }
+
+            }
+            finally
+            {
+                joinedUsersListLock.ExitWriteLock();
+                Console.WriteLine("{0} thread releases the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
+            }
+        }
+
+
+        // Check if a user with the given username is a 
+        // joined client
+        public bool IsJoinedUser(string username)
+        { 
+            joinedUsersListLock.EnterReadLock();
+            try
+            {
+                return joinedUsersList.Contains(username);
+            }
+            finally
+            {
+                joinedUsersListLock.ExitReadLock();
+            }
+
+        }
+
+
+
 
 
     }

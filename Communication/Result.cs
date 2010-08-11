@@ -12,6 +12,8 @@ namespace Communication
     [KnownType(typeof(WaitAndTryResult))]
     [KnownType(typeof(LoginOkResult))]
     [KnownType(typeof(LoginErrorResult))]
+    [KnownType(typeof(RegisterOkResult))]
+    [KnownType(typeof(RegisterErrorResult))]
     [KnownType(typeof(ConnectionErrorResult))]
     public abstract class Result
     {

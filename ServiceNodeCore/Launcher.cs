@@ -99,9 +99,9 @@ namespace ServiceNodeCore
         /// </summary>
         public static void PopulateUserDB()
         {
-            Console.Write("Initializing Users DB... ");
+            Console.WriteLine("Initializing Users DB... \n");
 
-            // Create some sample user
+            #region Create some sample user
             User daniele = new User
             {
                 UserName = "Shaoran",
@@ -126,26 +126,37 @@ namespace ServiceNodeCore
                 SignupDate = DateTime.Today.AddDays(-30),
                 Whereabouts = ""
             };
+            #endregion
 
             User[] users =new User[] { daniele, antonio };
             userList.AddRange(users);
 
             ServiceNodeCore firstNode = sncList.ElementAt(0);
-            Thread[] threads = new Thread[2];
-            //Console.WriteLine("Count:" + users.Count());
-            for (int i = 0; i < 2; ++i)
-            {
-                threads[i] = new Thread( () => firstNode.SaveUser(daniele) );
-                threads[i].Start();
+            Thread[] threads = new Thread[4];
 
-            }
 
-/*            foreach (User u in userList)
-            {
-                firstNode.SaveUser(u);
-            }
-            */
-            Console.WriteLine("Done!");
+            threads[0] = new Thread(() => firstNode.RegisterUser(daniele));
+            threads[0].Name = "Register Daniele";
+            
+            threads[1] = new Thread(() => firstNode.RegisterUser(antonio));
+            threads[1].Name = "Register Antonio";
+
+            threads[2] = new Thread(() => firstNode.Join("Shaoran","shaoran"));
+            threads[2].Name = "Join Daniele";
+
+            threads[3] = new Thread(() => firstNode.Unjoin("Shaoran"));
+            threads[3].Name = "UnJoin Daniele ";
+
+            // Testing the concurrency
+            threads[0].Start();
+            Thread.Sleep(200);
+            threads[2].Start();
+            //Thread.Sleep(1000);
+            //threads[0].Start();
+            Thread.Sleep(500);
+            threads[3].Start();
+
+            //Console.WriteLine("Done!");
 
         }
 
