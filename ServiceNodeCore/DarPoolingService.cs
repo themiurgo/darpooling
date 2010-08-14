@@ -22,7 +22,7 @@ namespace ServiceNodeCore
     /// will call the client and send it back the result.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class DarPoolingService : IDarPooling
+    public class DarPoolingService : IDarPooling, IDarPoolingForwarding
     {
         // An istance of ServiceNodeCore is the receiver for all
         // client commands.
@@ -70,10 +70,15 @@ namespace ServiceNodeCore
         {
             Console.Write("{0} received a User request. Processing the request... ", receiver.NodeName.ToUpper());
 
+
             // Assign an ID to the command, for later use;
             commandCounter++;
             command.CommandID = commandCounter;
-            
+
+            // Save information about the client that sent the command
+            IDarPoolingCallback client = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
+            commandClient.Add(command.CommandID, client);
+
             // Set a ServiceNodeCore as the receiver of the command;
             command.Receiver = receiver;
             
@@ -83,10 +88,6 @@ namespace ServiceNodeCore
 
             // Invoke the Execute() method of the command
             command.Execute();
-            
-            // Save information about the client that sent the command
-            IDarPoolingCallback client = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
-            commandClient.Add(command.CommandID, client);
 
             Console.WriteLine("Done!");
         }
@@ -113,6 +114,11 @@ namespace ServiceNodeCore
             Console.WriteLine("Done!");
         }
 
+
+
+        public void HandleForwardedUser(Command forwardedCommand) { }
+
+        public void ForwardedUserResult(Command forwardedCommand, Result finalResult) { }
 
         // Add an user in the list of joined user
         public void AddJoinedUser(string username)
