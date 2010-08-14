@@ -29,11 +29,10 @@ namespace ServiceNodeCore
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class DarPoolingService : IDarPooling, IDarPoolingForwarding
     {
-        // An istance of ServiceNodeCore is the receiver for all
-        // client commands.
+        // An istance of ServiceNodeCore is the receiver for all client commands.
         private ServiceNodeCore receiver;
 
-        // The numeric identifier for a received command
+        // The numeric identifier for a received Command.
         private int commandCounter;
 
         // This dictionary let DarPoolingService to identify the client
@@ -84,10 +83,10 @@ namespace ServiceNodeCore
         /// <param name="command">The Command sent by a client</param>
         public void HandleUser(Command command)
         {
-            Console.Write("{0} received a USER request. Processing the request... ", receiver.NodeName.ToUpper());
+            Console.Write("{0} node has received a HandleUser request. Processing... ", receiver.NodeName.ToUpper());
 
-            // Assign an ID to the command, for later use;
-            commandCounter++;
+            // Assign an ID to the command, for later use; use the atomic sum.
+            Interlocked.Add(ref commandCounter, 1);
             command.CommandID = commandCounter;
 
             // Save information about the client that has sent the command
@@ -104,10 +103,16 @@ namespace ServiceNodeCore
             // Invoke the Execute() method of the command
             command.Execute();
 
+            // DarPoolingService can now return to listen incoming request, while the secondary thread
+            // started by Execute() performs the necessary operation
             Console.WriteLine("Done!");
         }
 
 
+        /// <summary>
+        /// TODO: to be implemented
+        /// </summary>
+        /// <param name="tripCommand"></param>
         public void HandleTrip(Command tripCommand)
         {
 
@@ -117,7 +122,7 @@ namespace ServiceNodeCore
         /// <summary>
         /// This is the callback method of HandleUser, i.e. the method that is automatically
         /// invoked when a user command complete its Execute(). This behavior is obtained by
-        /// exploiting the asynchronous delegate approach. See Communication.Command for further detail.
+        /// exploiting the asynchronous delegate approach. See Communication.Command for further details.
         /// This method determines if the user request has been satisfied (in which case the final result
         /// is returned to client) or not (in which case the command must be forwarded to another node).
         /// </summary>
@@ -126,64 +131,76 @@ namespace ServiceNodeCore
         public void ReturnUserResult(IAsyncResult iAsyncResult)
         {
             // Used to store the Result of a particular command
-            Result executeResult;
+            Result executionResult;
 
             // Retrieve the command which started the request
             Command originalCommand = (Command)iAsyncResult.AsyncState;
 
             // Obtain the Result of the command
-            executeResult = originalCommand.EndExecute(iAsyncResult);
+            executionResult = originalCommand.EndExecute(iAsyncResult);
 
-            Console.Write("Client request n° {0} has been completed. Sending the result to Client...", originalCommand.CommandID);
             
-            // Retrieve the Client who sent the command
-            // FIXME: returning to client the result could not be a good idea if the command has to
-            // be forwarded
-            commandClient[originalCommand.CommandID].GetResult(executeResult);
-
             // The command must be forwarded
-            if (IsForwardRequired(executeResult.ResultID))
+            if (IsForwardRequired(executionResult.ResultID))
             {
-                string destinationAddress = GetForwardDestinationAddress(executeResult.ResultID);
+
+                Console.Write("{0} node could not satisfy the client request. Preparing to forward...", receiver.NodeName);
+
+                string destinationAddress = GetForwardDestinationAddress(executionResult.ResultID);
                 originalCommand.RootSender = receiver.BaseForwardAddress + receiver.NodeName;
 
+                // Get ready to call the remote node service via the dedicated forward endpoint address.
                 BasicHttpBinding fwdBinding = new BasicHttpBinding();
-
                 EndpointAddress fwdEndpoint = new EndpointAddress(destinationAddress);
-
                 ChannelFactory<IDarPoolingForwarding> forwardChannelFactory = new ChannelFactory<IDarPoolingForwarding>(fwdBinding, fwdEndpoint);
-
-                // Create a channel.
                 IDarPoolingForwarding destinationService = forwardChannelFactory.CreateChannel();
-                destinationService.HandleForwardedUser(originalCommand);
-                // Close the channels
+
+                // Forward the Command to the remote note, using the IDarPoolingForwarding interface.
+                destinationService.HandleForwardedUserCommand(originalCommand);
+                
+                // Close the channels. The communication is fire-and-forget (one-way)
                 ((IClientChannel)destinationService).Close();
                 forwardChannelFactory.Close();
 
+                Console.WriteLine("Forwarded!");
+
             }
-            // The result is complete. Cleanup operations
+            // The Execution was successfull, i.e. the requested data were in this node.
             else
             {
 
+                Console.Write("Client request n° {0} has been completed. Sending the result to Client...", originalCommand.CommandID);
+
+                // Retrieve the Client who sent the command and send it the Result
+                commandClient[originalCommand.CommandID].GetResult(executionResult);
+
                 // FIXME: Temporary code. A solution must be found
-                if (executeResult is LoginOkResult)
+                if (executionResult is LoginOkResult)
                 {
                     JoinCommand jc = (JoinCommand)originalCommand;
                     AddJoinedUser(jc.UserName);
                 }
 
+                // Delete the client from the DarPoolingService cache and close the channel
                 IDarPoolingCallback client = GetSenderClient(originalCommand.CommandID);
                 commandClient.Remove(originalCommand.CommandID);
                 ((IClientChannel)client).Close();
+
+                Console.WriteLine("Done!");
             
             }
-
-
-            Console.WriteLine("Done!");
+            
         }
 
 
-        public void HandleForwardedUser(Command forwardedCommand) 
+        /// <summary>
+        /// IDarPoolingForwarding method. The user-related command uses only one hop,
+        /// i.e. they always reach the correct and final destination node with only
+        /// one connession. For these reasons, we only have to execute the command,
+        /// and the return the result to the rootSender service node.
+        /// </summary>
+        /// <param name="forwardedCommand"></param>
+        public void HandleForwardedUserCommand(Command forwardedCommand) 
         {
             // Set a ServiceNodeCore as the receiver of the command;
             forwardedCommand.Receiver = receiver;
@@ -196,6 +213,7 @@ namespace ServiceNodeCore
             forwardedCommand.Execute();
         }
 
+
         public void ReturnForwardResult(IAsyncResult iAsyncResult)
         {
             // Used to store the Result of a particular command
@@ -207,38 +225,51 @@ namespace ServiceNodeCore
             // Obtain the Result of the command
             forwardResult = originalCommand.EndExecute(iAsyncResult);
 
-            Console.Write("Forward request n° {0} has been completed. Sending the result to ServiceNode...", originalCommand.CommandID);
+            Console.Write("Forwarded request n° {0} has been completed. Sending the result back to ServiceNode...", originalCommand.CommandID);
 
-
+            // Get ready to contact the RootSender service node.
             BasicHttpBinding myBinding = new BasicHttpBinding();
             EndpointAddress myEndpoint = new EndpointAddress(originalCommand.RootSender);
             ChannelFactory<IDarPoolingForwarding> myChannelFactory = new ChannelFactory<IDarPoolingForwarding>(myBinding, myEndpoint);
-
-            // Create a channel.
             IDarPoolingForwarding client = myChannelFactory.CreateChannel();
-            client.ForwardedUserResult(originalCommand, forwardResult);
+
+            // Give the result back to the rootsender node.
+            client.ForwardedUserCommandResult(originalCommand, forwardResult);
+            
             // Close channels
             ((IClientChannel)client).Close();
             myChannelFactory.Close();
             
             }
 
-        public void ForwardedUserResult(Command forwardedCommand, Result finalResult) {
+
+        /// <summary>
+        /// IDarPoolingForwarding method. The service node obtain the result of the forwarded command.
+        /// </summary>
+        /// <param name="forwardedCommand"></param>
+        /// <param name="finalResult"></param>
+        public void ForwardedUserCommandResult(Command forwardedCommand, Result finalResult) {
             Console.WriteLine("Received answer for command {0} , that is: {1}", forwardedCommand.CommandID, finalResult.Comment);
 
+            // FIXME: temporary code. Need to find a solution to this problem
             if (finalResult is LoginOkResult)
             {
                 JoinCommand jc = (JoinCommand)forwardedCommand;
                 AddJoinedUser(jc.UserName);
             }
 
-
+            // Retrieve the client that originates the request
             IDarPoolingCallback client = GetSenderClient(forwardedCommand.CommandID);
             commandClient.Remove(forwardedCommand.CommandID);
+
+            // Sent the result back to the client.
             client.GetResult(finalResult);
             ((IClientChannel)client).Close();
-        
+
         }
+
+
+        #region Collections
 
         // Add an user in the list of joined user
         public void AddJoinedUser(string username)
@@ -380,9 +411,10 @@ namespace ServiceNodeCore
             {
                 commandClientLock.ExitReadLock();
             }
-        
+
         }
 
+        #endregion
 
     }
 }

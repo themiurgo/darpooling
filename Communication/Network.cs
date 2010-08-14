@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Communication
 {
+
     /// <summary>
     /// Abstract class representing a generic node in the network. A node is
     /// characterized by a location and a name.
     /// </summary>
-    /// 
     public abstract class Node
     {
         private Location location;

@@ -1,14 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
+
 
 namespace Communication
 {
+
     /// <summary>
-    /// This is the Callback interface. The Client MUST implement it.
+    /// This is the DarPooling Service interface which is used by the clients. 
+    /// It distinguish two categories of Commands: User-related and Trip-related. 
+    /// Also note that the callback interface i specified, so it is used for two-way 
+    /// communication for non-mobile clients.
+    /// </summary>
+    [ServiceContract(Namespace="http://www.darpooling.org",CallbackContract = typeof(IDarPoolingCallback), SessionMode=SessionMode.Required)]
+    public interface IDarPooling
+    {
+        [OperationContract(IsOneWay=true)]
+        void HandleUser(Command userCommand);
+
+        [OperationContract(IsOneWay=true)]
+        void HandleTrip(Command tripCommand);
+
+    }
+
+
+    /// <summary>
+    /// This is the Callback interface, that must be implemented by the client in order
+    /// to receive the Result of the sent Commands.
     /// </summary>
     public interface IDarPoolingCallback
     {
@@ -16,23 +33,15 @@ namespace Communication
         void GetResult(Result result);
     }
 
+
     /// <summary>
-    /// This is the Service Interface
+    /// This is the interface of the DarPooling service that will be used by the mobile
+    /// clients.
     /// </summary>
-    [ServiceContract(Namespace="http://www.darpooling.org",CallbackContract = typeof(IDarPoolingCallback), SessionMode=SessionMode.Required)]
-    public interface IDarPooling
-    {
-        [OperationContract(IsOneWay=true)]
-        void HandleUser(Command c);
-
-        [OperationContract(IsOneWay=true)]
-        void HandleTrip(Command tripCommand);
-
+    [ServiceContract]
+    public interface IDarPoolingMobile
+    { 
+    
     }
 
-}//End Namespace
-
-/*
-[OperationContract]
-string SayHello();
-*/
+}
