@@ -71,6 +71,9 @@ namespace ServiceNodeCore
         // The root address where Services wait for a request forwarded by 
         // another service node.
         private const string baseForwardAddress = "http://localhost:1113/";
+        // Keep track of total number of forwarded requests. Also used as an ID
+        // for these forwarded request.
+        private int forwardCounter;
 
         #endregion
 
@@ -89,6 +92,9 @@ namespace ServiceNodeCore
             // Set the delegates
             addJoinedUser = new AddJoinedUser(serviceImpl.AddJoinedUser);
             removeJoinedUser = new RemoveJoinedUser(serviceImpl.RemoveJoinedUser);
+
+            // The forwardCounter should always be greater than zero.
+            forwardCounter = 1;
 
             InitializeXmlDatabases();
         }
@@ -137,13 +143,13 @@ namespace ServiceNodeCore
             Uri fwd_uri = new Uri(baseForwardAddress + NodeName);
             WSDualHttpBinding http_binding = new WSDualHttpBinding();
             NetTcpBinding tcp_binding = new NetTcpBinding();
-            WSHttpBinding fwd_binding = new WSHttpBinding();
+            BasicHttpBinding fwd_binding = new BasicHttpBinding();
             Type darPoolingContract = typeof(IDarPooling);
             Type darPoolingForwardingContract = typeof(IDarPoolingForwarding);
             ServiceMetadataBehavior mex_behavior = new ServiceMetadataBehavior();
             mex_behavior.HttpGetEnabled = true;
 
-            // Hosting the service
+            // Hosting the services
             serviceHost = new ServiceHost(serviceImpl, http_uri);
             serviceHost.AddServiceEndpoint(darPoolingContract, http_binding, "");
             serviceHost.AddServiceEndpoint(darPoolingContract, tcp_binding, tcp_uri);
@@ -191,9 +197,8 @@ namespace ServiceNodeCore
         public Result Join(string username, string password)
         {
             Result joinResult;
-            //Console.WriteLine("Received: {0} e {1}",username,password);
 
-            // Determine the name of the node where the user registered. According to
+            // Determine the name of the node where the user registered. Based to
             // the format, it MUST be the final token. Es.  user@baseaddress/NODENAME
             string registrationNode = username.Split('/').Last();
 
@@ -210,16 +215,20 @@ namespace ServiceNodeCore
             // forward the Join request to the appropriate node.
             if (!registrationNode.Equals(this.NodeName))
             {
-
-                // ... Code to forward the request...
-                string registrationNodeAddress = username.Split('@').Last();
-
                 string comment = "You were not registered in this node";
-                Console.WriteLine(comment);
+                //Console.WriteLine(comment);
+
+                Interlocked.Add(ref forwardCounter, 1);
+
+
+
+                serviceImpl.AddForwardingRequest(forwardCounter, baseForwardAddress + registrationNode);
+
 
                 // FIXME: Should a proper Result subclass be created for this situation?
                 joinResult = new NullResult();
                 joinResult.Comment = comment;
+                joinResult.ResultID = forwardCounter;
                 return joinResult;
             
             }
@@ -259,12 +268,13 @@ namespace ServiceNodeCore
                     //Console.WriteLine("Login successful");
 
                     // Add the user to the list of joined users.
-                    IAsyncResult asyncResult = addJoinedUser.BeginInvoke(username, null, null);
+                    //IAsyncResult asyncResult = addJoinedUser.BeginInvoke(username, null, null);
                     // Wait until the thread complete its execution.
-                    while (!asyncResult.IsCompleted) { }
+                    //while (!asyncResult.IsCompleted) { }
                     
                     joinResult = new LoginOkResult();
-                    joinResult.Comment = "Ok, you are now logged in";
+                    
+                    joinResult.Comment = "Account successfully verified. You can now access DarPooling";
                     return joinResult;
                 }
             }
@@ -484,6 +494,11 @@ namespace ServiceNodeCore
 
 
         #region Properties
+
+        public string BaseForwardAddress
+        {
+            get { return baseForwardAddress; }
+        }
 
         public string NodeName
         {

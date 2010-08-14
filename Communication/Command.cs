@@ -36,6 +36,8 @@ namespace Communication
         protected IDarPoolingOperations receiver;
         protected AsyncCallback callbackMethod;
         protected Result result;
+        [DataMember]
+        protected string rootSender;
 
         public abstract Result Execute();
         public abstract Result EndExecute(IAsyncResult asyncValue);
@@ -55,6 +57,12 @@ namespace Communication
         public AsyncCallback Callback
         {
             set { callbackMethod = value; }
+        }
+
+        public string RootSender
+        {
+            get { return rootSender; }
+            set { rootSender = value; }
         }
     }
 
@@ -92,6 +100,12 @@ namespace Communication
             // Obtain the return value of the invoked method
             result = l.EndInvoke(asyncValue);
             return result;
+        }
+
+        public string UserName
+        {
+            get { return username; }
+            set { username = value; }
         }
     }
 

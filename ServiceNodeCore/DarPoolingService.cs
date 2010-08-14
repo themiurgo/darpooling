@@ -14,12 +14,17 @@ using System.ServiceModel;
 namespace ServiceNodeCore
 {
     /// <summary>
-    /// This class implements the IDarpooling interface, i.e. the interface 
-    /// of the Darpooling service.
-    /// Its main goal is to wait for incoming requests from clients and then
+    /// DarPoolingService implements two service interfaces: IDarPooling and IDarPoolingForwarding.
+    /// The first interface, IDarPooling, declares the set of method that darpooling clients
+    /// use to send their requests.
+    /// The second interface, IDarPoolingForwarding, is used only by the services to exchange 
+    /// information and obtain data that belong to other nodes.
+    /// 
+    /// The main goal of DarPoolingService is to wait for incoming requests from clients and then
     /// satisfy these requests by using a ServiceNodeCore instance.
     /// When the result of a particular request is ready, DarPoolingService
-    /// will call the client and send it back the result.
+    /// will call the client and send it back the result. If the node doesn't have the requested information,
+    /// it will forward the request to another node.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class DarPoolingService : IDarPooling, IDarPoolingForwarding
@@ -34,14 +39,20 @@ namespace ServiceNodeCore
         // This dictionary let DarPoolingService to identify the client
         // that has sent a particular command
         private Dictionary<int, IDarPoolingCallback> commandClient;
+        private ReaderWriterLockSlim commandClientLock;
         
         // Keep track of the currently joined users.
         private List<string> joinedUsersList;
         private ReaderWriterLockSlim joinedUsersListLock;
 
+        // Contain the pair <id of request to be forwarded, address of the destination node>
+        private Dictionary<int, string> forwardDestination;
+        private ReaderWriterLockSlim forwardDestinationLock;
+
+
         /// <summary>
-        /// The default constructor has been marked as private to
-        /// be aware of attemps to instantiate this class. 
+        /// FIXME: The default constructor has been marked as private only to
+        /// be aware of attemps to instantiate this class (WCF mess).
         /// </summary>
         private DarPoolingService() { }
 
@@ -52,8 +63,13 @@ namespace ServiceNodeCore
             
             commandCounter = -1;
             commandClient = new Dictionary<int, IDarPoolingCallback>();
+            commandClientLock = new ReaderWriterLockSlim();
+            
             joinedUsersList = new List<string>();
             joinedUsersListLock = new ReaderWriterLockSlim();
+
+            forwardDestination = new Dictionary<int, string>();
+            forwardDestinationLock = new ReaderWriterLockSlim();
         }
 
 
@@ -68,14 +84,13 @@ namespace ServiceNodeCore
         /// <param name="command">The Command sent by a client</param>
         public void HandleUser(Command command)
         {
-            Console.Write("{0} received a User request. Processing the request... ", receiver.NodeName.ToUpper());
-
+            Console.Write("{0} received a USER request. Processing the request... ", receiver.NodeName.ToUpper());
 
             // Assign an ID to the command, for later use;
             commandCounter++;
             command.CommandID = commandCounter;
 
-            // Save information about the client that sent the command
+            // Save information about the client that has sent the command
             IDarPoolingCallback client = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
             commandClient.Add(command.CommandID, client);
 
@@ -84,7 +99,7 @@ namespace ServiceNodeCore
             
             /// Set the callback method, i.e. the method that will be
             /// invoked when the receiver finishes to compute the result
-            command.Callback = new AsyncCallback(ReturnResult);
+            command.Callback = new AsyncCallback(ReturnUserResult);
 
             // Invoke the Execute() method of the command
             command.Execute();
@@ -92,33 +107,138 @@ namespace ServiceNodeCore
             Console.WriteLine("Done!");
         }
 
+
         public void HandleTrip(Command tripCommand)
         {
 
         }
 
-        public void ReturnResult(IAsyncResult itfAR)
+
+        /// <summary>
+        /// This is the callback method of HandleUser, i.e. the method that is automatically
+        /// invoked when a user command complete its Execute(). This behavior is obtained by
+        /// exploiting the asynchronous delegate approach. See Communication.Command for further detail.
+        /// This method determines if the user request has been satisfied (in which case the final result
+        /// is returned to client) or not (in which case the command must be forwarded to another node).
+        /// </summary>
+        /// <param name="iAsyncResult">Represent the object which is available after the 
+        /// asynchronous invocation of Execute(). It gives access to all state information.</param>
+        public void ReturnUserResult(IAsyncResult iAsyncResult)
         {
             // Used to store the Result of a particular command
-            Result tempResult;
+            Result executeResult;
 
             // Retrieve the command which started the request
-            Command originator = (Command)itfAR.AsyncState;
+            Command originalCommand = (Command)iAsyncResult.AsyncState;
 
             // Obtain the Result of the command
-            tempResult = originator.EndExecute(itfAR);
+            executeResult = originalCommand.EndExecute(iAsyncResult);
 
-            Console.Write("Client request n° {0} has been completed. Sending the result to Client...", originator.CommandID);
+            Console.Write("Client request n° {0} has been completed. Sending the result to Client...", originalCommand.CommandID);
+            
             // Retrieve the Client who sent the command
-            commandClient[originator.CommandID].GetResult(tempResult);
+            // FIXME: returning to client the result could not be a good idea if the command has to
+            // be forwarded
+            commandClient[originalCommand.CommandID].GetResult(executeResult);
+
+            // The command must be forwarded
+            if (IsForwardRequired(executeResult.ResultID))
+            {
+                string destinationAddress = GetForwardDestinationAddress(executeResult.ResultID);
+                originalCommand.RootSender = receiver.BaseForwardAddress + receiver.NodeName;
+
+                BasicHttpBinding fwdBinding = new BasicHttpBinding();
+
+                EndpointAddress fwdEndpoint = new EndpointAddress(destinationAddress);
+
+                ChannelFactory<IDarPoolingForwarding> forwardChannelFactory = new ChannelFactory<IDarPoolingForwarding>(fwdBinding, fwdEndpoint);
+
+                // Create a channel.
+                IDarPoolingForwarding destinationService = forwardChannelFactory.CreateChannel();
+                destinationService.HandleForwardedUser(originalCommand);
+                // Close the channels
+                ((IClientChannel)destinationService).Close();
+                forwardChannelFactory.Close();
+
+            }
+            // The result is complete. Cleanup operations
+            else
+            {
+
+                // FIXME: Temporary code. A solution must be found
+                if (executeResult is LoginOkResult)
+                {
+                    JoinCommand jc = (JoinCommand)originalCommand;
+                    AddJoinedUser(jc.UserName);
+                }
+
+                IDarPoolingCallback client = GetSenderClient(originalCommand.CommandID);
+                commandClient.Remove(originalCommand.CommandID);
+                ((IClientChannel)client).Close();
+            
+            }
+
+
             Console.WriteLine("Done!");
         }
 
 
+        public void HandleForwardedUser(Command forwardedCommand) 
+        {
+            // Set a ServiceNodeCore as the receiver of the command;
+            forwardedCommand.Receiver = receiver;
 
-        public void HandleForwardedUser(Command forwardedCommand) { }
+            /// Set the callback method, i.e. the method that will be
+            /// invoked when the receiver finishes to compute the result
+            forwardedCommand.Callback = new AsyncCallback(ReturnForwardResult);
 
-        public void ForwardedUserResult(Command forwardedCommand, Result finalResult) { }
+            // Invoke the Execute() method of the command
+            forwardedCommand.Execute();
+        }
+
+        public void ReturnForwardResult(IAsyncResult iAsyncResult)
+        {
+            // Used to store the Result of a particular command
+            Result forwardResult;
+
+            // Retrieve the command which started the request
+            Command originalCommand = (Command)iAsyncResult.AsyncState;
+
+            // Obtain the Result of the command
+            forwardResult = originalCommand.EndExecute(iAsyncResult);
+
+            Console.Write("Forward request n° {0} has been completed. Sending the result to ServiceNode...", originalCommand.CommandID);
+
+
+            BasicHttpBinding myBinding = new BasicHttpBinding();
+            EndpointAddress myEndpoint = new EndpointAddress(originalCommand.RootSender);
+            ChannelFactory<IDarPoolingForwarding> myChannelFactory = new ChannelFactory<IDarPoolingForwarding>(myBinding, myEndpoint);
+
+            // Create a channel.
+            IDarPoolingForwarding client = myChannelFactory.CreateChannel();
+            client.ForwardedUserResult(originalCommand, forwardResult);
+            // Close channels
+            ((IClientChannel)client).Close();
+            myChannelFactory.Close();
+            
+            }
+
+        public void ForwardedUserResult(Command forwardedCommand, Result finalResult) {
+            Console.WriteLine("Received answer for command {0} , that is: {1}", forwardedCommand.CommandID, finalResult.Comment);
+
+            if (finalResult is LoginOkResult)
+            {
+                JoinCommand jc = (JoinCommand)forwardedCommand;
+                AddJoinedUser(jc.UserName);
+            }
+
+
+            IDarPoolingCallback client = GetSenderClient(forwardedCommand.CommandID);
+            commandClient.Remove(forwardedCommand.CommandID);
+            client.GetResult(finalResult);
+            ((IClientChannel)client).Close();
+        
+        }
 
         // Add an user in the list of joined user
         public void AddJoinedUser(string username)
@@ -127,7 +247,7 @@ namespace ServiceNodeCore
             joinedUsersListLock.EnterWriteLock();
             try
             {
-                //Console.WriteLine("{0} thread obtains the write lock in AddJoinedUser()", Thread.CurrentThread.Name);
+                Console.WriteLine("{0} added to joinedUsers of {1}", username, receiver.NodeName);
                 joinedUsersList.Add(username);
             }
             finally
@@ -145,17 +265,17 @@ namespace ServiceNodeCore
             joinedUsersListLock.EnterWriteLock();
             try
             {
-                Console.WriteLine("{0} thread obtains the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
+                //Console.WriteLine("{0} thread obtains the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
                 if (joinedUsersList.Remove(username))
                 {
-                    Console.WriteLine("User removed from the joined list");
+                    //Console.WriteLine("User removed from the joined list");
                 }
 
             }
             finally
             {
                 joinedUsersListLock.ExitWriteLock();
-                Console.WriteLine("{0} thread releases the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
+                //Console.WriteLine("{0} thread releases the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
             }
         }
 
@@ -177,7 +297,91 @@ namespace ServiceNodeCore
         }
 
 
+        public void AddForwardingRequest(int id, string destinationAddress)
+        {
+            forwardDestinationLock.EnterWriteLock();
+            try
+            {
+                forwardDestination.Add(id, destinationAddress);
+            }
+            finally
+            {
+                forwardDestinationLock.ExitWriteLock();
+            }
+        
+        }
 
+        private bool IsForwardRequired(int resultID)
+        {
+            forwardDestinationLock.EnterReadLock();
+            try
+            {
+                return forwardDestination.ContainsKey(resultID);
+            }
+            finally
+            {
+                forwardDestinationLock.ExitReadLock();    
+            }
+        
+        }
+
+        private string GetForwardDestinationAddress(int resultID)
+        {
+            forwardDestinationLock.EnterWriteLock();
+            try
+            {
+                string destinationAddress = forwardDestination[resultID];
+                forwardDestination.Remove(resultID);
+                return destinationAddress;
+            }
+            finally
+            {
+                forwardDestinationLock.ExitWriteLock();
+            }
+        
+        }
+
+        private void AddCommandClient(int commandID, IDarPoolingCallback client)
+        {
+            commandClientLock.EnterWriteLock();
+            try
+            {
+                commandClient.Add(commandID, client);
+            }
+            finally
+            {
+                commandClientLock.ExitWriteLock();
+            }
+            
+        }
+
+        private void RemoveCommandClient(int commandID)
+        {
+            commandClientLock.EnterWriteLock();
+            try
+            {
+                commandClient.Remove(commandID);
+            }
+            finally
+            {
+                commandClientLock.ExitWriteLock();
+            }
+        
+        }
+
+        private IDarPoolingCallback GetSenderClient(int commandID)
+        {
+            commandClientLock.EnterReadLock();
+            try
+            {
+                return commandClient[commandID];
+            }
+            finally
+            {
+                commandClientLock.ExitReadLock();
+            }
+        
+        }
 
 
     }

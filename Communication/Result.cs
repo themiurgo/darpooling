@@ -19,12 +19,20 @@ namespace Communication
     {
         [DataMember]
         protected string comment;
+        protected int resultID;
 
         public string Comment
         {
             get { return comment; }
             set { comment = value; }
         }
+
+        public int ResultID
+        {
+            get { return resultID; }
+            set { resultID = value; }
+        }
+
     }
 
     /// <summary>
@@ -46,7 +54,10 @@ namespace Communication
     // Possible results in response to JoinCommand
 
     [DataContract]
-    public class LoginOkResult : Result { }
+    public class LoginOkResult : Result 
+    {
+    
+    }
 
     [DataContract]
     public class LoginErrorResult : Result { }
