@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
 using System.Runtime.Serialization;
-
 using System.Reflection;
 
 
 namespace Communication
 {
+
     /// <summary>
-    /// This assembly contains Location, User, Trip
+    /// Location is the class that models the geocoord of a city, in terms of
+    /// latitude and longitude.
+    /// It also exposes the method to compute the distance between two location.
     /// </summary>
     public class Location
     {
@@ -38,7 +35,7 @@ namespace Communication
             Longitude = longitude;
         }
 
-        // Properties
+        #region Properties
         public string Name
         {
             get { return name; }
@@ -56,12 +53,13 @@ namespace Communication
             get { return longitude; }
             set { longitude = value; }
         }
+        #endregion
 
         /// <summary>
         /// Return distance in km to another Location.
         /// </summary>
         /// <param name="other">the other location</param>
-        /// <returns></returns>
+        /// <returns>the distance</returns>
         public double distance(Location other)
         {
             double a1 = this.latitude;
@@ -79,6 +77,7 @@ namespace Communication
         }
     }
 
+
     public class LocationRange : Location
     {
         private int range;
@@ -95,6 +94,13 @@ namespace Communication
         }
     }
 
+
+    /// <summary>
+    /// Class User represents the generic user of the DarPooling system.
+    /// It containts the fields that model the personal information and the properties
+    /// to access them.
+    /// Instances of this class will be stored in the service database.
+    /// </summary>
     [DataContract]
     public class User
     {
@@ -134,6 +140,12 @@ namespace Communication
 
     }
 
+
+    /// <summary>
+    /// Trip models the fundamental entity of the DarPooling service, that is
+    /// trip that a generic user chooses to share with other users. Trip are created
+    /// and stored in the service databases, and they could be searched and modified.
+    /// </summary>
     [DataContract]
     public class Trip
     {
@@ -169,7 +181,7 @@ namespace Communication
 
         public Trip() { }
 
-
+        // Debug
         public void PrintFullInfo()
         {
             Console.WriteLine("** Full Trip Info **");
@@ -183,22 +195,53 @@ namespace Communication
                 Console.WriteLine("{0} : {1}",p.Name,p.GetValue(this,null));
             }
 
-            /*Console.WriteLine("These are the Trip info");
-            Console.WriteLine("Id: ", ID);
-            Console.WriteLine(": ",Owner);
-            DepartureName);
-            DepartureDateTime);
-            ArrivalName);
-            ArrivalDateTime);
-            Smoke);
-            Music);
-            Cost);
-            FreeSits);
-            Notes);
-            Modifiable = Convert.ToBoolean(t.Attribute("Modifiable").Value)
-             * */
         }
     }
+
+
+    /// <summary>
+    /// Represent the set of parameters used to perform the search of a Trip.
+    /// The structure is nearly identical to Trip class, but actually QueryBuilder
+    /// represent a SET of Trips, and could be later extended to support different
+    /// search criteria.
+    /// </summary>
+    [DataContract]
+    public class QueryBuilder
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public String Owner { get; set; }
+
+        [DataMember]
+        public String DepartureName { get; set; }
+        [DataMember]
+        public DateTime DepartureDateTime { get; set; }
+
+        [DataMember]
+        public String ArrivalName { get; set; }
+        [DataMember]
+        public DateTime ArrivalDateTime { get; set; }
+
+        [DataMember]
+        public Boolean Smoke { get; set; }
+        [DataMember]
+        public Boolean Music { get; set; }
+
+        [DataMember]
+        public Double Cost { get; set; }
+        [DataMember]
+        public int FreeSits { get; set; }
+        [DataMember]
+        public String Notes { get; set; }
+
+        [DataMember]
+        public Boolean Modifiable { get; set; }
+
+        public QueryBuilder() { }
+
+    }
+
     
     public class TripSpecifier
     {
@@ -206,29 +249,6 @@ namespace Communication
         private Location destination;
     }
 
-/*    public class Movie
-    {
-        [XmlElement("MovieName")]
-        public string Title
-        { get; set; }
 
-        [XmlElement("MovieRating")]
-        public float Rating
-        { get; set; }
-
-        [XmlElement("MovieReleaseDate")]
-        public DateTime ReleaseDate
-        { get; set; }
-    }
-
-    public class Customer
-    {
-        public int ID { get; set; }
-        public string Forename { get; set; }
-        public string Surname { get; set; }
-        public string DOB { get; set; }
-        public string Location { get; set; }
-    }
-*/
 
 } //End Namespace

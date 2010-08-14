@@ -415,6 +415,11 @@ namespace ServiceNodeCore
             return new NullResult();
         }
 
+        public Result SearchTrip(QueryBuilder queryTrip)
+        {
+            return new NullResult();
+        }
+
 
         // Print some debug information
         public void PrintDebug()
