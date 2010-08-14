@@ -182,7 +182,7 @@ namespace ServiceNodeCore
         public Result Join(string username, string password)
         {
             Result joinResult;
-
+            Console.WriteLine("Received: {0} e {1}",username,password);
             // Obtain the Read lock to determine if the user actually is registered
             userDatabaseLock.EnterReadLock();
             try

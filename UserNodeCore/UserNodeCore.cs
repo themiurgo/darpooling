@@ -100,8 +100,8 @@ namespace UserNodeCore
         public static void Main()
         {
             UserNodeCore user = new UserNodeCore(new UserNode("prova"));
-            user.Join("ciao", "cdscd", "http://localhost:1111",
-                "http://localhost:2222");
+            user.Join("Shaoran", "shaoran", "http://localhost:1111/Catania",
+                "http://localhost:2222/prova");
             Console.ReadLine();
         }
     }
