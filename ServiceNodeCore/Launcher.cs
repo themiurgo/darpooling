@@ -86,7 +86,7 @@ namespace ServiceNodeCore
 
             // FIXME: this array is used only to save some lines of codes.
             ServiceNodeCore[] nodes =
-                new ServiceNodeCore[] { catania //, catania2, napoli, roma, milano, aosta 
+                new ServiceNodeCore[] { catania , milano//, catania2, napoli, roma, milano, aosta 
                                       };
             sncList.AddRange(nodes);
 
@@ -104,7 +104,7 @@ namespace ServiceNodeCore
             #region Create some sample user
             User daniele = new User
             {
-                UserName = "Shaoran@http://localhost:1111/Catania",
+                UserName = "Shaoran@http://localhost:1111/Milano",
                 Password = Communication.Tools.HashString("shaoran"),
                 Name = "Daniele",
                 UserSex = User.Sex.m,
@@ -131,14 +131,15 @@ namespace ServiceNodeCore
             User[] users =new User[] { daniele, antonio };
             userList.AddRange(users);
 
-            ServiceNodeCore firstNode = sncList.ElementAt(0);
+            ServiceNodeCore firstNode = sncList.First();
+            ServiceNodeCore lastNode = sncList.Last();
             Thread[] threads = new Thread[4];
 
 
             threads[0] = new Thread(() => firstNode.RegisterUser(daniele));
             threads[0].Name = "Register Daniele";
-            
-            threads[1] = new Thread(() => firstNode.RegisterUser(antonio));
+
+            threads[1] = new Thread(() => lastNode.RegisterUser(daniele));
             threads[1].Name = "Register Antonio";
 
             threads[2] = new Thread(() => firstNode.Join("Shaoran","shaoran"));
@@ -152,9 +153,9 @@ namespace ServiceNodeCore
             Thread.Sleep(200);
             threads[2].Start();
             //Thread.Sleep(1000);
-            //threads[0].Start();
-            Thread.Sleep(500);
-            threads[3].Start();
+            threads[1].Start();
+            //Thread.Sleep(500);
+            //threads[3].Start();
 
             //Console.WriteLine("Done!");
 
