@@ -61,23 +61,25 @@ namespace Communication
     [DataContract]
     public class JoinCommand : Command 
     {
-        public UserNode Node { get; set; }
-        public string Username { get; set; }
-        public string PasswordHash { get; set; }
+        private UserNode node;
+        [DataMember]
+        private string username;
+        [DataMember]
+        private string passwordHash;
         public delegate Result Login(string x, string y);
         Login login;
         
         public JoinCommand(UserNode node, string username, string passwordHash)
         {
-            Node = node;
-            Username = username;
-            PasswordHash = passwordHash;
+            this.node = node;
+            this.username = username;
+            this.passwordHash = passwordHash;
         }
 
         public override Result Execute()
         {
             login = new Login(receiver.Join);
-            login.BeginInvoke(Username, PasswordHash, callbackMethod, this);
+            login.BeginInvoke(username, passwordHash, callbackMethod, this);
             return new LoginOkResult();
         }
 

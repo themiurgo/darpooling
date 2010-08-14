@@ -49,7 +49,11 @@ namespace UserNodeCore
             // Send JoinCommand and have luck
             string passwordHash = Communication.Tools.HashString(password);
             Console.WriteLine(passwordHash);
-            Command c = new JoinCommand(context.UserNode, username, password); 
+            Command c = new JoinCommand(context.UserNode, username, passwordHash);
+
+            Console.WriteLine("Press a key to start the communication");
+            Console.ReadLine();
+            context.ServiceProxy.HandleUser(c);
 
             // Finally, if Join is NOT successfull, remove reference
             // context.ServiceProxy = null;

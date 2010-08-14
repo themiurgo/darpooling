@@ -21,7 +21,7 @@ namespace ServiceNodeCore
         static void Main(string[] args)
         {
             InitializeService();
-            //StartService();
+            StartService();
             //TestService();
             Console.ReadLine();
             //StopService();
@@ -105,7 +105,7 @@ namespace ServiceNodeCore
             User daniele = new User
             {
                 UserName = "Shaoran",
-                Password = "shaoran",
+                Password = Communication.Tools.HashString("shaoran"),
                 Name = "Daniele",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1986, 04, 08),
@@ -116,8 +116,8 @@ namespace ServiceNodeCore
             };
             User antonio = new User
             {
-                UserName = "AnT0",
-                Password = "anto",
+                UserName = "4nt0",
+                Password = Communication.Tools.HashString("anto"),
                 Name = "Antonio",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1987, 06, 12),
