@@ -104,7 +104,7 @@ namespace ServiceNodeCore
             #region Create some sample user
             User daniele = new User
             {
-                UserName = "Shaoran",
+                UserName = "Shaoran@http://localhost:1111/Catania",
                 Password = Communication.Tools.HashString("shaoran"),
                 Name = "Daniele",
                 UserSex = User.Sex.m,

@@ -68,6 +68,10 @@ namespace ServiceNodeCore
         private const string baseHTTPAddress = "http://localhost:1111/";
         private const string baseTCPAddress = "net.tcp://localhost:1112/";
 
+        // The root address where Services wait for a request forwarded by 
+        // another service node.
+        private const string baseForwardAddress = "http://localhost:1113/";
+
         #endregion
 
 
@@ -130,16 +134,20 @@ namespace ServiceNodeCore
             // Set address, binding, contract and behavior of the Service
             Uri http_uri = new Uri(baseHTTPAddress + NodeName);
             Uri tcp_uri = new Uri(baseTCPAddress + NodeName);
+            Uri fwd_uri = new Uri(baseForwardAddress + NodeName);
             WSDualHttpBinding http_binding = new WSDualHttpBinding();
             NetTcpBinding tcp_binding = new NetTcpBinding();
-            Type contract = typeof(IDarPooling);
+            WSHttpBinding fwd_binding = new WSHttpBinding();
+            Type darPoolingContract = typeof(IDarPooling);
+            Type darPoolingForwardingContract = typeof(IDarPoolingForwarding);
             ServiceMetadataBehavior mex_behavior = new ServiceMetadataBehavior();
             mex_behavior.HttpGetEnabled = true;
 
             // Hosting the service
             serviceHost = new ServiceHost(serviceImpl, http_uri);
-            serviceHost.AddServiceEndpoint(contract, http_binding, "");
-            serviceHost.AddServiceEndpoint(contract, tcp_binding, tcp_uri);
+            serviceHost.AddServiceEndpoint(darPoolingContract, http_binding, "");
+            serviceHost.AddServiceEndpoint(darPoolingContract, tcp_binding, tcp_uri);
+            serviceHost.AddServiceEndpoint(darPoolingForwardingContract, fwd_binding, fwd_uri);
             serviceHost.Description.Behaviors.Add(mex_behavior);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
 
@@ -176,13 +184,55 @@ namespace ServiceNodeCore
         /// <param name="password">The password provided by the client</param>
         /// <returns>
         /// a Result instance that represent the result of the Join operation; Specifically:
+        ///  - a ConnectionErrorResult if the username has an invalid format
         ///  - a LoginErrorResult instance if the credentials don't match in the database
         ///  - a LoginOkResult if the credentials are valid.
         /// </returns>
         public Result Join(string username, string password)
         {
             Result joinResult;
-            Console.WriteLine("Received: {0} e {1}",username,password);
+            //Console.WriteLine("Received: {0} e {1}",username,password);
+
+            // Determine the name of the node where the user registered. According to
+            // the format, it MUST be the final token. Es.  user@baseaddress/NODENAME
+            string registrationNode = username.Split('/').Last();
+
+            // The username has an invalid format, i.e. it is impossible to retrieve the
+            // name of the node where the user registered 
+            if (registrationNode.Length == 0 )
+            {
+                joinResult = new ConnectionErrorResult();
+                joinResult.Comment = "Error: invalid username!";
+                return joinResult;
+            }
+
+            // The user has registered in a different node. To confirm the join, we MUST
+            // forward the Join request to the appropriate node.
+            if (!registrationNode.Equals(this.NodeName))
+            {
+
+                // ... Code to forward the request...
+                string registrationNodeAddress = username.Split('@').Last();
+
+                string comment = "You were not registered in this node";
+                Console.WriteLine(comment);
+
+                // FIXME: Should a proper Result subclass be created for this situation?
+                joinResult = new NullResult();
+                joinResult.Comment = comment;
+                return joinResult;
+            
+            }
+
+
+
+
+
+            //string[] names = pieces[pieces.Count - 1].Split('/');
+
+            Console.WriteLine("Registered at : {0}", registrationNode);
+            
+
             // Obtain the Read lock to determine if the user actually is registered
             userDatabaseLock.EnterReadLock();
             try
