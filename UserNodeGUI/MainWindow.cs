@@ -28,12 +28,29 @@ namespace UserNodeGUI
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            (new ConnectDialog(core)).ShowDialog();
+            ConnectDialog dlg = new ConnectDialog(core);           
+            dlg.SetConnectedViewCallback = new ConnectDialog.SetConnectedViewDelegate(this.SetConnectedView);
+            dlg.ShowDialog();
+
         }
 
         private void searchButton_Click(object sender, EventArgs e)
         {
             ResultTabControl.Controls.Add(new TabPage());
+        }
+
+        private void SetConnectedView(bool connected)
+        {
+            if (connected)
+            {
+                connectedStatusLabel.Text = "Connected";
+                connectToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                connectedStatusLabel.Text = "Not connected";
+                connectToolStripMenuItem.Enabled = true;
+            }
         }
     }
 }

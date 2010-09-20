@@ -62,7 +62,7 @@ namespace UserNodeCore
             Console.ReadLine();
             context.ServiceProxy.HandleUser(c);
 
-            // Finally, if Join is NOT successfull, remove reference
+            // Finally, if Join is NOT successfull, remove reference (TODO)
             // context.ServiceProxy = null;
             return true;
         }

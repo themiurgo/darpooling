@@ -52,7 +52,7 @@ namespace UserNodeCore
                 if (serviceProxy != null)
                     return true;
                 else
-                    return false;s
+                    return false;
             }
         }
 
