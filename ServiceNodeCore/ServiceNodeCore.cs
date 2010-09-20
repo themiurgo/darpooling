@@ -66,11 +66,11 @@ namespace ServiceNodeCore
         // The root http and tcp addresses, which are the same for every
         // service instance.
         private const string baseHTTPAddress = "http://localhost:1111/";
-        private const string baseTCPAddress = "net.tcp://localhost:1112/";
+        private const string baseTCPAddress = "net.tcp://localhost:1155/";
 
         // The root address where Services wait for a request forwarded by 
         // another service node.
-        private const string baseForwardAddress = "http://localhost:1113/";
+        private const string baseForwardAddress = "http://localhost:1177/";
         // Keep track of total number of forwarded requests. Also used as an ID
         // for these forwarded request.
         private int forwardCounter;
