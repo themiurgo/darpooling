@@ -12,6 +12,8 @@ namespace UserNodeGUI
     public partial class ConnectDialog : Form
     {
         private UserNodeCore.UserNodeCore core;
+        public delegate void SetConnectedViewDelegate(bool status); 
+        public SetConnectedViewDelegate SetConnectedViewCallback;
 
         public ConnectDialog()
         {
@@ -37,9 +39,10 @@ namespace UserNodeGUI
         {
             core.Join(UsernameTextbox.Text, PasswordTextBox.Text,
                 AddressComboBox.Text, "http://localhost:2222");
+            SetConnectedViewCallback(true);
             if (core.Connected)
             {
-                // Update the GUI
+                
             }
         }
     }
