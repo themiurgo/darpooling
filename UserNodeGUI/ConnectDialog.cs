@@ -37,6 +37,10 @@ namespace UserNodeGUI
         {
             core.Join(UsernameTextbox.Text, PasswordTextBox.Text,
                 AddressComboBox.Text, "http://localhost:2222");
+            if (core.Connected)
+            {
+                // Update the GUI
+            }
         }
     }
 }

@@ -46,6 +46,16 @@ namespace UserNodeCore
             userNode = clientNode;
         }
 
+        public bool Connected
+        {
+            get {
+                if (serviceProxy != null)
+                    return true;
+                else
+                    return false;s
+            }
+        }
+
         public UserNode UserNode
         {
             get { return userNode; }
