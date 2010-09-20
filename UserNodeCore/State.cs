@@ -36,14 +36,21 @@ namespace UserNodeCore
         public bool Join(UserNodeCore context, string username, string password,
             string serviceNodeAddress, string callbackAddress)
         {
-            // First of all, set up the connection
-            EndpointAddress endPointAddress = new EndpointAddress(serviceNodeAddress);
-            WSDualHttpBinding binding = new WSDualHttpBinding();
-            binding.ClientBaseAddress = new Uri(callbackAddress);
-            DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
-                    new ClientCallback(), binding, endPointAddress);
+            try
+            {
+                // First of all, set up the connection
+                EndpointAddress endPointAddress = new EndpointAddress(serviceNodeAddress);
+                WSDualHttpBinding binding = new WSDualHttpBinding();
+                binding.ClientBaseAddress = new Uri(callbackAddress);
+                DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
+                        new ClientCallback(), binding, endPointAddress);
 
-            context.ServiceProxy = factory.CreateChannel();
+                context.ServiceProxy = factory.CreateChannel();
+            }
+            catch
+            {
+                return false;
+            }
 
             // Now, hopefully you have a working ServiceProxy
             // Send JoinCommand and have luck
