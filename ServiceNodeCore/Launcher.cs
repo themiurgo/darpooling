@@ -230,26 +230,6 @@ namespace ServiceNodeCore
         }
 
 
-
-
-        public static void TestService()
-        {
-            /*
-            ServiceNodeCore randomNode = sncList.ElementAt(0);
-            Trip queryTrip = new Trip { DepartureName = "Catania", ArrivalDateTime = new DateTime(2010,08,4,19,0,0)};
-            //queryTrip.PrintFullInfo();
-            List<Trip> list = randomNode.GetTrip(queryTrip);
-            Console.WriteLine("Retrieved {0} trip(s).", list.Count());
-            Console.ReadLine();
-            foreach (Trip t in list)
-            {
-                t.PrintFullInfo();
-            }*/
-
-            Console.WriteLine("\nWaiting for incoming request...");
-        }
-
-
         public static void StartService()
         {
             Console.WriteLine("\nStarting the Service Nodes...");
@@ -270,6 +250,24 @@ namespace ServiceNodeCore
                 node.StopService();
             }
             Console.WriteLine("ALL Service Nodes are now OFFLINE Quitting...");
+        }
+
+
+        public static void TestService()
+        {
+            /*
+            ServiceNodeCore randomNode = sncList.ElementAt(0);
+            Trip queryTrip = new Trip { DepartureName = "Catania", ArrivalDateTime = new DateTime(2010,08,4,19,0,0)};
+            //queryTrip.PrintFullInfo();
+            List<Trip> list = randomNode.GetTrip(queryTrip);
+            Console.WriteLine("Retrieved {0} trip(s).", list.Count());
+            Console.ReadLine();
+            foreach (Trip t in list)
+            {
+                t.PrintFullInfo();
+            }*/
+
+            //Console.WriteLine("\nWaiting for incoming request...");
         }
 
 

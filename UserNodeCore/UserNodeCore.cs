@@ -110,7 +110,11 @@ namespace UserNodeCore
         public static void Main()
         {
             UserNodeCore user = new UserNodeCore(new UserNode("prova"));
-            user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
+            Console.WriteLine("DarPooling Client Console Testing");
+            Console.WriteLine("Press a key to send the Join() request...");
+            Console.ReadLine();
+            // In order: username, password (blank), Service Addr, Callback Addr.
+            user.Join("Shaoran@http://localhost:1111/", "shaoran", "http://localhost:1111/Catania",
                 "http://localhost:2222/prova");
             Console.ReadLine();
         }
