@@ -17,9 +17,18 @@ namespace UserNodeCore
     /// </summary>
     public class ClientCallback : IDarPoolingCallback
     {
+        private UserNodeCore parent;
+
+        public UserNodeCore Parent
+        {
+            get { return parent; }
+            set { parent = value; }
+        }
+
         public void GetResult(Result result)
         {
-            Console.WriteLine("Service says: " + result.Comment);
+            parent.resultCallback(result);
+            // Console.WriteLine("Service says: " + result.Comment);
         }
     }
 
@@ -35,6 +44,15 @@ namespace UserNodeCore
         private List<SearchTripResult> results;
         private IDarPooling serviceProxy;
 
+        public delegate void ResultReceiveHandler(Result r);
+        public ResultReceiveHandler resultCallback;
+        private IDarPoolingCallback clientCallback;
+
+        public IDarPoolingCallback ClientCallback
+        {
+            get { return clientCallback; }
+        }
+
         /// <summary>
         /// Setup a new UserNodeCore.
         /// </summary>
@@ -44,6 +62,8 @@ namespace UserNodeCore
             results = new List<SearchTripResult>();
             state = new UnjointState();
             userNode = clientNode;
+            clientCallback = new ClientCallback();
+            ((ClientCallback) clientCallback).Parent = this;
         }
 
         public bool Connected

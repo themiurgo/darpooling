@@ -19,6 +19,10 @@ namespace UserNodeGUI
             core = new UserNodeCore.UserNodeCore(new Communication.UserNode("prova"));
             SearchPanel.Hide();
             ResultTabControl.Hide();
+            core.resultCallback += new UserNodeCore.UserNodeCore.ResultReceiveHandler(onNewResult);
+        }
+
+        public void onNewResult(Communication.Result res) {
         }
                 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
