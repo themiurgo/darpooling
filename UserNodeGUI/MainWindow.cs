@@ -22,7 +22,22 @@ namespace UserNodeGUI
             core.resultCallback += new UserNodeCore.UserNodeCore.ResultReceiveHandler(onNewResult);
         }
 
-        public void onNewResult(Communication.Result res) {
+        /// <summary>
+        /// Each new Result received (through callback in NodeCore), goes
+        /// here, then is processed in an appropriate method, exploiting
+        /// overloading to change behaviour depending on Result subclass.
+        /// </summary>
+        /// <param name="result"></param>
+        public void onNewResult(Communication.Result result) {
+            
+        }
+
+        public void ProcessResult(Communication.LoginOkResult result)
+        {
+        }
+
+        public void ProcessResult(Communication.LoginErrorResult result)
+        {
         }
                 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
