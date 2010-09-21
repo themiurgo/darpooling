@@ -43,8 +43,8 @@ namespace UserNodeCore
                 WSDualHttpBinding binding = new WSDualHttpBinding();
                 binding.ClientBaseAddress = new Uri(callbackAddress);
                 DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
-                        new ClientCallback(), binding, endPointAddress);
-
+                        context.ClientCallback, binding, endPointAddress);
+                
                 context.ServiceProxy = factory.CreateChannel();
             }
             catch
