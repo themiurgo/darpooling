@@ -174,7 +174,7 @@ namespace ServiceNodeCore
                 // Retrieve the Client who sent the command and send it the Result
                 commandClient[originalCommand.CommandID].GetResult(executionResult);
 
-                // FIXME: Temporary code. A solution must be found
+                
                 if (executionResult is LoginOkResult)
                 {
                     JoinCommand jc = (JoinCommand)originalCommand;

@@ -149,18 +149,45 @@ namespace Communication
     }
 
 
-
-
     public class UnjoinCommand : Command
     {
+        // Username of the client that sends the unjoin request.
+        [DataMember]
+        private string username;
+
+        // The delegate is used to perform an asynchronous invocation of the
+        // Join DarPoolingOperation
+        public delegate Result Logoff(string x);
+        Logoff logoff;
+        
+
+        public UnjoinCommand(string username)
+        {
+            this.username = username;
+        }
+
         public override Result Execute()
         {
-            throw new NotImplementedException();
+            logoff = new Logoff(receiver.Unjoin);
+            logoff.BeginInvoke(username, callbackMethod, this);
+            return new NullResult();
         }
 
         public override Result EndExecute(IAsyncResult asyncValue)
         {
-            throw new NotImplementedException();
+            // Obtain the AsyncResult object
+            AsyncResult asyncResult = (AsyncResult)asyncValue;
+            // Obtain the delegate
+            Logoff l = (Logoff) asyncResult.AsyncDelegate;
+            // Obtain the return value of the invoked method
+            result = l.EndInvoke(asyncValue);
+            return result;
+        }
+
+        public string UserName
+        {
+            get { return username; }
+            set { username = value; }
         }
     }
     public class RegisterUserCommand : Command

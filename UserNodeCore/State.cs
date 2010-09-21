@@ -55,14 +55,14 @@ namespace UserNodeCore
             // Now, hopefully you have a working ServiceProxy
             // Send JoinCommand and have luck
             string passwordHash = Communication.Tools.HashString(password);
-            //Console.WriteLine(passwordHash);
+            Console.WriteLine(passwordHash);
             Command c = new JoinCommand(context.UserNode, username, passwordHash);
 
-            //Console.WriteLine("Press a key to start the communication");
-            //Console.ReadLine();
+            Console.WriteLine("Press a key to start the communication");
+            Console.ReadLine();
             context.ServiceProxy.HandleUser(c);
 
-            // TODO: Finally, if Join is NOT successfull, remove reference
+            // Finally, if Join is NOT successfull, remove reference (TODO)
             // context.ServiceProxy = null;
             return true;
         }
