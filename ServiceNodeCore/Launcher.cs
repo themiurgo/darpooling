@@ -86,7 +86,7 @@ namespace ServiceNodeCore
 
             // FIXME: this array is used only to save some lines of codes.
             ServiceNodeCore[] nodes =
-                new ServiceNodeCore[] { catania , milano//, catania2, napoli, roma, milano, aosta 
+                new ServiceNodeCore[] { milano, catania//, catania2, napoli, roma, milano, aosta 
                                       };
             sncList.AddRange(nodes);
 
@@ -116,7 +116,7 @@ namespace ServiceNodeCore
             };
             User antonio = new User
             {
-                UserName = "4nt0",
+                UserName = "Anto@http://localhost:1111/Catania",
                 Password = Communication.Tools.HashString("anto"),
                 Name = "Antonio",
                 UserSex = User.Sex.m,
@@ -139,21 +139,22 @@ namespace ServiceNodeCore
             threads[0] = new Thread(() => firstNode.RegisterUser(daniele));
             threads[0].Name = "Register Daniele";
 
-            threads[1] = new Thread(() => lastNode.RegisterUser(daniele));
+            threads[1] = new Thread(() => lastNode.RegisterUser(antonio));
             threads[1].Name = "Register Antonio";
 
+            /*
             threads[2] = new Thread(() => firstNode.Join("Shaoran","shaoran"));
             threads[2].Name = "Join Daniele";
 
             threads[3] = new Thread(() => firstNode.Unjoin("Shaoran"));
             threads[3].Name = "UnJoin Daniele ";
-
+            */
             // Testing the concurrency
             threads[0].Start();
-            Thread.Sleep(200);
-            threads[2].Start();
-            //Thread.Sleep(1000);
             threads[1].Start();
+            //Thread.Sleep(200);
+            //threads[2].Start();
+            //Thread.Sleep(1000);
             //Thread.Sleep(500);
             //threads[3].Start();
 

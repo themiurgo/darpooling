@@ -217,32 +217,21 @@ namespace ServiceNodeCore
             {
                 string comment = "You were not registered in this node";
                 //Console.WriteLine(comment);
-
+                
                 Interlocked.Add(ref forwardCounter, 1);
-
-
-
                 serviceImpl.AddForwardingRequest(forwardCounter, baseForwardAddress + registrationNode);
-
 
                 // FIXME: Should a proper Result subclass be created for this situation?
                 joinResult = new NullResult();
                 joinResult.Comment = comment;
                 joinResult.ResultID = forwardCounter;
-                return joinResult;
-            
+                return joinResult;            
             }
 
-
-
-
-
             //string[] names = pieces[pieces.Count - 1].Split('/');
+            //Console.WriteLine("Registered at : {0}", registrationNode);
 
-            Console.WriteLine("Registered at : {0}", registrationNode);
-            
-
-            // Obtain the Read lock to determine if the user actually is registered
+            // Obtain the Read lock to determine if the user is actually registered.
             userDatabaseLock.EnterReadLock();
             try
             {
@@ -264,9 +253,11 @@ namespace ServiceNodeCore
                     return joinResult;
                 }
                 else
-                {   // Login successful
+                {   /** The Login is successful. */
                     //Console.WriteLine("Login successful");
 
+                    //FIXME: The following code generates inconsistency when
+                    // used by a forwarded command
                     // Add the user to the list of joined users.
                     //IAsyncResult asyncResult = addJoinedUser.BeginInvoke(username, null, null);
                     // Wait until the thread complete its execution.
