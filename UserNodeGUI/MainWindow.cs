@@ -12,6 +12,7 @@ namespace UserNodeGUI
     public partial class MainWindow : Form
     {
         UserNodeCore.UserNodeCore core;
+        ConnectDialog connectDlg;
 
         public MainWindow()
         {
@@ -29,8 +30,11 @@ namespace UserNodeGUI
         /// </summary>
         /// <param name="result"></param>
         public void onNewResult(Communication.Result result) {
-            if (result.GetType() == typeof(Communication.LoginOkResult)) 
+            if (result.GetType() == typeof(Communication.LoginOkResult))
+            {
                 SetConnectedView(true);
+                connectDlg.Dispose();
+            }
         }
                 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -40,10 +44,9 @@ namespace UserNodeGUI
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConnectDialog dlg = new ConnectDialog(core);           
-            dlg.SetConnectedViewCallback = new ConnectDialog.SetConnectedViewDelegate(this.SetConnectedView);
-            dlg.ShowDialog();
-
+            connectDlg = new ConnectDialog(core);           
+            connectDlg.SetConnectedViewCallback = new ConnectDialog.SetConnectedViewDelegate(this.SetConnectedView);
+            connectDlg.ShowDialog();
         }
 
         private void searchButton_Click(object sender, EventArgs e)
@@ -56,13 +59,22 @@ namespace UserNodeGUI
             if (connected)
             {
                 connectedStatusLabel.Text = "Connected";
+                disconnectToolStripMenuItem.Enabled = true;
                 connectToolStripMenuItem.Enabled = false;
             }
             else
             {
                 connectedStatusLabel.Text = "Not connected";
                 connectToolStripMenuItem.Enabled = true;
+                disconnectToolStripMenuItem.Enabled = false;
             }
         }
+
+        private void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            core.Unjoin();
+            SetConnectedView(false);
+        }
+
     }
 }
