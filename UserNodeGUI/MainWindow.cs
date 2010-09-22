@@ -29,15 +29,8 @@ namespace UserNodeGUI
         /// </summary>
         /// <param name="result"></param>
         public void onNewResult(Communication.Result result) {
-            
-        }
-
-        public void ProcessResult(Communication.LoginOkResult result)
-        {
-        }
-
-        public void ProcessResult(Communication.LoginErrorResult result)
-        {
+            if (result.GetType() == typeof(Communication.LoginOkResult)) 
+                SetConnectedView(true);
         }
                 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

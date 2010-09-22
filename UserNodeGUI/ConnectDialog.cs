@@ -39,11 +39,6 @@ namespace UserNodeGUI
         {
             core.Join(UsernameTextbox.Text, PasswordTextBox.Text,
                 AddressComboBox.Text, "http://localhost:2222");
-            SetConnectedViewCallback(true);
-            if (core.Connected)
-            {
-                
-            }
         }
     }
 }
