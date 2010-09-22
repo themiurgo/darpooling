@@ -40,6 +40,7 @@ namespace Communication
     /// </summary>
     [DataContract]
     [KnownType(typeof(JoinCommand))]
+    //[KnownType(typeof(UnjoinCommand))]
     public abstract class Command : ICommand
     {
         protected int commandID;
@@ -148,7 +149,7 @@ namespace Communication
         }
     }
 
-
+    [DataContract]
     public class UnjoinCommand : Command
     {
         // Username of the client that sends the unjoin request.

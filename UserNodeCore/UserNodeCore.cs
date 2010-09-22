@@ -27,8 +27,10 @@ namespace UserNodeCore
 
         public void GetResult(Result result)
         {
+            Console.WriteLine("Service says: " + result.Comment);
+
             parent.resultCallback(result);
-            // Console.WriteLine("Service says: " + result.Comment);
+            
         }
     }
 

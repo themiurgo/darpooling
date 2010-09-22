@@ -239,7 +239,7 @@ namespace ServiceNodeCore
             // Close channels
             ((IClientChannel)client).Close();
             myChannelFactory.Close();
-            
+          
             }
 
 
