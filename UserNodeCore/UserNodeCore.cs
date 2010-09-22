@@ -28,8 +28,8 @@ namespace UserNodeCore
         public void GetResult(Result result)
         {
             Console.WriteLine("Service says: " + result.Comment);
-
-            parent.resultCallback(result);
+            // FIXME: This line MUST BE decommented when using GUI
+            //parent.resultCallback(result);
             
         }
     }
@@ -129,15 +129,47 @@ namespace UserNodeCore
             state.SearchTrip(this);
         }
 
+        // Console-Client, used for debug purposes
         public static void Main()
         {
             UserNodeCore user = new UserNodeCore(new UserNode("prova"));
-            Console.WriteLine("DarPooling Client Console Testing");
-            Console.WriteLine("Press a key to send the Join() request...");
-            Console.ReadLine();
+            Console.WriteLine("\t\t/***** DarPooling Client Console Testing  *****/\n\n");
             // In order: username, password (blank), Service Addr, Callback Addr.
-            user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
+            
+            // Case 1: LoginError
+            Console.WriteLine("Press a key... (Error expected)");
+            Console.ReadLine();
+            user.Join("Shaoran@http://localhost:1111/", "shaoran", "http://localhost:1111/Catania",
                 "http://localhost:2222/prova");
+            
+            // Case 2: LoginInvalid
+            Console.ReadLine();
+            Console.WriteLine("Press a key... (Invalid expected)");
+            Console.ReadLine();
+            user.Join("Anto@http://localhost:1111/Catania", "XxXxXXxxX", "http://localhost:1111/Catania",
+   "http://localhost:2222/prova");
+            
+            // Case 3: LoginOk
+            Console.ReadLine();
+            Console.WriteLine("Press a key... (Login OK expected)");
+            Console.ReadLine();
+            user.Join("Anto@http://localhost:1111/Catania", "anto", "http://localhost:1111/Catania",
+    "http://localhost:2222/prova");
+            
+            // Case 4: LoginForward
+            Console.ReadLine();
+            Console.WriteLine("Press a key... (Forward expected)");
+            Console.ReadLine();
+            user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
+    "http://localhost:2222/prova");
+
+            // Case 4: LoginForward
+            Console.ReadLine();
+            Console.WriteLine("Press a key... (Forward expected)");
+            Console.ReadLine();
+            user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
+    "http://localhost:2222/prova");
+
             Console.ReadLine();
         }
     }

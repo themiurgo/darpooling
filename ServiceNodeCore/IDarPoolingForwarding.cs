@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-//using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 using System.ServiceModel;
 using Communication;
 
@@ -17,12 +17,54 @@ namespace ServiceNodeCore
     public interface IDarPoolingForwarding
     {
         [OperationContract(IsOneWay = true)]
-        void HandleForwardedUserCommand(Command forwardedCommand);
+        void HandleForwardedUserCommand(ForwardedRequest fwdRequest);
 
         [OperationContract(IsOneWay = true)]
-        void ForwardedUserCommandResult(Command forwardedCommand, Result finalResult);
+        void ForwardedUserCommandResult(ForwardedRequest fwdRequest, Result finalResult);
 
     }
+
+
+    [DataContract]
+    public class ForwardRequiredResult : Result { }
+
+    // Acts like a Decorator
+    [DataContract]
+    public class ForwardedRequest
+    {
+        [DataMember]
+        Command forwardedCommand;
+        [DataMember]
+        string rootSender;
+        [DataMember]
+        string forwardingKey;
+
+        /*
+        ForwardedCommand(Command clientCommand)
+        {
+            this.component = clientCommand;
+        }*/
+
+        public Command ForwardedCommand
+        {
+            get { return forwardedCommand; }
+            set { forwardedCommand = value; }
+        }
+
+        public string RootSender
+        {
+            get { return rootSender; }
+            set { rootSender = value; }
+        }
+
+        public string ForwardingKey
+        {
+            get { return forwardingKey; }
+            set { forwardingKey = value; }
+        }
+
+    }
+
 
 /*
     // When the Result of a previously forwarded command is received, the necessity of

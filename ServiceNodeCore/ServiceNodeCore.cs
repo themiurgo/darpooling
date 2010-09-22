@@ -181,10 +181,9 @@ namespace ServiceNodeCore
 
         /// <summary>
         /// Login the DarPooling Service network using username and password.
-        /// First, the method check if an user with the given credentials is
-        /// actually present in the database. Then, the client is added to the
-        /// list of joined users (mantained by DarPoolingService) and the join is
-        /// confirmed.
+        /// Check if the current node is responsible for holding data about the user.
+        /// If so, the given credential are checked, otherwise the request is 
+        /// scheduled for forwarding.
         /// </summary>
         /// <param name="username">The username provided by the client</param>
         /// <param name="password">The password provided by the client</param>
@@ -206,7 +205,7 @@ namespace ServiceNodeCore
             // name of the node where the user registered 
             if (registrationNode.Length == 0 )
             {
-                joinResult = new ConnectionErrorResult();
+                joinResult = new LoginErrorResult();
                 joinResult.Comment = "Error: invalid username!";
                 return joinResult;
             }
@@ -216,15 +215,19 @@ namespace ServiceNodeCore
             if (!registrationNode.Equals(this.NodeName))
             {
                 string comment = "You were not registered in this node";
-                //Console.WriteLine(comment);
                 
-                Interlocked.Add(ref forwardCounter, 1);
-                serviceImpl.AddForwardingRequest(forwardCounter, baseForwardAddress + registrationNode);
+                
+                serviceImpl.AddForwardingRequest(forwardCounter, registrationNode);
 
-                // FIXME: Should a proper Result subclass be created for this situation?
-                joinResult = new NullResult();
+                Console.WriteLine("Current value for forward counter: {0}", forwardCounter);
+
+                joinResult = new ForwardRequiredResult();
                 joinResult.Comment = comment;
                 joinResult.ResultID = forwardCounter;
+
+
+                Interlocked.Add(ref forwardCounter, 1);
+
                 return joinResult;            
             }
 
@@ -248,23 +251,13 @@ namespace ServiceNodeCore
                 // The provided username and password don't match in the database.
                 if (registeredUserQuery.Count() == 0)
                 {
-                    joinResult = new LoginErrorResult();
+                    joinResult = new LoginInvalidResult();
                     joinResult.Comment = "Invalid username and/or password";
                     return joinResult;
                 }
                 else
                 {   /** The Login is successful. */
-                    //Console.WriteLine("Login successful");
-
-                    //FIXME: The following code generates inconsistency when
-                    // used by a forwarded command
-                    // Add the user to the list of joined users.
-                    //IAsyncResult asyncResult = addJoinedUser.BeginInvoke(username, null, null);
-                    // Wait until the thread complete its execution.
-                    //while (!asyncResult.IsCompleted) { }
-                    
                     joinResult = new LoginOkResult();
-                    
                     joinResult.Comment = "Account successfully verified. You can now access DarPooling";
                     return joinResult;
                 }
@@ -275,6 +268,9 @@ namespace ServiceNodeCore
                 userDatabaseLock.ExitReadLock();
             }
         }
+
+
+
 
         public Result Unjoin(string username)
         {
@@ -557,3 +553,14 @@ namespace ServiceNodeCore
     }
 
 } //End Namespace
+
+
+
+//Console.WriteLine("Login successful");
+
+//FIXME: The following code generates inconsistency when
+// used by a forwarded command
+// Add the user to the list of joined users.
+//IAsyncResult asyncResult = addJoinedUser.BeginInvoke(username, null, null);
+// Wait until the thread complete its execution.
+//while (!asyncResult.IsCompleted) { }

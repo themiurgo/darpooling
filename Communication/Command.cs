@@ -60,8 +60,8 @@ namespace Communication
         
         // Address (Uri) of the first node that received the command. It is used 
         // only if the command will be forwarded to another service node.
-        [DataMember]
-        protected string rootSender;
+        //[DataMember]
+        //protected string rootSender;
 
 
         public abstract Result Execute();
@@ -85,12 +85,12 @@ namespace Communication
         {
             set { callbackMethod = value; }
         }
-
+        /*
         public string RootSender
         {
             get { return rootSender; }
             set { rootSender = value; }
-        }
+        }*/
         #endregion
     }
 
