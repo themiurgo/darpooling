@@ -11,6 +11,7 @@ namespace Communication
     [KnownType(typeof(NullResult))]
     [KnownType(typeof(WaitAndTryResult))]
     [KnownType(typeof(LoginOkResult))]
+    [KnownType(typeof(LoginInvalidResult))]
     [KnownType(typeof(LoginErrorResult))]
     [KnownType(typeof(RegisterOkResult))]
     [KnownType(typeof(RegisterErrorResult))]
@@ -41,17 +42,20 @@ namespace Communication
     [DataContract]
     public class NullResult : Result { }
 
+    [DataContract]
+    public class ConnectionErrorResult : Result { }
+
 
     // Possible results in response to JoinCommand
     [DataContract]
     public class LoginOkResult : Result {}
 
     [DataContract]
+    public class LoginInvalidResult : Result { }
+
+    [DataContract]
     public class LoginErrorResult : Result { }
     
-    [DataContract]
-    public class ConnectionErrorResult : Result { }
-
 
     // Possible results in response to UnjoinCommand
 
