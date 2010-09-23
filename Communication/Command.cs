@@ -41,6 +41,7 @@ namespace Communication
     [DataContract]
     [KnownType(typeof(JoinCommand))]
     [KnownType(typeof(UnjoinCommand))]
+    [KnownType(typeof(InsertTripCommand))]
     public abstract class Command : ICommand
     {
         [DataMember]
@@ -211,30 +212,44 @@ namespace Communication
         }
     }
 
+    [DataContract]
     public class InsertTripCommand : Command
     {
-        Trip trip;
+        [DataMember]
+        Trip newTrip;
+
+        public delegate Result InsertNewTrip(Trip newTrip);
+        private InsertNewTrip insertNewTrip;
 
         public InsertTripCommand(Trip trip)
         {
-            this.trip = trip;
-        }
-
-        public Trip Trip
-        {
-            get { return trip; }
+            this.newTrip = trip;
         }
 
         public override Result Execute()
         {
-            throw new NotImplementedException();
+            insertNewTrip = new InsertNewTrip(receiver.InsertTrip);
+            insertNewTrip.BeginInvoke(newTrip, callbackMethod, this);
+            return new NullResult();
         }
 
         public override Result EndExecute(IAsyncResult asyncValue)
         {
-            throw new NotImplementedException();
+            AsyncResult asyncResult = (AsyncResult)asyncValue;
+            InsertNewTrip i = (InsertNewTrip) asyncResult.AsyncDelegate;
+            result = i.EndInvoke(asyncValue);
+            return result;
         }
+
+
+        public Trip NewTrip
+        {
+            get { return newTrip; }
+        }
+
     }
+
+
     public class SearchTripCommand : Command
     {
         public override Result Execute()
