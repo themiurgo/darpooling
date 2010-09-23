@@ -166,12 +166,13 @@ namespace UserNodeCore
     "http://localhost:2222/prova");
 
             // Case 4: LoginForward
+            /*
             Console.ReadLine();
             Console.WriteLine("Press a key... (Forward expected)");
             Console.ReadLine();
             user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
     "http://localhost:2222/prova");
-
+            */
             Console.ReadLine();
         }
     }

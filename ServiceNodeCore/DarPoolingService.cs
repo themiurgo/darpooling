@@ -18,7 +18,7 @@ namespace ServiceNodeCore
     /// The first interface, IDarPooling, declares the set of method that darpooling clients
     /// use to send their requests.
     /// The second interface, IDarPoolingForwarding, is used only by the services to exchange 
-    /// information and obtain data that belong to other nodes.
+    /// information.
     /// 
     /// The main goal of DarPoolingService is to wait for incoming requests from clients and then
     /// satisfy these requests by using a ServiceNodeCore instance.
@@ -32,28 +32,21 @@ namespace ServiceNodeCore
         // An istance of ServiceNodeCore is the receiver for all client commands.
         private ServiceNodeCore receiver;
 
-        // The numeric identifier for a received Command.
+        // A local identifier for Commands.
         private int commandCounter;
 
         // Keep track of the currently joined users.
-        private List<string> joinedUsersList;
-        private ReaderWriterLockSlim joinedUsersListLock;
+        private List<string> joinedUserNames;
+        private ReaderWriterLockSlim joinedUserNamesLock;
         
-        // This dictionary let DarPoolingService to identify the client
-        // that has sent a particular command
+        // Let the Service to retrieve the client that has sent a given command.
         private Dictionary<string, IDarPoolingCallback> commandClient;
         private ReaderWriterLockSlim commandClientLock;
 
         // Keep track of the received forwarded commands.
-        private Dictionary<string, string> fwdCommandSender;
-        private ReaderWriterLockSlim fwdCommandSenderLock;
+        private Dictionary<string, string> fwdCommandService;
+        private ReaderWriterLockSlim fwdCommandServiceLock;
         
-
-
-        // Contain the pair <id of request to be forwarded, address of the destination node>
-        //private Dictionary<int, string> forwardDestination;
-        //private ReaderWriterLockSlim forwardDestinationLock;
-
 
         /// <summary>
         /// FIXME: The default constructor has been marked as private only to
@@ -62,33 +55,28 @@ namespace ServiceNodeCore
         private DarPoolingService() { }
 
 
+        /// <summary>
+        /// The constructor only set the receiver and initialize
+        /// the data structures.
+        /// </summary>
+        /// <param name="receiver">A ServiceNodeCore instance that represents 
+        /// the 'receiver' of the commands.</param>
         public DarPoolingService(ServiceNodeCore receiver)
         {
             this.receiver = receiver;
+
+            joinedUserNames = new List<string>();
+            joinedUserNamesLock = new ReaderWriterLockSlim();
             
             commandCounter = -1;
             commandClient = new Dictionary<string, IDarPoolingCallback>();
             commandClientLock = new ReaderWriterLockSlim();
             
-            joinedUsersList = new List<string>();
-            joinedUsersListLock = new ReaderWriterLockSlim();
+            fwdCommandService = new Dictionary<string, string>();
+            fwdCommandServiceLock = new ReaderWriterLockSlim();
 
-            fwdCommandSender = new Dictionary<string, string>();
-            fwdCommandSenderLock = new ReaderWriterLockSlim();
-
-
-            //forwardDestination = new Dictionary<int, string>();
-            //forwardDestinationLock = new ReaderWriterLockSlim();
         }
 
-
-        public string generateGUID(Type objType)
-        { 
-            Interlocked.Add(ref commandCounter, 1);
-            string baseString = receiver.BaseForwardAddress + receiver.NodeName +
-                                DateTime.Now.ToString() + commandCounter + objType.ToString();
-            return Tools.HashString(baseString);
-        }
 
         /// <summary>
         /// Method of the IDarpooling interface.
@@ -99,10 +87,9 @@ namespace ServiceNodeCore
         /// <param name="command">The Command object, sent by a client</param>
         public void HandleUser(Command command)
         {
-            Console.WriteLine("\n{0} node has received a HandleUser request. Processing... ", receiver.NodeName.ToUpper());
+            Console.WriteLine("\n{0} node received {1}", receiver.NodeName.ToUpper(),command.GetType());
 
-            // Assign an ID to the command, for later use; use the atomic sum.
-
+            // Assign a GUID to the command
             command.CommandID = generateGUID(command.GetType());
 
             // Save information about the client that has sent the command
@@ -112,14 +99,9 @@ namespace ServiceNodeCore
             // Set a ServiceNodeCore as the receiver of the command;
             command.Receiver = receiver;
             
-            /// Set the callback method, i.e. the method that will be
-            /// invoked when the receiver finishes to compute the result
-            command.Callback = new AsyncCallback(ReturnUserResult);
+            command.Callback = new AsyncCallback(ProcessUserResult);
 
-            // Invoke the Execute() method of the command
             command.Execute();
-
-            //Console.WriteLine("Listening for incoming requests...\n");
         }
 
 
@@ -142,83 +124,23 @@ namespace ServiceNodeCore
         /// </summary>
         /// <param name="iAsyncResult">Represent the object which is available after the 
         /// asynchronous invocation of Execute(). It gives access to all state information.</param>
-        public void ReturnUserResult(IAsyncResult iAsyncResult)
+        public void ProcessUserResult(IAsyncResult iAsyncResult)
         {
-            // Used to store the Result of a particular command
             Result executionResult;
 
-            // Retrieve the command which started the request
+            // Retrieve the Command whose execution has ended.
             Command originalCommand = (Command)iAsyncResult.AsyncState;
 
-            // Obtain the Result of the command
+            // Obtain the Result of the Command.
             executionResult = originalCommand.EndExecute(iAsyncResult);
 
-            ForwardRequiredResult forward = executionResult as ForwardRequiredResult;
-            
-            // The command must be forwarded
-            if ( forward != null)
+            bool forwarded = TryForwardCommand(originalCommand,executionResult);
+
+            if ( !forwarded  )
             {
-                Console.Write("{0} node could not satisfy the client request. Preparing to forward...", receiver.NodeName);
-
-                // Get ready to call the remote node service via the dedicated forward endpoint address.
-                BasicHttpBinding fwdBinding = new BasicHttpBinding();
-                EndpointAddress fwdEndpoint = new EndpointAddress(forward.Destination);
-                ChannelFactory<IDarPoolingForwarding> forwardChannelFactory = new ChannelFactory<IDarPoolingForwarding>(fwdBinding, fwdEndpoint);
-                IDarPoolingForwarding destinationService = forwardChannelFactory.CreateChannel();
-
-                string senderAddress = receiver.BaseForwardAddress + receiver.NodeName;
-                // Forward the Command to the remote note, using the IDarPoolingForwarding interface.
-                destinationService.HandleForwardedUserCommand(originalCommand, senderAddress);
-
-                // Close the channels. The communication is fire-and-forget (one-way)
-                ((IClientChannel)destinationService).Close();
-                forwardChannelFactory.Close();
-
-                Console.WriteLine("Forwarded!");
-                
-                //string finalDestinationName = GetDestinationServiceName(executionResult.ResultID);
-
-                /*ForwardedCommand fwdCommand = new ForwardedCommand();
-                fwdCommand.Component = originalCommand;
-                fwdCommand.ForwardingKey = finalDestinationName;
-                fwdCommand.RootSender = receiver.BaseForwardAddress + receiver.NodeName;
-                */
-                // FIXME: Temporary code.
-                //string destinationAddress = receiver.BaseForwardAddress + finalDestinationName;
-                //Forward(originalCommand, forward.Destination);
-
-
+                ReturnFinalResult(originalCommand, executionResult);            
             }
-            // The Execution was successfull, i.e. the requested data were in this node.
-            else
-            {
-
-                // Apply changes on the service
-                RegisterResult(executionResult);
-
-                Console.Write("Client request n° {0} has been completed. Sending the result to Client...", originalCommand.CommandID);
-
-                // Retrieve the Client who sent the command and send it the Result
-                commandClient[originalCommand.CommandID].GetResult(executionResult);
-
-                // Delete the client from the DarPoolingService cache and close the channel
-                IDarPoolingCallback client = GetSenderClient(originalCommand.CommandID);
-                commandClient.Remove(originalCommand.CommandID);
-                ((IClientChannel)client).Close();
-
-                Console.WriteLine("Done!");
-            
-            }
-            
         }
-
-        /*
-        public void Forward(Command fwdCommand, string destinationAddress)
-        {
-
-
-        
-        }*/
 
 
         /// <summary>
@@ -229,61 +151,31 @@ namespace ServiceNodeCore
         /// </summary>
         /// <param name="forwardedCommand"></param>
         public void HandleForwardedUserCommand(Command fwdCommand, string senderAddress)
-
         {
-            Console.WriteLine("Forwarded request received!!  Info:");
-            Console.WriteLine("RootSender: {0}", senderAddress);
+            Console.WriteLine("\n{0} node received FWD:{1}", receiver.NodeName.ToUpper(), fwdCommand.GetType());
 
-            AddFwdCommandSender(fwdCommand.CommandID, senderAddress);
-
+            AddFwdCommandService(fwdCommand.CommandID, senderAddress);
  
-            // Set a ServiceNodeCore as the receiver of the command;
             fwdCommand.Receiver = receiver;
-
-            /// Set the callback method, i.e. the method that will be
-            /// invoked when the receiver finishes to compute the result
-            fwdCommand.Callback = new AsyncCallback(ReturnForwardResult);
-
-            // Invoke the Execute() method of the command
-            fwdCommand.Execute();
- 
+            fwdCommand.Callback = new AsyncCallback(ProcessResultOfForwardedCommand);
+            fwdCommand.Execute(); 
         }
 
 
-        public void ReturnForwardResult(IAsyncResult iAsyncResult)
+        public void ProcessResultOfForwardedCommand(IAsyncResult iAsyncResult)
         {
-            // Used to store the Result of a particular command
-            Result forwardResult;
+            Result executionResult;
+            Command fwdCommand = (Command)iAsyncResult.AsyncState;
+            executionResult = fwdCommand.EndExecute(iAsyncResult);
 
-            // Retrieve the command which started the request
-            Command originalCommand = (Command)iAsyncResult.AsyncState;
+            bool forwarded = TryForwardCommand(fwdCommand, executionResult);
 
-            // Obtain the Result of the command
-            forwardResult = originalCommand.EndExecute(iAsyncResult);
-
-
-            string sender = GetSenderService(originalCommand.CommandID);
-
-
-            Console.WriteLine("Class is {0}", originalCommand.GetType());
-
-            Console.Write("Forwarded request n° {0} has been completed. Sending the result back to ServiceNode :  {1}", originalCommand.CommandID, sender);
-            
-            // Get ready to contact the RootSender service node.
-            BasicHttpBinding myBinding = new BasicHttpBinding();
-            EndpointAddress myEndpoint = new EndpointAddress(sender);
-            ChannelFactory<IDarPoolingForwarding> myChannelFactory = new ChannelFactory<IDarPoolingForwarding>(myBinding, myEndpoint);
-            IDarPoolingForwarding client = myChannelFactory.CreateChannel();
-
-            // Give the result back to the rootsender node.
-            client.ForwardedUserCommandResult(originalCommand, forwardResult);
-            
-            // Close channels
-            ((IClientChannel)client).Close();
-            myChannelFactory.Close();
-          
+            if (!forwarded)
+            {
+                BackPropagateResult(fwdCommand, executionResult);
             }
-
+          
+        }
 
 
         /// <summary>
@@ -291,61 +183,101 @@ namespace ServiceNodeCore
         /// </summary>
         /// <param name="forwardedCommand"></param>
         /// <param name="finalResult"></param>
-        public void ForwardedUserCommandResult(Command fwdCommand, Result finalResult)
+        public void BackPropagateForwardedCommandResult(Command fwdCommand, Result finalResult)
         {
-            Console.WriteLine("Received answer for command {0} , that is: {1}", fwdCommand.CommandID, finalResult.Comment);
-
+           
             if (IsFwdCommand(fwdCommand.CommandID))
             {
-                string sender = GetSenderService(fwdCommand.CommandID);
-
-                // Get ready to contact the RootSender service node.
-                BasicHttpBinding myBinding = new BasicHttpBinding();
-                EndpointAddress myEndpoint = new EndpointAddress(sender);
-                ChannelFactory<IDarPoolingForwarding> myChannelFactory = new ChannelFactory<IDarPoolingForwarding>(myBinding, myEndpoint);
-                IDarPoolingForwarding client = myChannelFactory.CreateChannel();
-
-                // Give the result back to the rootsender node.
-                client.ForwardedUserCommandResult(fwdCommand, finalResult);
-
-                // Close channels
-                ((IClientChannel)client).Close();
-                myChannelFactory.Close();
-
-
+                BackPropagateResult(fwdCommand, finalResult);
             }
             else
             {
-
-
-                // Apply changes on the service
-                RegisterResult(finalResult);
-
-                Console.Write("Client request n° {0} has been completed. Sending the result to Client...", fwdCommand.CommandID);
-
-                // Retrieve the Client who sent the command and send it the Result
-                //commandClient[fwdRequest.CommandID].GetResult(executionResult);
-
-                // Delete the client from the DarPoolingService cache and close the channel
-                IDarPoolingCallback client = GetSenderClient(fwdCommand.CommandID);
-                commandClient.Remove(fwdCommand.CommandID);
-                client.GetResult(finalResult);
-                ((IClientChannel)client).Close();
-
-                Console.WriteLine("Done!");
-
+                ReturnFinalResult(fwdCommand, finalResult);
             }
             
-            /*
+        }
 
-            // Retrieve the client that originates the request
-            IDarPoolingCallback client = GetSenderClient(forwardedCommand.CommandID);
-            commandClient.Remove(forwardedCommand.CommandID);
 
-            // Sent the result back to the client.
+
+        private bool TryForwardCommand(Command command, Result lastExecutionResult) 
+        {
+            // Determine if the Command must be forwarded to another Service.
+            ForwardRequiredResult forward = lastExecutionResult as ForwardRequiredResult;
+
+            // The command must be forwarded
+            if (forward != null)
+            {
+                Console.Write("Forwarding a {0} to {1}", command.GetType(), forward.Destination);
+
+                // Get ready to call the remote node service via the dedicated forward endpoint address.
+                BasicHttpBinding fwdBinding = new BasicHttpBinding();
+                EndpointAddress fwdEndpoint = new EndpointAddress(forward.Destination);
+                ChannelFactory<IDarPoolingForwarding> fwdChannelFactory = new ChannelFactory<IDarPoolingForwarding>(fwdBinding, fwdEndpoint);
+                IDarPoolingForwarding destinationService = fwdChannelFactory.CreateChannel();
+
+                string senderAddress = receiver.BaseForwardAddress + receiver.NodeName;
+
+                // Forward the Command to the remote note, using the IDarPoolingForwarding interface.
+                destinationService.HandleForwardedUserCommand(command, senderAddress);
+
+                // Close the channels. The communication is fire-and-forget (one-way)
+                ((IClientChannel)destinationService).Close();
+                fwdChannelFactory.Close();
+
+                return true;
+
+            }
+            return false;
+        
+        }
+
+
+        private void BackPropagateResult(Command fwdCommand, Result finalResult)
+        {
+            string senderAddress = GetService(fwdCommand.CommandID);
+            RemoveFwdCommand(fwdCommand.CommandID);
+            Console.WriteLine("{0} gives back a {1} to {2}", receiver.NodeName, finalResult.GetType(), senderAddress);
+
+            // Get ready to contact the sender Service node.
+            BasicHttpBinding myBinding = new BasicHttpBinding();
+            EndpointAddress myEndpoint = new EndpointAddress(senderAddress);
+            ChannelFactory<IDarPoolingForwarding> myChannelFactory = new ChannelFactory<IDarPoolingForwarding>(myBinding, myEndpoint);
+            IDarPoolingForwarding service = myChannelFactory.CreateChannel();
+
+            // Give the result back to the the sender Service node.
+            service.BackPropagateForwardedCommandResult(fwdCommand, finalResult);
+
+            // Close channel
+            ((IClientChannel)service).Close();
+            myChannelFactory.Close();
+        
+        }
+
+
+        private void ReturnFinalResult(Command originalCommand, Result finalResult)
+        {
+            // Apply changes on the service
+            RegisterResult(finalResult);
+
+            Console.Write("Sending the FINAL Result to Client.", originalCommand.CommandID);
+
+            IDarPoolingCallback client = GetClient(originalCommand.CommandID);
+            RemoveCommand(originalCommand.CommandID);
             client.GetResult(finalResult);
             ((IClientChannel)client).Close();
-            */
+        
+        }
+
+
+
+        // Generate GUIDs using SHA1
+        public string generateGUID(Type objType)
+        {
+            // Use atomic sum
+            Interlocked.Add(ref commandCounter, 1);
+            string baseString = receiver.BaseForwardAddress + receiver.NodeName +
+                                DateTime.Now.ToString() + commandCounter + objType.ToString();
+            return Tools.HashString(baseString);
         }
 
 
@@ -359,109 +291,60 @@ namespace ServiceNodeCore
         
         }
 
-        #region Collections
 
-        // Add an user in the list of joined user
+        #region JoinedUser List Management
+
+
         public void AddJoinedUser(string username)
         {
-            //Obtain the write lock   
-            joinedUsersListLock.EnterWriteLock();
+            joinedUserNamesLock.EnterWriteLock();
             try
             {
-                Console.WriteLine("{0} added to joinedUsers of {1}", username, receiver.NodeName);
-                joinedUsersList.Add(username);
+                Console.WriteLine("{0} joined {1} node", username, receiver.NodeName);
+                joinedUserNames.Add(username);
             }
             finally
             {
-                joinedUsersListLock.ExitWriteLock();
-                //Console.WriteLine("{0} thread releases the write lock in AddJoinedUser()", Thread.CurrentThread.Name);
+                joinedUserNamesLock.ExitWriteLock();
             }
         }
 
 
-        // Remove an user from the list of joined user
+        public bool IsJoinedUser(string username)
+        {
+            joinedUserNamesLock.EnterReadLock();
+            try
+            {
+                return joinedUserNames.Contains(username);
+            }
+            finally
+            {
+                joinedUserNamesLock.ExitReadLock();
+            }
+        }
+
+
         public void RemoveJoinedUser(string username)
         {
-            //Obtain the write lock of the list
-            joinedUsersListLock.EnterWriteLock();
+            joinedUserNamesLock.EnterWriteLock();
             try
             {
-                //Console.WriteLine("{0} thread obtains the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
-                if (joinedUsersList.Remove(username))
+                if (joinedUserNames.Remove(username))
                 {
-                    Console.WriteLine("User {0}  removed from the joined list", username);
+                    Console.WriteLine("{0} unjoined {1}", username, receiver.NodeName);
                 }
-
             }
             finally
             {
-                joinedUsersListLock.ExitWriteLock();
-                //Console.WriteLine("{0} thread releases the write lock in RemoveJoinedUser()", Thread.CurrentThread.Name);
+                joinedUserNamesLock.ExitWriteLock();
             }
         }
 
+        #endregion
 
-        // Check if a user with the given username is a 
-        // joined client
-        public bool IsJoinedUser(string username)
-        { 
-            joinedUsersListLock.EnterReadLock();
-            try
-            {
-                return joinedUsersList.Contains(username);
-            }
-            finally
-            {
-                joinedUsersListLock.ExitReadLock();
-            }
 
-        }
-
-        /*
-        public void AddForwardingRequest(int id, string destinationAddress)
-        {
-            forwardDestinationLock.EnterWriteLock();
-            try
-            {
-                forwardDestination.Add(id, destinationAddress);
-            }
-            finally
-            {
-                forwardDestinationLock.ExitWriteLock();
-            }
+        #region Command-Client Management
         
-        }
-        */
-        private bool IsFwdCommand(string commandID)
-        {
-            fwdCommandSenderLock.EnterReadLock();
-            try
-            {
-                return fwdCommandSender.ContainsKey(commandID);
-            }
-            finally
-            {
-                fwdCommandSenderLock.ExitReadLock();    
-            }
-        
-        }
-        /*
-        private string GetDestinationServiceName(int resultID)
-        {
-            forwardDestinationLock.EnterWriteLock();
-            try
-            {
-                string destinationAddress = forwardDestination[resultID];
-                forwardDestination.Remove(resultID);
-                return destinationAddress;
-            }
-            finally
-            {
-                forwardDestinationLock.ExitWriteLock();
-            }
-        
-        }*/
-
         private void AddCommandClient(string commandID, IDarPoolingCallback client)
         {
             commandClientLock.EnterWriteLock();
@@ -473,24 +356,9 @@ namespace ServiceNodeCore
             {
                 commandClientLock.ExitWriteLock();
             }
-            
         }
 
-        private void RemoveCommandClient(string commandID)
-        {
-            commandClientLock.EnterWriteLock();
-            try
-            {
-                commandClient.Remove(commandID);
-            }
-            finally
-            {
-                commandClientLock.ExitWriteLock();
-            }
-        
-        }
-
-        private IDarPoolingCallback GetSenderClient(string commandID)
+        private IDarPoolingCallback GetClient(string commandID)
         {
             commandClientLock.EnterReadLock();
             try
@@ -501,49 +369,77 @@ namespace ServiceNodeCore
             {
                 commandClientLock.ExitReadLock();
             }
-
         }
 
-
-
-        private void AddFwdCommandSender(string commandID, string sender)
+        private void RemoveCommand(string commandID)
         {
-            fwdCommandSenderLock.EnterWriteLock();
+            commandClientLock.EnterWriteLock();
             try
             {
-                fwdCommandSender.Add(commandID, sender);
+                commandClient.Remove(commandID);
             }
             finally
             {
-                fwdCommandSenderLock.ExitWriteLock();
+                commandClientLock.ExitWriteLock();
             }
-
         }
 
-        private void RemoveFwdCommandSender(string commandID)
+        #endregion
+
+
+        #region FwdCommand-Service Management
+
+        private void AddFwdCommandService(string fwdCommandID, string sender)
         {
-            fwdCommandSenderLock.EnterWriteLock();
+            fwdCommandServiceLock.EnterWriteLock();
             try
             {
-                fwdCommandSender.Remove(commandID);
+                fwdCommandService.Add(fwdCommandID, sender);
             }
             finally
             {
-                fwdCommandSenderLock.ExitWriteLock();
+                fwdCommandServiceLock.ExitWriteLock();
             }
-
         }
 
-        private string GetSenderService(string commandID)
+
+        private bool IsFwdCommand(string commandID)
         {
-            fwdCommandSenderLock.EnterReadLock();
+            fwdCommandServiceLock.EnterReadLock();
             try
             {
-                return fwdCommandSender[commandID];
+                return fwdCommandService.ContainsKey(commandID);
             }
             finally
             {
-                fwdCommandSenderLock.ExitReadLock();
+                fwdCommandServiceLock.ExitReadLock();    
+            }
+        
+        }
+
+        private void RemoveFwdCommand(string fwdCommandID)
+        {
+            fwdCommandServiceLock.EnterWriteLock();
+            try
+            {
+                fwdCommandService.Remove(fwdCommandID);
+            }
+            finally
+            {
+                fwdCommandServiceLock.ExitWriteLock();
+            }
+        }
+
+        private string GetService(string fwdCommandID)
+        {
+            fwdCommandServiceLock.EnterReadLock();
+            try
+            {
+                return fwdCommandService[fwdCommandID];
+            }
+            finally
+            {
+                fwdCommandServiceLock.ExitReadLock();
             }
 
         }
@@ -552,3 +448,15 @@ namespace ServiceNodeCore
 
     }
 }
+
+
+//string finalDestinationName = GetDestinationServiceName(executionResult.ResultID);
+
+/*ForwardedCommand fwdCommand = new ForwardedCommand();
+fwdCommand.Component = originalCommand;
+fwdCommand.ForwardingKey = finalDestinationName;
+fwdCommand.RootSender = receiver.BaseForwardAddress + receiver.NodeName;
+*/
+// FIXME: Temporary code.
+//string destinationAddress = receiver.BaseForwardAddress + finalDestinationName;
+//Forward(originalCommand, forward.Destination);

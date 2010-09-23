@@ -20,7 +20,7 @@ namespace ServiceNodeCore
         void HandleForwardedUserCommand(Command fwdCommand, string senderAddress);
 
         [OperationContract(IsOneWay = true)]
-        void ForwardedUserCommandResult(Command fwdCommand, Result finalResult);
+        void BackPropagateForwardedCommandResult(Command fwdCommand, Result finalResult);
 
     }
 
