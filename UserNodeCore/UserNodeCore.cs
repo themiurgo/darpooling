@@ -30,7 +30,7 @@ namespace UserNodeCore
             Console.WriteLine("Service says: " + result.Comment);
             
             // FIXME: This line MUST BE decommented when using GUI
-            //parent.resultCallback(result);
+            parent.resultCallback(result);
             
         }
     }
