@@ -224,7 +224,7 @@ namespace ServiceNodeCore
             ServiceNodeCore randomNode = sncList.ElementAt(0);
             foreach (Trip t in tripList)
             {
-                randomNode.SaveTrip(t);
+                randomNode.InsertTrip(t);
             }
 
             Console.WriteLine("Done!");

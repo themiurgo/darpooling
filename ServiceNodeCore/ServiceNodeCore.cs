@@ -55,7 +55,7 @@ namespace ServiceNodeCore
         // Path, document and lock for the TRIP database.
         private string tripDatabasePath;
         private XDocument tripDatabase;
-        private ReaderWriterLockSlim tripLock = new ReaderWriterLockSlim();
+        private ReaderWriterLockSlim tripDatabaseLock = new ReaderWriterLockSlim();
 
         //Delegates that deal with DarPoolingService structures
         private delegate void AddJoinedUser(string username);
@@ -271,8 +271,6 @@ namespace ServiceNodeCore
         }
 
 
-
-
         public Result Unjoin(string username)
         {
             Result unjoinResult;
@@ -287,6 +285,7 @@ namespace ServiceNodeCore
             return unjoinResult;
         }
         
+
         public Result RegisterUser(User newUser)
         {
             Result registerUserResult;
@@ -367,41 +366,61 @@ namespace ServiceNodeCore
         #endregion
 
 
-        public void SaveTrip(Trip newTrip)
+
+
+        public Result InsertTrip(Trip newTrip)
         {
-            tripDatabase = XDocument.Load(tripDatabasePath);
+            Result saveResult;
 
-            int nextAvailableID = Convert.ToInt32(
-                     (from trip in tripDatabase.Descendants("Trip")
-                      orderby Convert.ToInt32(trip.Element("ID").Value) descending
-                      select trip.Element("ID").Value).FirstOrDefault()) + 1;
+            if (!serviceImpl.IsJoinedUser(newTrip.Owner))
+            {
+                saveResult = new InsertErrorResult();
+                saveResult.Comment = String.Format("Error! Invalid request: {0} has not joined DarPooling", newTrip.Owner);
+                return saveResult;
+            }
+            else
+            {   //Save the trip
+                tripDatabaseLock.EnterWriteLock();
+                try
+                {
+                    tripDatabase = XDocument.Load(tripDatabasePath);
 
+                    int nextAvailableID = Convert.ToInt32(
+                             (from trip in tripDatabase.Descendants("Trip")
+                              orderby Convert.ToInt32(trip.Element("ID").Value) descending
+                              select trip.Element("ID").Value).FirstOrDefault()) + 1;
 
-            newTrip.ID = nextAvailableID;
+                    newTrip.ID = nextAvailableID;
 
-            XElement newXmlTrip = new XElement("Trip",
-                new XElement("ID", newTrip.ID),
-                new XElement("Owner", newTrip.Owner),
-                new XElement("DepartureName", newTrip.DepartureName),
-                new XElement("DepartureDateTime", newTrip.DepartureDateTime),
-                new XElement("ArrivalName", newTrip.ArrivalName),
-                new XElement("ArrivalDateTime", newTrip.ArrivalDateTime),
-                new XElement("Smoke", newTrip.Smoke),
-                new XElement("Music", newTrip.Music),
-                new XElement("Cost", newTrip.Cost),
-                new XElement("FreeSits", newTrip.FreeSits),
-                new XElement("Notes", newTrip.Notes),
-                new XElement("Modifiable", newTrip.Modifiable)
-                );
-            tripDatabase.Element("Trips").Add(newXmlTrip);
-            tripDatabase.Save(tripDatabasePath);
-        }
+                    XElement newXmlTrip = new XElement("Trip",
+                        new XElement("ID", newTrip.ID),
+                        new XElement("Owner", newTrip.Owner),
+                        new XElement("DepartureName", newTrip.DepartureName),
+                        new XElement("DepartureDateTime", newTrip.DepartureDateTime),
+                        new XElement("ArrivalName", newTrip.ArrivalName),
+                        new XElement("ArrivalDateTime", newTrip.ArrivalDateTime),
+                        new XElement("Smoke", newTrip.Smoke),
+                        new XElement("Music", newTrip.Music),
+                        new XElement("Cost", newTrip.Cost),
+                        new XElement("FreeSits", newTrip.FreeSits),
+                        new XElement("Notes", newTrip.Notes),
+                        new XElement("Modifiable", newTrip.Modifiable)
+                        );
+                    tripDatabase.Element("Trips").Add(newXmlTrip);
+                    tripDatabase.Save(tripDatabasePath);
+
+                    saveResult = new InsertOkResult();
+                    saveResult.Comment = "The trip has been successfully inserted";
+                    return saveResult;
+                }
+                finally
+                {
+                    tripDatabaseLock.ExitWriteLock();
+                
+                }
+            }// end else
+        }//End savetrip
         
-
-        public Result InsertTrip(Trip trip) 
-        {
-            return new NullResult();
-        }
 
         public Result SearchTrip(QueryBuilder queryTrip)
         {

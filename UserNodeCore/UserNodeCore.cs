@@ -28,8 +28,9 @@ namespace UserNodeCore
         public void GetResult(Result result)
         {
             Console.WriteLine("Service says: " + result.Comment);
+            
             // FIXME: This line MUST BE decommented when using GUI
-            parent.resultCallback(result);
+            //parent.resultCallback(result);
             
         }
     }
@@ -133,31 +134,24 @@ namespace UserNodeCore
         public static void Main()
         {
             UserNodeCore user = new UserNodeCore(new UserNode("prova"));
-            Console.WriteLine("\t\t/***** DarPooling Client Console Testing  *****/\n\n");
-            //Console.WriteLine(" {0}", Tools.HashString(DateTime.Now.ToString() + "1") );
-            //Console.WriteLine(" {0}", Tools.HashString(DateTime.Now.ToString() + "2" ));
-            // In order: username, password (blank), Service Addr, Callback Addr.
-          /*  
-            // Case 1: LoginError
-            Console.WriteLine("Press a key... (Error expected)");
-            Console.ReadLine();
-            user.Join("Shaoran@http://localhost:1111/", "shaoran", "http://localhost:1111/Catania",
-                "http://localhost:2222/prova");
-            
-            // Case 2: LoginInvalid
-            Console.ReadLine();
-            Console.WriteLine("Press a key... (Invalid expected)");
-            Console.ReadLine();
-            user.Join("Anto@http://localhost:1111/Catania", "XxXxXXxxX", "http://localhost:1111/Catania",
-   "http://localhost:2222/prova");
-            
-            // Case 3: LoginOk
-            Console.ReadLine();
-            Console.WriteLine("Press a key... (Login OK expected)");
-            Console.ReadLine();
-            user.Join("Anto@http://localhost:1111/Catania", "anto", "http://localhost:1111/Catania",
-    "http://localhost:2222/prova");
-            */
+            Console.WriteLine("***** DarPooling Client Console Testing  *****\n\n");
+
+            Trip trip1 = new Trip
+            {
+                Owner = "Shaoran@http://localhost:1111/Milano",
+                DepartureName = "Catania",
+                DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
+                ArrivalName = "Messina",
+                ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
+                Smoke = false,
+                Music = false,
+                Cost = 10,
+                FreeSits = 4,
+                Notes = "none",
+                Modifiable = false
+            };
+
+
             // Case 4: LoginForward
             Console.ReadLine();
             Console.WriteLine("Press a key... (Forward expected)");
@@ -165,15 +159,69 @@ namespace UserNodeCore
             user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
     "http://localhost:2222/prova");
 
-            // Case 4: LoginForward
-            /*
             Console.ReadLine();
-            Console.WriteLine("Press a key... (Forward expected)");
+            Console.WriteLine("Press a key... (Insert Trip)");
             Console.ReadLine();
-            user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
-    "http://localhost:2222/prova");
-            */
+            InsertTripCommand insert = new InsertTripCommand(trip1);
+            TestCommands(insert);
+           
             Console.ReadLine();
         }
+
+        public static void TestCommands(Command c)
+        {
+            string serviceNodeAddress = "http://localhost:1111/Catania";
+            string callbackAddress = "http://localhost:2222/prova";
+            
+            ClientCallback callback = new ClientCallback();
+         
+            // First of all, set up the connection
+            EndpointAddress endPointAddress = new EndpointAddress(serviceNodeAddress);
+            WSDualHttpBinding binding = new WSDualHttpBinding();
+            binding.ClientBaseAddress = new Uri(callbackAddress);
+            DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
+                    callback, binding, endPointAddress);
+
+            IDarPooling serviceProxy = factory.CreateChannel();
+
+            serviceProxy.HandleTrip(c);
+        }
     }
+
+
 }
+
+
+//Console.WriteLine(" {0}", Tools.HashString(DateTime.Now.ToString() + "1") );
+//Console.WriteLine(" {0}", Tools.HashString(DateTime.Now.ToString() + "2" ));
+// In order: username, password (blank), Service Addr, Callback Addr.
+/*  
+  // Case 1: LoginError
+  Console.WriteLine("Press a key... (Error expected)");
+  Console.ReadLine();
+  user.Join("Shaoran@http://localhost:1111/", "shaoran", "http://localhost:1111/Catania",
+      "http://localhost:2222/prova");
+            
+  // Case 2: LoginInvalid
+  Console.ReadLine();
+  Console.WriteLine("Press a key... (Invalid expected)");
+  Console.ReadLine();
+  user.Join("Anto@http://localhost:1111/Catania", "XxXxXXxxX", "http://localhost:1111/Catania",
+"http://localhost:2222/prova");
+            
+  // Case 3: LoginOk
+  Console.ReadLine();
+  Console.WriteLine("Press a key... (Login OK expected)");
+  Console.ReadLine();
+  user.Join("Anto@http://localhost:1111/Catania", "anto", "http://localhost:1111/Catania",
+"http://localhost:2222/prova");
+  */
+
+// Case 4: LoginForward
+/*
+Console.ReadLine();
+Console.WriteLine("Press a key... (Forward expected)");
+Console.ReadLine();
+user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
+"http://localhost:2222/prova");
+*/
