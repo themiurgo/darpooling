@@ -17,38 +17,78 @@ namespace ServiceNodeCore
     public interface IDarPoolingForwarding
     {
         [OperationContract(IsOneWay = true)]
-        void HandleForwardedUserCommand(ForwardedRequest fwdRequest);
+        void HandleForwardedUserCommand(Command fwdCommand, string senderAddress);
 
         [OperationContract(IsOneWay = true)]
-        void ForwardedUserCommandResult(ForwardedRequest fwdRequest, Result finalResult);
+        void ForwardedUserCommandResult(Command fwdCommand, Result finalResult);
 
     }
 
 
-    [DataContract]
-    public class ForwardRequiredResult : Result { }
+    //[DataContract]
+    public class ForwardRequiredResult : Result 
+    {
+        string requestID;
+        string destinationAddress;
 
+        public string RequestID
+        {
+            get { return requestID; }
+            set { requestID = value; }
+        }
+
+        public string Destination
+        {
+            get { return destinationAddress; }
+            set { destinationAddress = value; }
+        }
+        
+    }
+
+    /*
     // Acts like a Decorator
     [DataContract]
-    public class ForwardedRequest
+    public class ForwardedCommand : Command
     {
         [DataMember]
-        Command forwardedCommand;
+        Command component;
         [DataMember]
         string rootSender;
         [DataMember]
         string forwardingKey;
 
-        /*
-        ForwardedCommand(Command clientCommand)
+        public override Result Execute()
         {
-            this.component = clientCommand;
-        }*/
+            return component.Execute();
+        }
 
-        public Command ForwardedCommand
+        public override Result EndExecute(IAsyncResult asyncValue)
         {
-            get { return forwardedCommand; }
-            set { forwardedCommand = value; }
+            return component.EndExecute(asyncValue);
+        }
+
+
+        public int CommandID
+        {
+            get { return component.CommandID; }
+            set { component.CommandID = value; }
+        }
+
+        public IDarPoolingOperations Receiver
+        {
+            get { return component.Receiver; }
+            set { component.Receiver = value; }
+        }
+
+        public AsyncCallback Callback
+        {
+            set { component.Callback = value; }
+        }
+
+        public Command Component
+        {
+            get { return component; }
+            set { component = value; }
         }
 
         public string RootSender
@@ -64,7 +104,7 @@ namespace ServiceNodeCore
         }
 
     }
-
+    */
 
 /*
     // When the Result of a previously forwarded command is received, the necessity of

@@ -29,7 +29,7 @@ namespace UserNodeCore
         {
             Console.WriteLine("Service says: " + result.Comment);
             // FIXME: This line MUST BE decommented when using GUI
-            //parent.resultCallback(result);
+            parent.resultCallback(result);
             
         }
     }
@@ -134,8 +134,10 @@ namespace UserNodeCore
         {
             UserNodeCore user = new UserNodeCore(new UserNode("prova"));
             Console.WriteLine("\t\t/***** DarPooling Client Console Testing  *****/\n\n");
+            //Console.WriteLine(" {0}", Tools.HashString(DateTime.Now.ToString() + "1") );
+            //Console.WriteLine(" {0}", Tools.HashString(DateTime.Now.ToString() + "2" ));
             // In order: username, password (blank), Service Addr, Callback Addr.
-            
+          /*  
             // Case 1: LoginError
             Console.WriteLine("Press a key... (Error expected)");
             Console.ReadLine();
@@ -155,7 +157,7 @@ namespace UserNodeCore
             Console.ReadLine();
             user.Join("Anto@http://localhost:1111/Catania", "anto", "http://localhost:1111/Catania",
     "http://localhost:2222/prova");
-            
+            */
             // Case 4: LoginForward
             Console.ReadLine();
             Console.WriteLine("Press a key... (Forward expected)");

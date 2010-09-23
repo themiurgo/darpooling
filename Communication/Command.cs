@@ -40,10 +40,11 @@ namespace Communication
     /// </summary>
     [DataContract]
     [KnownType(typeof(JoinCommand))]
-    //[KnownType(typeof(UnjoinCommand))]
+    [KnownType(typeof(UnjoinCommand))]
     public abstract class Command : ICommand
     {
-        protected int commandID;
+        [DataMember]
+        protected string commandID;
         
         // Store the reference of the service module which implements the
         // IDarPoolingOperations interface. 
@@ -57,6 +58,9 @@ namespace Communication
         // The Result of the execution of the command, which will be retrieved
         // by EndExecute() method
         protected Result result;
+
+        [DataMember]
+        protected DateTime timestamp;
         
         // Address (Uri) of the first node that received the command. It is used 
         // only if the command will be forwarded to another service node.
@@ -69,7 +73,7 @@ namespace Communication
 
 
         #region Basic Properties
-        public int CommandID
+        public string CommandID
         {
             get { return commandID; }
             set { commandID = value; }
@@ -85,12 +89,12 @@ namespace Communication
         {
             set { callbackMethod = value; }
         }
-        /*
-        public string RootSender
+        
+        public DateTime Timestamp
         {
-            get { return rootSender; }
-            set { rootSender = value; }
-        }*/
+            get { return timestamp; }
+            set { timestamp = value; }
+        }
         #endregion
     }
 
@@ -191,6 +195,9 @@ namespace Communication
             set { username = value; }
         }
     }
+
+
+
     public class RegisterUserCommand : Command
     {
         public override Result Execute()

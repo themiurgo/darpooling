@@ -73,7 +73,7 @@ namespace ServiceNodeCore
         private const string baseForwardAddress = "http://localhost:1177/";
         // Keep track of total number of forwarded requests. Also used as an ID
         // for these forwarded request.
-        private int forwardCounter;
+        //private int forwardCounter;
 
         #endregion
 
@@ -94,7 +94,7 @@ namespace ServiceNodeCore
             removeJoinedUser = new RemoveJoinedUser(serviceImpl.RemoveJoinedUser);
 
             // The forwardCounter should always be greater than zero.
-            forwardCounter = 1;
+            //forwardCounter = 1;
 
             InitializeXmlDatabases();
         }
@@ -214,19 +214,18 @@ namespace ServiceNodeCore
             // forward the Join request to the appropriate node.
             if (!registrationNode.Equals(this.NodeName))
             {
-                string comment = "You were not registered in this node";
-                
-                
-                serviceImpl.AddForwardingRequest(forwardCounter, registrationNode);
+                   
+                //serviceImpl.AddForwardingRequest(forwardCounter, registrationNode);
 
-                Console.WriteLine("Current value for forward counter: {0}", forwardCounter);
+                //Console.WriteLine("Current value for forward counter: {0}", forwardCounter);
 
-                joinResult = new ForwardRequiredResult();
-                joinResult.Comment = comment;
-                joinResult.ResultID = forwardCounter;
+                ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
+                forwardRequest.RequestID = serviceImpl.generateGUID(forwardRequest.GetType());
+                forwardRequest.Destination = baseForwardAddress + registrationNode;
+                forwardRequest.Comment = "You were not registered in this node";
+                joinResult = forwardRequest;
 
-
-                Interlocked.Add(ref forwardCounter, 1);
+                //Interlocked.Add(ref forwardCounter, 1);
 
                 return joinResult;            
             }
@@ -257,8 +256,10 @@ namespace ServiceNodeCore
                 }
                 else
                 {   /** The Login is successful. */
-                    joinResult = new LoginOkResult();
-                    joinResult.Comment = "Account successfully verified. You can now access DarPooling";
+                    LoginOkResult success = new LoginOkResult();
+                    success.AuthorizedUsername = username;
+                    success.Comment = "Account successfully verified. You can now access DarPooling";
+                    joinResult = success;
                     return joinResult;
                 }
             }
