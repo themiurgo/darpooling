@@ -61,12 +61,14 @@ namespace UserNodeGUI
                 connectedStatusLabel.Text = "Connected";
                 disconnectToolStripMenuItem.Enabled = true;
                 connectToolStripMenuItem.Enabled = false;
+                newTripToolStripMenuItem.Enabled = true;
             }
             else
             {
                 connectedStatusLabel.Text = "Not connected";
                 connectToolStripMenuItem.Enabled = true;
                 disconnectToolStripMenuItem.Enabled = false;
+                newTripToolStripMenuItem = false;
             }
         }
 
@@ -74,6 +76,11 @@ namespace UserNodeGUI
         {
             core.Unjoin();
             SetConnectedView(false);
+        }
+
+        private void newTripToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
         }
 
     }
