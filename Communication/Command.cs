@@ -213,6 +213,18 @@ namespace Communication
 
     public class InsertTripCommand : Command
     {
+        Trip trip;
+
+        public InsertTripCommand(Trip trip)
+        {
+            this.trip = trip;
+        }
+
+        public Trip Trip
+        {
+            get { return trip; }
+        }
+
         public override Result Execute()
         {
             throw new NotImplementedException();
