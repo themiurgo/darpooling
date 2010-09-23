@@ -38,12 +38,15 @@ namespace UserNodeCore
         {
             try
             {
+                ClientCallback callback = new ClientCallback();
+                callback.Parent = context;
+
                 // First of all, set up the connection
                 EndpointAddress endPointAddress = new EndpointAddress(serviceNodeAddress);
                 WSDualHttpBinding binding = new WSDualHttpBinding();
                 binding.ClientBaseAddress = new Uri(callbackAddress);
                 DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
-                        context.ClientCallback, binding, endPointAddress);
+                        callback, binding, endPointAddress);
                 
                 context.ServiceProxy = factory.CreateChannel();
             }
