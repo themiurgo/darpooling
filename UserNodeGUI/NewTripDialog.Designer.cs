@@ -42,7 +42,7 @@
             this.departureTimePicker = new System.Windows.Forms.DateTimePicker();
             this.arrivalDatePicker = new System.Windows.Forms.DateTimePicker();
             this.arrivalTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancButton = new System.Windows.Forms.Button();
             this.OKButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.freeSeatsUpDown)).BeginInit();
             this.SuspendLayout();
@@ -168,15 +168,15 @@
             this.arrivalTimePicker.Size = new System.Drawing.Size(55, 20);
             this.arrivalTimePicker.TabIndex = 13;
             // 
-            // CancelButton
+            // CancButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(304, 175);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 14;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancButton.Location = new System.Drawing.Point(304, 175);
+            this.CancButton.Name = "CancButton";
+            this.CancButton.Size = new System.Drawing.Size(75, 23);
+            this.CancButton.TabIndex = 14;
+            this.CancButton.Text = "Cancel";
+            this.CancButton.UseVisualStyleBackColor = true;
+            this.CancButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // OKButton
             // 
@@ -194,7 +194,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(393, 210);
             this.Controls.Add(this.OKButton);
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancButton);
             this.Controls.Add(this.arrivalTimePicker);
             this.Controls.Add(this.arrivalDatePicker);
             this.Controls.Add(this.departureTimePicker);
@@ -234,7 +234,7 @@
         private System.Windows.Forms.DateTimePicker departureTimePicker;
         private System.Windows.Forms.DateTimePicker arrivalDatePicker;
         private System.Windows.Forms.DateTimePicker arrivalTimePicker;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancButton;
         private System.Windows.Forms.Button OKButton;
     }
 }
