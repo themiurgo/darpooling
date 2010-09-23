@@ -107,6 +107,8 @@ namespace UserNodeCore
         public void Join(string username, string password,
             string serviceNodeAddress, string callbackAddress)
         {
+            //userNode.User = new User();
+            //userNode.User.UserName = username;
             state.Join(this, username, password, serviceNodeAddress,
                 callbackAddress);
         }

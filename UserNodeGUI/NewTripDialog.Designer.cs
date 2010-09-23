@@ -139,7 +139,6 @@
             this.departureDatePicker.Name = "departureDatePicker";
             this.departureDatePicker.Size = new System.Drawing.Size(200, 20);
             this.departureDatePicker.TabIndex = 10;
-            this.departureDatePicker.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
             // 
             // departureTimePicker
             // 

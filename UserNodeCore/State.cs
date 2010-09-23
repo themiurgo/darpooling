@@ -101,7 +101,10 @@ namespace UserNodeCore
     {
         public bool Unjoin(UserNodeCore context)
         {
+            Command command = new UnjoinCommand(context.UserNode.User.UserName);
+            context.ServiceProxy.HandleUser(command);
             context.State = new UnjointState();
+            
             return true;
         }
 
