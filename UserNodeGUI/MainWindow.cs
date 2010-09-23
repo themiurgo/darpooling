@@ -51,7 +51,7 @@ namespace UserNodeGUI
 
         private void searchButton_Click(object sender, EventArgs e)
         {
-            ResultTabControl.Controls.Add(new TabPage());
+            AddTabPage();
         }
 
         private void SetConnectedView(bool connected)
@@ -80,9 +80,13 @@ namespace UserNodeGUI
 
         private void newTripToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NewTripDialog dlg = new NewTripDialog();
+            NewTripDialog dlg = new NewTripDialog(core);
             dlg.ShowDialog();
         }
 
+        private void AddTabPage()
+        {
+            ResultTabControl.Controls.Add(new TabPage());
+        }
     }
 }

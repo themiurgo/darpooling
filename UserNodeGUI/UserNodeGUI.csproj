@@ -89,10 +89,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SearchTabControl.resx">
-      <DependentUpon>SearchTabControl.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -106,12 +102,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="SearchTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="SearchTabControl.Designer.cs">
-      <DependentUpon>SearchTabControl.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
