@@ -111,7 +111,15 @@ namespace ServiceNodeCore
         /// <param name="tripCommand"></param>
         public void HandleTrip(Command tripCommand)
         {
+            Console.WriteLine("\n{0} node received {1}", receiver.NodeName.ToUpper(), tripCommand.GetType());
 
+            tripCommand.CommandID = generateGUID(tripCommand.GetType());
+            IDarPoolingCallback client = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
+            commandClient.Add(tripCommand.CommandID, client);
+
+            tripCommand.Receiver = receiver;
+            tripCommand.Callback = new AsyncCallback(ProcessUserResult);
+            tripCommand.Execute();
         }
 
 

@@ -8,14 +8,13 @@ using System.Runtime.Serialization;
 namespace Communication
 {
     [DataContract]
+    [KnownType(typeof(ConnectionErrorResult))]
     [KnownType(typeof(NullResult))]
-    [KnownType(typeof(WaitAndTryResult))]
     [KnownType(typeof(LoginOkResult))]
     [KnownType(typeof(LoginInvalidResult))]
     [KnownType(typeof(LoginErrorResult))]
-    [KnownType(typeof(RegisterOkResult))]
-    [KnownType(typeof(RegisterErrorResult))]
-    [KnownType(typeof(ConnectionErrorResult))]
+    [KnownType(typeof(InsertErrorResult))]
+    [KnownType(typeof(InsertOkResult))]
     public abstract class Result
     {
         [DataMember]
@@ -80,9 +79,9 @@ namespace Communication
 
     
     // Possible results in response to InsertTrip
-
+    [DataContract]
     public class InsertOkResult : Result { }
-
+    [DataContract]
     public class InsertErrorResult : Result { }
 
     
