@@ -30,7 +30,7 @@ namespace UserNodeCore
             Console.WriteLine("Service says: " + result.Comment);
             
             // FIXME: This line MUST BE decommented when using GUI
-            parent.resultCallback(result);
+            //parent.resultCallback(result);
             
         }
     }
@@ -158,6 +158,7 @@ namespace UserNodeCore
             Console.ReadLine();
             Console.WriteLine("Press a key... (Forward expected)");
             Console.ReadLine();
+            Console.WriteLine("Key pressed!");
             user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
     "http://localhost:2222/prova");
 
@@ -187,6 +188,16 @@ namespace UserNodeCore
             IDarPooling serviceProxy = factory.CreateChannel();
 
             serviceProxy.HandleDarPoolingRequest(c);
+        }
+
+
+        private string LogTimestamp
+        {
+            get
+            {
+                string time = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff");
+                return ("[" + time + "] ");
+            }
         }
     }
 
