@@ -119,8 +119,11 @@ namespace UserNodeCore
             return false;
         }
 
-        public bool InsertTrip(UserNodeCore context, Communication.Trip Trip)
+        public bool InsertTrip(UserNodeCore context, Communication.Trip trip)
         {
+            Command command = new InsertTripCommand(trip);
+            context.ServiceProxy.HandleDarPoolingRequest(command);
+            // This command does not change state
             return true;
         }
 
