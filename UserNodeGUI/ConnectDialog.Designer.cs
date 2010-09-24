@@ -62,6 +62,7 @@
             this.UsernameTextbox.Name = "UsernameTextbox";
             this.UsernameTextbox.Size = new System.Drawing.Size(255, 20);
             this.UsernameTextbox.TabIndex = 1;
+            this.UsernameTextbox.Text = "Shaoran@http://localhost:1111/Milano";
             // 
             // PasswordLabel
             // 
@@ -80,6 +81,7 @@
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.Size = new System.Drawing.Size(255, 20);
             this.PasswordTextBox.TabIndex = 3;
+            this.PasswordTextBox.Text = "shaoran";
             // 
             // AddressLabel
             // 
@@ -181,6 +183,7 @@
             this.AddressComboBox.Name = "AddressComboBox";
             this.AddressComboBox.Size = new System.Drawing.Size(255, 21);
             this.AddressComboBox.TabIndex = 10;
+            this.AddressComboBox.Text = "http://localhost:1111/Catania";
             // 
             // ConnectDialog
             // 

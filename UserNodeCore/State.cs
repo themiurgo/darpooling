@@ -63,7 +63,7 @@ namespace UserNodeCore
 
             //Console.WriteLine("Press a key to start the communication");
             //Console.ReadLine();
-            context.ServiceProxy.HandleUser(c);
+            context.ServiceProxy.HandleDarPoolingRequest(c);
 
             // Finally, if Join is NOT successfull, remove reference (TODO)
             // context.ServiceProxy = null;
@@ -102,7 +102,7 @@ namespace UserNodeCore
         public bool Unjoin(UserNodeCore context)
         {
             Command command = new UnjoinCommand(context.UserNode.User.UserName);
-            context.ServiceProxy.HandleUser(command);
+            context.ServiceProxy.HandleDarPoolingRequest(command);
             context.State = new UnjointState();
             
             return true;

@@ -85,7 +85,7 @@ namespace ServiceNodeCore
         /// it invokes the Execute() method on the command itself.
         /// </summary>
         /// <param name="command">The Command object, sent by a client</param>
-        public void HandleUser(Command command)
+        public void HandleDarPoolingRequest(Command command)
         {
             Console.WriteLine("\n{0} node received {1}", receiver.NodeName.ToUpper(),command.GetType());
 
@@ -158,7 +158,7 @@ namespace ServiceNodeCore
         /// and the return the result to the rootSender service node.
         /// </summary>
         /// <param name="forwardedCommand"></param>
-        public void HandleForwardedUserCommand(Command fwdCommand, string senderAddress)
+        public void HandleForwardedDarPoolingRequest(Command fwdCommand, string senderAddress)
         {
             Console.WriteLine("\n{0} node received FWD:{1}", receiver.NodeName.ToUpper(), fwdCommand.GetType());
 
@@ -191,7 +191,7 @@ namespace ServiceNodeCore
         /// </summary>
         /// <param name="forwardedCommand"></param>
         /// <param name="finalResult"></param>
-        public void BackPropagateForwardedCommandResult(Command fwdCommand, Result finalResult)
+        public void BackPropagateForwardedDarPoolingRequest(Command fwdCommand, Result finalResult)
         {
            
             if (IsFwdCommand(fwdCommand.CommandID))
@@ -226,7 +226,7 @@ namespace ServiceNodeCore
                 string senderAddress = receiver.BaseForwardAddress + receiver.NodeName;
 
                 // Forward the Command to the remote note, using the IDarPoolingForwarding interface.
-                destinationService.HandleForwardedUserCommand(command, senderAddress);
+                destinationService.HandleForwardedDarPoolingRequest(command, senderAddress);
 
                 // Close the channels. The communication is fire-and-forget (one-way)
                 ((IClientChannel)destinationService).Close();
@@ -253,7 +253,7 @@ namespace ServiceNodeCore
             IDarPoolingForwarding service = myChannelFactory.CreateChannel();
 
             // Give the result back to the the sender Service node.
-            service.BackPropagateForwardedCommandResult(fwdCommand, finalResult);
+            service.BackPropagateForwardedDarPoolingRequest(fwdCommand, finalResult);
 
             // Close channel
             ((IClientChannel)service).Close();

@@ -186,7 +186,7 @@ namespace UserNodeCore
 
             IDarPooling serviceProxy = factory.CreateChannel();
 
-            serviceProxy.HandleTrip(c);
+            serviceProxy.HandleDarPoolingRequest(c);
         }
     }
 
