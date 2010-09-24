@@ -20,7 +20,7 @@ namespace ServiceNodeCore
         void HandleForwardedDarPoolingRequest(Command fwdCommand, string senderAddress);
 
         [OperationContract(IsOneWay = true)]
-        void BackPropagateForwardedDarPoolingRequest(Command fwdCommand, Result finalResult);
+        void BackPropagateResult(Result finalResult, Command originalCommand);
 
     }
 

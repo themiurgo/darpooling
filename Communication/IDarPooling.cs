@@ -15,7 +15,7 @@ namespace Communication
     public interface IDarPooling
     {
         [OperationContract(IsOneWay=true)]
-        void HandleDarPoolingRequest(Command userCommand);
+        void HandleDarPoolingRequest(Command command);
 
         //[OperationContract(IsOneWay=true)]
         //void HandleTrip(Command tripCommand);

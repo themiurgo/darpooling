@@ -220,7 +220,7 @@ namespace ServiceNodeCore
                 //Console.WriteLine("Current value for forward counter: {0}", forwardCounter);
 
                 ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
-                forwardRequest.RequestID = serviceImpl.generateGUID(forwardRequest.GetType());
+                forwardRequest.RequestID = serviceImpl.generateGUID();
                 forwardRequest.Destination = baseForwardAddress + registrationNode;
                 forwardRequest.Comment = "You were not registered in this node";
                 joinResult = forwardRequest;
