@@ -253,8 +253,28 @@ namespace ServiceNodeCore
                 Console.WriteLine("{0} {1} return a {2}",LogTimestamp,receiver.NodeName.ToUpper(), finalResult.GetType().Name);
 
             destination.GetResult(finalResult);
-            //((IClientChannel)destination).Close();
 
+            bool closeConnection = IsFinalInteraction(finalResult);
+            if (closeConnection)
+            {
+                Console.WriteLine("{0} End of communication with client.",LogTimestamp);
+                ((IClientChannel)destination).Close();
+            }
+
+        }
+
+
+        private bool IsFinalInteraction(Result result)
+        {
+            LoginErrorResult error = result as LoginErrorResult;
+            if (error != null)
+                return true;
+
+            UnjoinConfirmedResult unjoin = result as UnjoinConfirmedResult;
+            if (unjoin != null)
+                return true;
+
+            return false;        
         }
         
 
@@ -296,7 +316,7 @@ namespace ServiceNodeCore
             get
             {
                 string compact = "HH:mm:ss.fff";
-                string full = "yyyy-MM-ddTHH:mm:ss.fff";
+                //string full = "yyyy-MM-ddTHH:mm:ss.fff";
                 string time = DateTime.Now.ToString(compact);
                 return ("[" + time + "]"); 
             }

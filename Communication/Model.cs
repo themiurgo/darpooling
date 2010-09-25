@@ -61,17 +61,19 @@ namespace Communication
         /// <returns>the distance</returns>
         public double distance(Location other)
         {
-            double a1 = this.latitude;
-            double b1 = this.longitude;
-            double a2 = other.latitude;
-            double b2 = other.longitude;
+            /** Convert angle coordinates into radians. */
+            double a1 = (this.latitude* Math.PI ) / 180.0;
+            double b1 = (this.longitude* Math.PI ) / 180.0;
+            double a2 = (other.latitude* Math.PI ) / 180.0;
+            double b2 = (other.longitude* Math.PI ) / 180.0;
 
             if ((a1 == 0 && b1 == 0) || (a2 == 0 && b2 == 0))
                 throw new System.Exception("One of the member has no coordinates");
 
-            int earthRadius = 6378;
+            int earthRadius = 6371;
+
             double ret = Math.Acos(Math.Cos(a1) * Math.Cos(b1) * Math.Cos(a2) * Math.Cos(b2) + Math.Cos(a1) * Math.Sin(b1) * Math.Cos(a2) * Math.Sin(b2) + Math.Sin(a1) * Math.Sin(a2)) * earthRadius;
-            //Console.WriteLine("{0}", ret);
+
             return ret;
         }
     }

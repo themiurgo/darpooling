@@ -135,7 +135,7 @@ namespace ServiceNodeCore
         /// </summary>
         public void StartService()
         {
-            Console.Write("Starting " + NodeName + " node... ");
+            Console.Write("Starting " + NodeName + " node in " + NodeGeoName + " ... ");
 
             // Set address, binding, contract and behavior of the Service
             Uri http_uri = new Uri(baseHTTPAddress + NodeName);
@@ -286,7 +286,7 @@ namespace ServiceNodeCore
             if (registrationNode.Length == 0 )
             {
                 joinResult = new LoginErrorResult();
-                joinResult.Comment = "Error: invalid username!";
+                joinResult.Comment = "Invalid username and/or password";
                 return joinResult;
             }
 
@@ -320,7 +320,7 @@ namespace ServiceNodeCore
                 // The provided username and password don't match in the database.
                 if (registeredUserQuery.Count() == 0)
                 {
-                    joinResult = new LoginInvalidResult();
+                    joinResult = new LoginErrorResult();
                     joinResult.Comment = "Invalid username and/or password";
                     return joinResult;
                 }
@@ -350,7 +350,7 @@ namespace ServiceNodeCore
             // Wait until the thread complete its execution.
             while (!asyncResult.IsCompleted) { }
 
-            unjoinResult = new UnjoinConfirmed();
+            unjoinResult = new UnjoinConfirmedResult();
             unjoinResult.Comment = "You are logged OFF from Darpooling";
             return unjoinResult;
         }
@@ -507,6 +507,12 @@ namespace ServiceNodeCore
         {
             get { return serviceNode.NodeName; }
             private set { serviceNode.NodeName = value; }
+        }
+
+        public string NodeGeoName
+        {
+            get { return serviceNode.NodeGeoName; }
+            private set { serviceNode.NodeGeoName = value; }
         }
 
         public Location NodeLocation

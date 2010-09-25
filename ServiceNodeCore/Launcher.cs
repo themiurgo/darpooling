@@ -22,9 +22,10 @@ namespace ServiceNodeCore
         {
             InitializeService();
             StartService();
+            
             //TestService();
             Console.ReadLine();
-            StopService();
+            //StopService();
         }
 
         public static void InitializeService()
@@ -42,32 +43,31 @@ namespace ServiceNodeCore
         {
             Console.WriteLine("**** DarPooling Service Nodes ****\n");
 
-            string[] locNames = new string[] { "Aosta", "Milano", "Roma", "Napoli", "Catania" };
-            string[] coords;
-            double latitude;
-            double longitude;
-            Location location;
+            string[] locNames = new string[] { "Aosta", "Milano", "Roma", "Napoli", "CT Pigno", "CT Nesima Superiore" };
 
             // Obtain the Location coordinates from the location name
-            Console.Write("Retrieving Coordinates from GMap Server....   ");
+            Console.WriteLine("Retrieving Coordinates from GMap Server....   ");
             foreach (string locName in locNames)
             {
-                coords = GMapsAPI.addrToLatLng(locName);
-                latitude = double.Parse(coords[0]);
-                longitude = double.Parse(coords[1]);
-                location = new Location(locName, latitude, longitude);
+                Location location = GMapsAPI.geoNameToLocation(locName);
                 nameLoc.Add(locName, location);
+                //Console.WriteLine("{0} coords:\n lat:{1} long:{2}", locName, location.Latitude, location.Longitude);
+            }
+
+            foreach (string locName in locNames)
+            {
+                //Console.WriteLine("Dtance between {0} and {1} is  {2} km", locNames[4], locName, nameLoc[locNames[4]].distance(nameLoc[locName]));
             }
 
             Console.WriteLine("Done!");
 
             // ServiceNode
-            ServiceNode aostaSN = new ServiceNode("Aosta", nameLoc["Aosta"]);
-            ServiceNode milanoSN = new ServiceNode("Milano", nameLoc["Milano"]);
-            ServiceNode romaSN = new ServiceNode("Roma", nameLoc["Roma"]);
-            ServiceNode napoliSN = new ServiceNode("Napoli", nameLoc["Napoli"]);
-            ServiceNode cataniaSN = new ServiceNode("Catania", nameLoc["Catania"]);
-            ServiceNode catania2SN = new ServiceNode("Catania2", nameLoc["Catania"]);
+            ServiceNode aostaSN = new ServiceNode("Aosta", locNames[0], nameLoc[locNames[0]]);
+            ServiceNode milanoSN = new ServiceNode("Milano", locNames[1], nameLoc[locNames[1]]);
+            ServiceNode romaSN = new ServiceNode("Roma", locNames[2], nameLoc[locNames[2]]);
+            ServiceNode napoliSN = new ServiceNode("Napoli", locNames[3], nameLoc[locNames[3]]);
+            ServiceNode cataniaSN = new ServiceNode("Catania", locNames[4], nameLoc[locNames[4]]);
+            ServiceNode catania2SN = new ServiceNode("Catania2", locNames[5], nameLoc[locNames[5]]);
             // ServiceNodeCore
             ServiceNodeCore aosta = new ServiceNodeCore(aostaSN);
             ServiceNodeCore milano = new ServiceNodeCore(milanoSN);
@@ -86,7 +86,7 @@ namespace ServiceNodeCore
 
             // FIXME: this array is used only to save some lines of codes.
             ServiceNodeCore[] nodes =
-                new ServiceNodeCore[] { milano, catania//, catania2, napoli, roma, milano, aosta 
+                new ServiceNodeCore[] { milano, catania //, catania2, napoli, roma, aosta 
                                       };
             sncList.AddRange(nodes);
 

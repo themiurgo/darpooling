@@ -13,8 +13,8 @@ namespace Communication
     [KnownType(typeof(RegisterOkResult))]
     [KnownType(typeof(RegisterErrorResult))]
     [KnownType(typeof(LoginOkResult))]
-    [KnownType(typeof(LoginInvalidResult))]
     [KnownType(typeof(LoginErrorResult))]
+    [KnownType(typeof(UnjoinConfirmedResult))]
     [KnownType(typeof(InsertErrorResult))]
     [KnownType(typeof(InsertOkResult))]
     public abstract class Result
@@ -72,15 +72,13 @@ namespace Communication
         }
     }
     [DataContract]
-    public class LoginInvalidResult : Result { }
-    [DataContract]
     public class LoginErrorResult : Result { }
     
 
     // Possible results in response to UnjoinCommand
     
     [DataContract]
-    public class UnjoinConfirmed : Result { }
+    public class UnjoinConfirmedResult : Result { }
 
     
     // Possible results in response to InsertTrip
