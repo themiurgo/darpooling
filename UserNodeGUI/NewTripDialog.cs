@@ -17,6 +17,12 @@ namespace UserNodeGUI
         {
             this.core = core;
             InitializeComponent();
+            DateTime departure = DateTime.Now.AddDays(1);
+            DateTime arrival = departure.AddHours(2);
+            departureDatePicker.Value = departure;
+            departureTimePicker.Value = departure;
+            arrivalDatePicker.Value = arrival;
+            arrivalTimePicker.Value = arrival;
         }
 
         private void OKButton_Click(object sender, EventArgs e)

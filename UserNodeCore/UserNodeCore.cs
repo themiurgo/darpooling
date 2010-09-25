@@ -67,6 +67,11 @@ namespace UserNodeCore
         {
             if (result.GetType() == typeof(LoginOkResult))
                 state = new JointState();
+            /*
+             * UnjointState case not present here: the client sets its
+             * new Unjointstate right after it has sent the UnjoinCommand.
+             */
+
         }
 
         /// <summary>
