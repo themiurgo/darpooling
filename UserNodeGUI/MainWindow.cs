@@ -18,8 +18,8 @@ namespace UserNodeGUI
         {
             InitializeComponent();
             core = new UserNodeCore.UserNodeCore(new Communication.UserNode("prova"));
-            SearchPanel.Hide();
-            ResultTabControl.Hide();
+            //SearchPanel.Hide();
+            //ResultTabControl.Hide();
             core.resultCallback += new UserNodeCore.UserNodeCore.ResultReceiveHandler(onNewResult);
         }
 
@@ -62,6 +62,8 @@ namespace UserNodeGUI
                 disconnectToolStripMenuItem.Enabled = true;
                 connectToolStripMenuItem.Enabled = false;
                 newTripToolStripMenuItem.Enabled = true;
+                SearchPanel.Show();
+                ResultTabControl.Show();
             }
             else
             {
@@ -69,6 +71,8 @@ namespace UserNodeGUI
                 connectToolStripMenuItem.Enabled = true;
                 disconnectToolStripMenuItem.Enabled = false;
                 newTripToolStripMenuItem.Enabled = false;
+                SearchPanel.Hide();
+                ResultTabControl.Hide();
             }
         }
 
@@ -87,6 +91,14 @@ namespace UserNodeGUI
         private void AddTabPage()
         {
             ResultTabControl.Controls.Add(new TabPage());
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            //ResultTabControl.Controls.RemoveAt();
+            TabPage p = ResultTabControl.SelectedTab;
+            if (p != null)
+                p.Dispose();
         }
     }
 }
