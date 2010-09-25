@@ -46,7 +46,7 @@ namespace UserNodeGUI
                 Smoker = smokerCheckBox.Checked,
                 SignupDate = DateTime.Now
             };
-            // Forward to core (TODO)
+            core.RegisterUser(user, registrarTextBox.Text);
         }
     }
 }

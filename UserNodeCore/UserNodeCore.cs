@@ -65,12 +65,15 @@ namespace UserNodeCore
 
         private void onResultReceive(Result result)
         {
-            if (result.GetType() == typeof(LoginOkResult))
+            Type type = result.GetType();
+            if (type == typeof(LoginOkResult))
                 state = new JointState();
-            /*
-             * UnjointState case not present here: the client sets its
-             * new Unjointstate right after it has sent the UnjoinCommand.
-             */
+            else if (type == typeof(LoginErrorResult))
+                ServiceProxy = null; // and state does not change
+            // In practice, this is never used, since the core changes its state
+            // right after it has sent the UnjoinCommand, without waiting confirmation
+            else if (type == typeof(UnjoinConfirmed))
+                state = new UnjointState();
 
         }
 
@@ -120,7 +123,7 @@ namespace UserNodeCore
             set { state = value; }
         }
 
-        public void RegisteredUser (User user, string registrarAddress)
+        public void RegisterUser (User user, string registrarAddress)
         {
             state.RegisterUser(this, user);
         }
