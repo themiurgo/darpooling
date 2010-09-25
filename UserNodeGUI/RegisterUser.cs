@@ -47,6 +47,7 @@ namespace UserNodeGUI
                 SignupDate = DateTime.Now
             };
             core.RegisterUser(user, registrarTextBox.Text);
+            this.Dispose();
         }
     }
 }

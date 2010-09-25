@@ -105,7 +105,8 @@ namespace Communication
     [DataContract]
     public class User
     {
-        private string pw_hash;
+        [DataMember(Name="PasswordHash")]
+        private String pw_hash;
 
         public enum Sex { f, m }
         
@@ -113,12 +114,11 @@ namespace Communication
         public int UserID { get; set; }
         [DataMember]
         public String UserName { get; set; }
-        [DataMember] // Should be datamember?
+        // [DataMember] Should be datamember?
         public String Password
         {
-            set { pw_hash = Tools.HashString(value); } // FIXME
+            set { pw_hash = Tools.HashString(value); }
         }
-        [DataMember]
         public String PasswordHash
         {
             get { return pw_hash; }
