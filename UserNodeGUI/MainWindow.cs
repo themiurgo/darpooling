@@ -51,7 +51,14 @@ namespace UserNodeGUI
 
         private void searchButton_Click(object sender, EventArgs e)
         {
-            AddTabPage();
+            /*
+             * 1. Build a new search trip request and send it.
+             * 2. Create a new tab
+             * 3. On receiving the result, populate the tab with trips.
+             */
+            string source = sourceTextBox.Text;
+            string destination = destinationTextBox.Text;
+            AddTabPage(source + " - " + destination);
         }
 
         private void SetConnectedView(bool connected)
@@ -88,9 +95,11 @@ namespace UserNodeGUI
             dlg.ShowDialog();
         }
 
-        private void AddTabPage()
+        private void AddTabPage(string label)
         {
-            ResultTabControl.Controls.Add(new TabPage());
+            TabPage page = new TabPage(label);
+            ResultTabControl.Controls.Add(page);
+            ResultTabControl.SelectTab(page);
         }
 
         private void closeButton_Click(object sender, EventArgs e)
