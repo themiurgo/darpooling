@@ -14,9 +14,29 @@ namespace UserNodeGUI
         UserNodeCore.UserNodeCore core;
         ConnectDialog connectDlg;
 
+
+        public Communication.SearchTripResult stresult; // DEBUG
+        public void Debug()
+        {
+            Communication.Trip trip1 = new Communication.Trip();
+            trip1.ArrivalName = "catania";
+            trip1.DepartureName = "messina";
+            trip1.ArrivalDateTime = new DateTime(1999, 06, 20);
+            trip1.DepartureDateTime = new DateTime(1999, 06, 19);
+            trip1.Smoke = false;
+            trip1.Music = false;
+            trip1.Owner = "provaowner";
+            trip1.FreeSits = 3;
+            trip1.Cost = 19;
+            List<Communication.Trip> list = new List<Communication.Trip>();
+            list.Add(trip1);
+            stresult = new Communication.SearchTripResult(list);
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            Debug();
             core = new UserNodeCore.UserNodeCore(new Communication.UserNode("prova"));
             //SearchPanel.Hide();
             //ResultTabControl.Hide();

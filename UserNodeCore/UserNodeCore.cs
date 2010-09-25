@@ -19,6 +19,13 @@ namespace UserNodeCore
     {
         private UserNodeCore parent;
 
+        public ClientCallback() { }
+
+        public ClientCallback(UserNodeCore parent)
+        {
+            this.parent = parent;
+        }
+
         public UserNodeCore Parent
         {
             get { return parent; }
@@ -30,7 +37,7 @@ namespace UserNodeCore
             Console.WriteLine("Service says: " + result.Comment);
             
             // FIXME: This line MUST BE decommented when using GUI
-            //parent.resultCallback(result);
+            parent.resultCallback(result);
             
         }
     }
@@ -56,6 +63,12 @@ namespace UserNodeCore
             get { return clientCallback; }
         }
 
+        private void onResultReceive(Result result)
+        {
+            if (result.GetType() == typeof(LoginOkResult))
+                state = new JointState();
+        }
+
         /// <summary>
         /// Setup a new UserNodeCore.
         /// </summary>
@@ -67,6 +80,7 @@ namespace UserNodeCore
             userNode = clientNode;
             clientCallback = new ClientCallback();
             ((ClientCallback) clientCallback).Parent = this;
+            resultCallback += new ResultReceiveHandler(onResultReceive);
         }
 
         public bool Connected

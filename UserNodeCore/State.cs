@@ -38,8 +38,7 @@ namespace UserNodeCore
         {
             try
             {
-                ClientCallback callback = new ClientCallback();
-                callback.Parent = context;
+                ClientCallback callback = new ClientCallback(context);
 
                 // First of all, set up the connection
                 EndpointAddress endPointAddress = new EndpointAddress(serviceNodeAddress);
