@@ -10,7 +10,7 @@ namespace UserNodeCore
 {
     public interface IState
     {
-        bool RegisterUser(UserNodeCore context, string username, string pw_hash);
+        bool RegisterUser(UserNodeCore context, User user);
         bool Join(UserNodeCore context, string username, string password, string serviceNodeAddress, string callbackAddress);
         bool Unjoin(UserNodeCore context);
         bool InsertTrip(UserNodeCore context, Communication.Trip trip);
@@ -26,10 +26,9 @@ namespace UserNodeCore
     /// </summary>
     public class UnjointState : IState
     {
-        public bool RegisterUser(UserNodeCore context, string username,
-            string pw_hash)
+        public bool RegisterUser(UserNodeCore context, User user)
         {
-            //Command c = new Communication.RegisterUserCommand();
+            Command c = new Communication.RegisterUserCommand(user);
             return true;
         }
 
