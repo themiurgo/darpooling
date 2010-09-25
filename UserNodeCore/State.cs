@@ -106,7 +106,7 @@ namespace UserNodeCore
             return true;
         }
 
-        public bool RegisterUser(UserNodeCore context, string username, string pw_hash)
+        public bool RegisterUser(UserNodeCore context, User user)
         {
             return false;
         }
