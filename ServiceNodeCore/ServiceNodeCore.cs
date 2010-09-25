@@ -177,7 +177,87 @@ namespace ServiceNodeCore
         }
 
 
-        #region User-Related IDarPoolingOperations implementation
+        #region IDarPoolingOperations implementation
+
+
+        public Result RegisterUser(User newUser)
+        {
+            // Enter the critical section in upgradeable mode.
+            userDatabaseLock.EnterUpgradeableReadLock();
+            try
+            {
+                userDatabase = XDocument.Load(userDatabasePath);
+
+                // Determine if the provided username has been already taken
+                var sameUserName = (from u in userDatabase.Descendants("User")
+                                    where u.Attribute("principal").Value.Equals(newUser.UserName)
+                                    select u);
+
+                // The username is already present. The user must choose another one.
+                if (sameUserName.Count() != 0)
+                {
+                    Result error = new RegisterErrorResult();
+                    error.Comment = "Sorry, this UserName is already present.";
+                    return error;
+                }
+                else //Register the user
+                {
+                    // Build the final username.
+                    string darPoolingUsername = newUser.UserName + "@" + baseHTTPAddress + NodeName;
+                    // Extract the next ID from the database
+                    int nextAvailableID = Convert.ToInt32(
+                                     (from user in userDatabase.Descendants("User")
+                                      orderby Convert.ToInt32(user.Element("UserID").Value) descending
+                                      select user.Element("UserID").Value).FirstOrDefault()) + 1;
+
+                    newUser.UserID = nextAvailableID;
+
+                    // Create the XML entity that represent the User in the database.
+                    XElement newXmlUser = new XElement("User",
+                        new XElement("UserID", newUser.UserID),
+                        new XElement("UserName", darPoolingUsername),
+                        new XElement("Password", newUser.Password),
+                        new XElement("Name", newUser.Name),
+                        new XElement("Sex", newUser.UserSex),
+                        new XElement("BirthDate", newUser.BirthDate),
+                        new XElement("Email", newUser.Email),
+                        new XElement("Smoker", newUser.Smoker),
+                        new XElement("SignupDate", newUser.SignupDate),
+                        new XElement("Whereabouts", newUser.Whereabouts)
+                    );
+
+                    // Maintain the info about the provided username
+                    newXmlUser.SetAttributeValue("principal", newUser.UserName);
+
+                    //Register the user: upgrade to Write mode
+                    userDatabaseLock.EnterWriteLock();
+                    //Console.WriteLine("{0} thread obtains the write lock", Thread.CurrentThread.Name);
+                    try
+                    {
+                        userDatabase.Element("Users").Add(newXmlUser);
+                        userDatabase.Save(userDatabasePath);
+                    }
+                    finally
+                    {
+                        //Console.WriteLine("{0} thread releases the write lock", Thread.CurrentThread.Name);
+                        userDatabaseLock.ExitWriteLock();
+                    }
+
+                    RegisterOkResult success = new RegisterOkResult();
+                    success.Comment = "User successfully registered! Your username is : " + darPoolingUsername;
+                    success.FinalUsername = darPoolingUsername;
+                    return success;
+
+                } // End else
+
+            } // End try upgradable
+            finally
+            {
+                //Console.WriteLine("{0} thread releases the upgradeable lock", Thread.CurrentThread.Name);
+                userDatabaseLock.ExitUpgradeableReadLock();
+            }
+        }// End RegisterUser
+
 
         /// <summary>
         /// Login the DarPooling Service network using username and password.
@@ -214,24 +294,14 @@ namespace ServiceNodeCore
             // forward the Join request to the appropriate node.
             if (!registrationNode.Equals(this.NodeName))
             {
-                   
-                //serviceImpl.AddForwardingRequest(forwardCounter, registrationNode);
-
-                //Console.WriteLine("Current value for forward counter: {0}", forwardCounter);
-
                 ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
                 forwardRequest.RequestID = serviceImpl.generateGUID();
                 forwardRequest.Destination = baseForwardAddress + registrationNode;
                 forwardRequest.Comment = "You were not registered in this node";
                 joinResult = forwardRequest;
 
-                //Interlocked.Add(ref forwardCounter, 1);
-
                 return joinResult;            
             }
-
-            //string[] names = pieces[pieces.Count - 1].Split('/');
-            //Console.WriteLine("Registered at : {0}", registrationNode);
 
             // Obtain the Read lock to determine if the user is actually registered.
             userDatabaseLock.EnterReadLock();
@@ -281,97 +351,12 @@ namespace ServiceNodeCore
             while (!asyncResult.IsCompleted) { }
 
             unjoinResult = new UnjoinConfirmed();
-            unjoinResult.Comment = "Ok, you are now logged off from the system";
+            unjoinResult.Comment = "You are logged OFF from Darpooling";
             return unjoinResult;
         }
         
 
-        public Result RegisterUser(User newUser)
-        {
-            Result registerUserResult;
-
-            // Obtain the upgradeable lock on the db, i.e. first we start in 
-            // read mode, and eventually upgrade to write mode.
-            userDatabaseLock.EnterUpgradeableReadLock();
-            try
-            {
-                //Console.WriteLine("{0} thread obtains the upgradeable lock", Thread.CurrentThread.Name);
-
-                userDatabase = XDocument.Load(userDatabasePath);
-
-                // Determine if the username has been already taken
-                var sameUserName = (from u in userDatabase.Descendants("User")
-                                    where u.Attribute("principal").Value.Equals(newUser.UserName)
-                                    select u);
-                // The username is already present. The user must choose another one.
-                if (sameUserName.Count() != 0)
-                {
-                    Console.WriteLine("Sorry, this UserName is already present.");
-                    registerUserResult = new RegisterErrorResult();
-                    registerUserResult.Comment = "Sorry, this UserName is already present.";
-                    return registerUserResult;
-                }
-                else //Register the user
-                {
-                    string darPoolingUsername = newUser.UserName + "@" + baseHTTPAddress + NodeName;
-                    // Extract the next ID from the database
-                    int nextAvailableID = Convert.ToInt32(
-                                     (from user in userDatabase.Descendants("User")
-                                      orderby Convert.ToInt32(user.Element("UserID").Value) descending
-                                      select user.Element("UserID").Value).FirstOrDefault()) + 1;
-
-                    newUser.UserID = nextAvailableID;
-
-                    // Create the XML entity that represent the User in the database.
-                    XElement newXmlUser = new XElement("User",
-                        new XElement("UserID", newUser.UserID),
-                        new XElement("UserName", darPoolingUsername),
-                        new XElement("Password", newUser.Password),
-                        new XElement("Name", newUser.Name),
-                        new XElement("Sex", newUser.UserSex),
-                        new XElement("BirthDate", newUser.BirthDate),
-                        new XElement("Email", newUser.Email),
-                        new XElement("Smoker", newUser.Smoker),
-                        new XElement("SignupDate", newUser.SignupDate),
-                        new XElement("Whereabouts", newUser.Whereabouts)
-                    );
-
-                    newXmlUser.SetAttributeValue("principal", newUser.UserName);
-
-                    //Register the user: upgrade to Write mode
-                    userDatabaseLock.EnterWriteLock();
-                    //Console.WriteLine("{0} thread obtains the write lock", Thread.CurrentThread.Name);
-                    try
-                    {
-                        userDatabase.Element("Users").Add(newXmlUser);
-                        userDatabase.Save(userDatabasePath);
-                    }
-                    finally
-                    {
-                        //Console.WriteLine("{0} thread releases the write lock", Thread.CurrentThread.Name);
-                        userDatabaseLock.ExitWriteLock();
-                    }
-
-                    registerUserResult = new RegisterOkResult();
-                    registerUserResult.Comment = "User successfully registered! Your username is : " + darPoolingUsername;
-                    return registerUserResult;
-
-                } // End else
-
-            } // End try upgradable
-            finally 
-            {
-                //Console.WriteLine("{0} thread releases the upgradeable lock", Thread.CurrentThread.Name);
-                userDatabaseLock.ExitUpgradeableReadLock();
-            }
-
-        }
-
-        #endregion
-
-
-
-
+        
         public Result InsertTrip(Trip newTrip)
         {
             Result saveResult;
@@ -430,6 +415,8 @@ namespace ServiceNodeCore
         {
             return new NullResult();
         }
+
+        #endregion
 
 
         // Print some debug information

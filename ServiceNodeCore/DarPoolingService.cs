@@ -295,7 +295,9 @@ namespace ServiceNodeCore
         {
             get
             {
-                string time = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff");
+                string compact = "HH:mm:ss.fff";
+                string full = "yyyy-MM-ddTHH:mm:ss.fff";
+                string time = DateTime.Now.ToString(compact);
                 return ("[" + time + "]"); 
             }
         }
@@ -343,12 +345,9 @@ namespace ServiceNodeCore
             joinedUserNamesLock.EnterWriteLock();
             try
             {
-                //Console.WriteLine("{0} {1} XXXX unjoined {2}", LogTimestamp, username, receiver.NodeName.ToUpper());
-                if (joinedUserNames.Remove(username))
-                {
-                    if (debug)
-                        Console.WriteLine("{0} {1} unjoined {2}",LogTimestamp, username, receiver.NodeName.ToUpper());
-                }
+                joinedUserNames.Remove(username);
+                if (debug)
+                    Console.WriteLine("{0} {1} unjoined {2}",LogTimestamp, username, receiver.NodeName.ToUpper());   
             }
             finally
             {
