@@ -119,7 +119,6 @@ namespace Communication
             register = new Register(receiver.RegisterUser);
             register.BeginInvoke(newUser, callbackMethod, this);
             return new NullResult();
-
         }
 
         public override Result EndExecute(IAsyncResult asyncValue)
@@ -136,7 +135,6 @@ namespace Communication
             get { return newUser; }
             set { newUser = value; }
         }
-
     }
 
     // Client request of logging into the DarPooling service.
@@ -264,16 +262,12 @@ namespace Communication
             return result;
         }
 
-
         public Trip NewTrip
         {
             get { return newTrip; }
         }
 
     }
-
-
-
 
     public class SearchTripCommand : Command
     {
