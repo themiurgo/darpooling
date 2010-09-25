@@ -64,10 +64,10 @@
             this.SearchPanel = new System.Windows.Forms.Panel();
             this.searchButton = new System.Windows.Forms.Button();
             this.SourceLabel = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.sourceTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ResetButton = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.destinationTextBox = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -358,10 +358,10 @@
             this.SearchPanel.Controls.Add(this.closeButton);
             this.SearchPanel.Controls.Add(this.searchButton);
             this.SearchPanel.Controls.Add(this.SourceLabel);
-            this.SearchPanel.Controls.Add(this.textBox1);
+            this.SearchPanel.Controls.Add(this.sourceTextBox);
             this.SearchPanel.Controls.Add(this.label1);
             this.SearchPanel.Controls.Add(this.ResetButton);
-            this.SearchPanel.Controls.Add(this.textBox2);
+            this.SearchPanel.Controls.Add(this.destinationTextBox);
             this.SearchPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchPanel.Name = "SearchPanel";
             this.SearchPanel.Size = new System.Drawing.Size(193, 405);
@@ -373,7 +373,7 @@
             this.searchButton.Location = new System.Drawing.Point(34, 94);
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(75, 23);
-            this.searchButton.TabIndex = 5;
+            this.searchButton.TabIndex = 3;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
             this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
@@ -387,14 +387,14 @@
             this.SourceLabel.TabIndex = 0;
             this.SourceLabel.Text = "Source";
             // 
-            // textBox1
+            // sourceTextBox
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.sourceTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(3, 25);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(187, 20);
-            this.textBox1.TabIndex = 1;
+            this.sourceTextBox.Location = new System.Drawing.Point(3, 25);
+            this.sourceTextBox.Name = "sourceTextBox";
+            this.sourceTextBox.Size = new System.Drawing.Size(187, 20);
+            this.sourceTextBox.TabIndex = 1;
             // 
             // label1
             // 
@@ -411,18 +411,18 @@
             this.ResetButton.Location = new System.Drawing.Point(115, 94);
             this.ResetButton.Name = "ResetButton";
             this.ResetButton.Size = new System.Drawing.Size(75, 23);
-            this.ResetButton.TabIndex = 4;
+            this.ResetButton.TabIndex = 3;
             this.ResetButton.Text = "Reset";
             this.ResetButton.UseVisualStyleBackColor = true;
             // 
-            // textBox2
+            // destinationTextBox
             // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.destinationTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(3, 68);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(187, 20);
-            this.textBox2.TabIndex = 3;
+            this.destinationTextBox.Location = new System.Drawing.Point(3, 68);
+            this.destinationTextBox.Name = "destinationTextBox";
+            this.destinationTextBox.Size = new System.Drawing.Size(187, 20);
+            this.destinationTextBox.TabIndex = 2;
             // 
             // splitter1
             // 
@@ -494,9 +494,9 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label SourceLabel;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox destinationTextBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox sourceTextBox;
         private System.Windows.Forms.Button searchButton;
         private System.Windows.Forms.Button ResetButton;
         private System.Windows.Forms.Splitter splitter1;
