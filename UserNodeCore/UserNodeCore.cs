@@ -177,6 +177,12 @@ namespace UserNodeCore
     "http://localhost:2222/prova");
 
             Console.ReadLine();
+            Console.WriteLine("Press a key... (Unjoin)");
+            Console.ReadLine();
+            UnjoinCommand unjoin = new UnjoinCommand("Shaoran@http://localhost:1111/Milano");
+            TestCommands(unjoin);
+
+            Console.ReadLine();
             Console.WriteLine("Press a key... (Insert Trip)");
             Console.ReadLine();
             InsertTripCommand insert = new InsertTripCommand(trip1);

@@ -253,7 +253,7 @@ namespace ServiceNodeCore
                 Console.WriteLine("{0} {1} return a {2}",LogTimestamp,receiver.NodeName.ToUpper(), finalResult.GetType().Name);
 
             destination.GetResult(finalResult);
-            ((IClientChannel)destination).Close();
+            //((IClientChannel)destination).Close();
 
         }
         
@@ -343,6 +343,7 @@ namespace ServiceNodeCore
             joinedUserNamesLock.EnterWriteLock();
             try
             {
+                //Console.WriteLine("{0} {1} XXXX unjoined {2}", LogTimestamp, username, receiver.NodeName.ToUpper());
                 if (joinedUserNames.Remove(username))
                 {
                     if (debug)

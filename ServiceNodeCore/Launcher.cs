@@ -24,7 +24,7 @@ namespace ServiceNodeCore
             StartService();
             //TestService();
             Console.ReadLine();
-            //StopService();
+            StopService();
         }
 
         public static void InitializeService()
@@ -104,26 +104,40 @@ namespace ServiceNodeCore
             #region Create some sample user
             User daniele = new User
             {
-                UserName = "Shaoran@http://localhost:1111/Milano",
+                UserName = "Shaoran",
                 Password = Communication.Tools.HashString("shaoran"),
                 Name = "Daniele",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1986, 04, 08),
                 Email = "danielemar86@gmail.com",
                 Smoker = false,
-                SignupDate = DateTime.Today.AddDays(-30),
+                SignupDate = DateTime.Now.AddDays(-30),
                 Whereabouts = ""
             };
+
+            User dummy = new User
+            {
+                UserName = "Dummy_Shaoran",
+                Password = Communication.Tools.HashString("shaoran"),
+                Name = "Daniele",
+                UserSex = User.Sex.m,
+                BirthDate = new DateTime(1986, 04, 08),
+                Email = "danielemar86@gmail.com",
+                Smoker = false,
+                SignupDate = DateTime.Now.AddDays(-30),
+                Whereabouts = ""
+            };
+
             User antonio = new User
             {
-                UserName = "Anto@http://localhost:1111/Catania",
+                UserName = "Anto",
                 Password = Communication.Tools.HashString("anto"),
                 Name = "Antonio",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1987, 06, 12),
                 Email = "anto87@gmail.com",
                 Smoker = false,
-                SignupDate = DateTime.Today.AddDays(-30),
+                SignupDate = DateTime.Now.AddDays(-30),
                 Whereabouts = ""
             };
             #endregion
@@ -142,6 +156,9 @@ namespace ServiceNodeCore
             threads[1] = new Thread(() => lastNode.RegisterUser(antonio));
             threads[1].Name = "Register Antonio";
 
+            threads[2] = new Thread(() => firstNode.RegisterUser(dummy));
+            threads[2].Name = "Register Dummy";
+
             /*
             threads[2] = new Thread(() => firstNode.Join("Shaoran","shaoran"));
             threads[2].Name = "Join Daniele";
@@ -152,6 +169,7 @@ namespace ServiceNodeCore
             // Testing the concurrency
             threads[0].Start();
             threads[1].Start();
+            threads[2].Start();
             //Thread.Sleep(200);
             //threads[2].Start();
             //Thread.Sleep(1000);

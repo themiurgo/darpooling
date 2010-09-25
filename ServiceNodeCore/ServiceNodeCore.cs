@@ -301,17 +301,19 @@ namespace ServiceNodeCore
 
                 // Determine if the username has been already taken
                 var sameUserName = (from u in userDatabase.Descendants("User")
-                                    where u.Element("UserName").Value.Equals(newUser.UserName)
+                                    where u.Attribute("principal").Value.Equals(newUser.UserName)
                                     select u);
                 // The username is already present. The user must choose another one.
                 if (sameUserName.Count() != 0)
                 {
+                    Console.WriteLine("Sorry, this UserName is already present.");
                     registerUserResult = new RegisterErrorResult();
                     registerUserResult.Comment = "Sorry, this UserName is already present.";
                     return registerUserResult;
                 }
                 else //Register the user
                 {
+                    string darPoolingUsername = newUser.UserName + "@" + baseHTTPAddress + NodeName;
                     // Extract the next ID from the database
                     int nextAvailableID = Convert.ToInt32(
                                      (from user in userDatabase.Descendants("User")
@@ -323,7 +325,7 @@ namespace ServiceNodeCore
                     // Create the XML entity that represent the User in the database.
                     XElement newXmlUser = new XElement("User",
                         new XElement("UserID", newUser.UserID),
-                        new XElement("UserName", newUser.UserName),
+                        new XElement("UserName", darPoolingUsername),
                         new XElement("Password", newUser.Password),
                         new XElement("Name", newUser.Name),
                         new XElement("Sex", newUser.UserSex),
@@ -333,6 +335,8 @@ namespace ServiceNodeCore
                         new XElement("SignupDate", newUser.SignupDate),
                         new XElement("Whereabouts", newUser.Whereabouts)
                     );
+
+                    newXmlUser.SetAttributeValue("principal", newUser.UserName);
 
                     //Register the user: upgrade to Write mode
                     userDatabaseLock.EnterWriteLock();
@@ -349,7 +353,7 @@ namespace ServiceNodeCore
                     }
 
                     registerUserResult = new RegisterOkResult();
-                    registerUserResult.Comment = "User successfully registered!";
+                    registerUserResult.Comment = "User successfully registered! Your username is : " + darPoolingUsername;
                     return registerUserResult;
 
                 } // End else

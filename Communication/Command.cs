@@ -40,8 +40,8 @@ namespace Communication
     /// </summary>
     [DataContract]
     [KnownType(typeof(JoinCommand))]
-    [KnownType(typeof(UnjoinCommand))]
     [KnownType(typeof(InsertTripCommand))]
+    [KnownType(typeof(UnjoinCommand))]
     public abstract class Command : ICommand
     {
         [DataMember]
@@ -62,12 +62,6 @@ namespace Communication
 
         [DataMember]
         protected DateTime timestamp;
-        
-        // Address (Uri) of the first node that received the command. It is used 
-        // only if the command will be forwarded to another service node.
-        //[DataMember]
-        //protected string rootSender;
-
 
         public abstract Result Execute();
         public abstract Result EndExecute(IAsyncResult asyncValue);
