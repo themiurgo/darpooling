@@ -4,16 +4,32 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using System.Text;
+using Communication;
 
 namespace ServiceNodeCore
 {
     class GMapsAPI
     {
-        public static Communication.Location updateLatLng(Communication.Location location)
+        public static Location updateLatLng(Location location)
         {
             string[] latlng = addrToLatLng(location.Name);
             location.Latitude = double.Parse(latlng[0]);
             location.Longitude = double.Parse(latlng[1]);
+            return location;
+        }
+
+        public static Location geoNameToLocation(string address)
+        {
+            string[] coords;
+            double latitude;
+            double longitude;
+            Location location;
+
+            coords = GMapsAPI.addrToLatLng(address);
+            latitude = double.Parse(coords[0]);
+            longitude = double.Parse(coords[1]);
+            location = new Location(address, latitude, longitude);
+
             return location;
         }
 

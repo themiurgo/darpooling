@@ -8,26 +8,37 @@ namespace Communication
 
     /// <summary>
     /// Abstract class representing a generic node in the network. A node is
-    /// characterized by a location and a name.
+    /// characterized by a (custom) name, geographical name and location.
     /// </summary>
     public abstract class Node
     {
-        private Location location;
         private string nodeName;
+        private string nodeGeoName;
+        private Location location;
 
         public Node(string nodeName)
-            : this(nodeName,null) {}
+            : this(nodeName,null,null) {}
 
-        public Node(string nodeName, Location nodeLocation)
+        public Node(string nodeName, string geoName)
+            : this(nodeName,geoName,null) {}
+
+        public Node(string nodeName, string geoName, Location nodeLocation)
         {
-            this.location = nodeLocation;
             this.nodeName = nodeName;
+            this.nodeGeoName = geoName;
+            this.location = nodeLocation;
         }
 
         public String NodeName
         {
             get { return nodeName; }
             set { nodeName = value;}
+        }
+
+        public String NodeGeoName
+        {
+            get { return nodeGeoName; }
+            set { nodeGeoName = value; }
         }
 
         public Location Location
@@ -45,7 +56,7 @@ namespace Communication
         private User user;
 
         public UserNode(string userName, Location nodeLocation) :
-            base(userName, nodeLocation)
+            base(userName, null, nodeLocation)
         {
         }
 
@@ -85,8 +96,8 @@ namespace Communication
         private List<ServiceNode> neighbours;
         private List<UserNode> localUsers;
 
-        public ServiceNode(string nodeName, Location nodeLocation) :
-            base(nodeName, nodeLocation)
+        public ServiceNode(string nodeName, string geoName, Location nodeLocation) :
+            base(nodeName, geoName, nodeLocation)
         {
             neighbours = new List<ServiceNode>();
             localUsers = new List<UserNode>();
