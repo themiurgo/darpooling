@@ -45,26 +45,29 @@ namespace UserNodeCore
                 binding.ClientBaseAddress = new Uri(callbackAddress);
                 DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
                         callback, binding, endPointAddress);
-                //Console.WriteLine("[{0}] Ready to invoke service",DateTime.Now.TimeOfDay);
                 context.ServiceProxy = factory.CreateChannel();
             }
             catch
             {
+                context.ServiceProxy = null;
                 return false;
             }
 
-            // Now, hopefully you have a working ServiceProxy
-            // Send JoinCommand and have luck
+            // Now, hopefully you have a working ServiceProxy.
             string passwordHash = Communication.Tools.HashString(password);
-            //Console.WriteLine(passwordHash);
             Command c = new JoinCommand(context.UserNode, username, passwordHash);
 
-            //Console.WriteLine("Press a key to start the communication");
-            //Console.ReadLine();
-            context.ServiceProxy.HandleDarPoolingRequest(c);
+            try
+            {
+                context.ServiceProxy.HandleDarPoolingRequest(c);
+            }
+            catch (TimeoutException e)
+            {
+                context.ServiceProxy = null;
+                throw e;
+            }
 
-            // Finally, if Join is NOT successfull, remove reference (TODO)
-            // context.ServiceProxy = null;
+            // Finally, if Join is NOT successfull, remove reference (UserNodeCore.onResult)
             return true;
         }
 
