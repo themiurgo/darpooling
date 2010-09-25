@@ -29,7 +29,7 @@ namespace UserNodeCore
         public bool RegisterUser(UserNodeCore context, string username,
             string pw_hash)
         {
-            Command c = new Communication.RegisterUserCommand();
+            //Command c = new Communication.RegisterUserCommand();
             return true;
         }
 

@@ -152,6 +152,19 @@ namespace UserNodeCore
             UserNodeCore user = new UserNodeCore(new UserNode("prova"));
             Console.WriteLine("***** DarPooling Client Console Testing  *****\n\n");
 
+            User dummy = new User
+            {
+                UserName = "Dummy",
+                Password = Communication.Tools.HashString("shaoran"),
+                Name = "Daniele",
+                UserSex = User.Sex.m,
+                BirthDate = new DateTime(1986, 04, 08),
+                Email = "danielemar86@gmail.com",
+                Smoker = false,
+                SignupDate = DateTime.Now.AddDays(-30),
+                Whereabouts = ""
+            };
+
             Trip trip1 = new Trip
             {
                 Owner = "Shaoran@http://localhost:1111/Milano",
@@ -176,11 +189,20 @@ namespace UserNodeCore
             user.Join("Shaoran@http://localhost:1111/Milano", "shaoran", "http://localhost:1111/Catania",
     "http://localhost:2222/prova");
 
+            /*
             Console.ReadLine();
             Console.WriteLine("Press a key... (Unjoin)");
             Console.ReadLine();
             UnjoinCommand unjoin = new UnjoinCommand("Shaoran@http://localhost:1111/Milano");
             TestCommands(unjoin);
+            */
+
+            Console.ReadLine();
+            Console.WriteLine("Press a key... (Register)");
+            Console.ReadLine();
+            RegisterUserCommand register = new RegisterUserCommand(dummy);
+            TestCommands(register);
+            //TestCommands(register);
 
             Console.ReadLine();
             Console.WriteLine("Press a key... (Insert Trip)");
