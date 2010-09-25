@@ -105,7 +105,7 @@ namespace ServiceNodeCore
             User daniele = new User
             {
                 UserName = "Shaoran",
-                Password = Communication.Tools.HashString("shaoran"),
+                Password = "shaoran",
                 Name = "Daniele",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1986, 04, 08),
@@ -118,7 +118,7 @@ namespace ServiceNodeCore
             User antonio = new User
             {
                 UserName = "Anto",
-                Password = Communication.Tools.HashString("anto"),
+                Password = "anto",
                 Name = "Antonio",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1987, 06, 12),

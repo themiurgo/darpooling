@@ -132,7 +132,7 @@ namespace UserNodeGUI
 
         private void registerUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RegisterUser form = new RegisterUser();
+            RegisterUser form = new RegisterUser(core);
             form.ShowDialog();
         }
     }

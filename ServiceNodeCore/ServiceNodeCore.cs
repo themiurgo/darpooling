@@ -216,7 +216,7 @@ namespace ServiceNodeCore
                     XElement newXmlUser = new XElement("User",
                         new XElement("UserID", newUser.UserID),
                         new XElement("UserName", darPoolingUsername),
-                        new XElement("Password", newUser.Password),
+                        new XElement("Password", newUser.PasswordHash), // FIXME: should store hash, not password
                         new XElement("Name", newUser.Name),
                         new XElement("Sex", newUser.UserSex),
                         new XElement("BirthDate", newUser.BirthDate),
@@ -266,14 +266,14 @@ namespace ServiceNodeCore
         /// scheduled for forwarding.
         /// </summary>
         /// <param name="username">The username provided by the client</param>
-        /// <param name="password">The password provided by the client</param>
+        /// <param name="pw_hash">The password provided by the client</param>
         /// <returns>
         /// a Result instance that represent the result of the Join operation; Specifically:
         ///  - a ConnectionErrorResult if the username has an invalid format
         ///  - a LoginErrorResult instance if the credentials don't match in the database
         ///  - a LoginOkResult if the credentials are valid.
         /// </returns>
-        public Result Join(string username, string password)
+        public Result Join(string username, string pw_hash)
         {
             Result joinResult;
 
@@ -314,7 +314,7 @@ namespace ServiceNodeCore
                 // Determine if the username and password have a match in the database
                 var registeredUserQuery = (from user in userDatabase.Descendants("User")
                                            where user.Element("UserName").Value.Equals(username) &&
-                                                 user.Element("Password").Value.Equals(password)
+                                                 user.Element("Password").Value.Equals(pw_hash)
                                            select user);
 
                 // The provided username and password don't match in the database.

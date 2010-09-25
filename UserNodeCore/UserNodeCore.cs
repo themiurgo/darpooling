@@ -120,7 +120,7 @@ namespace UserNodeCore
             set { state = value; }
         }
 
-        public RegisteredUser (User user, string registrarAddress)
+        public void RegisteredUser (User user, string registrarAddress)
         {
             state.RegisterUser(this, user);
         }
@@ -165,7 +165,7 @@ namespace UserNodeCore
             User dummy = new User
             {
                 UserName = "Dummy",
-                Password = Communication.Tools.HashString("shaoran"),
+                Password = "shaoran",
                 Name = "Daniele",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1986, 04, 08),
