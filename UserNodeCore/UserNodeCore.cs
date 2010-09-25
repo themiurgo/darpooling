@@ -119,6 +119,11 @@ namespace UserNodeCore
             get { return state; }
             set { state = value; }
         }
+
+        public RegisteredUser (User user, string registrarAddress)
+        {
+            state.RegisterUser(this, user);
+        }
         
         /// <summary>
         /// Join (connect) to the network, through a ServiceNode.
