@@ -39,9 +39,10 @@ namespace Communication
     /// The command class allows arbitrary commands to be executed.
     /// </summary>
     [DataContract]
+    [KnownType(typeof(RegisterUserCommand))]
     [KnownType(typeof(JoinCommand))]
-    [KnownType(typeof(InsertTripCommand))]
     [KnownType(typeof(UnjoinCommand))]
+    [KnownType(typeof(InsertTripCommand))]
     public abstract class Command : ICommand
     {
         [DataMember]
@@ -94,8 +95,51 @@ namespace Communication
     }
 
 
-    // The JoinCommand models a client request of logging into the DarPooling service.
-    // Thus, it provides a reference to the client UserNode, username and password.
+    // Register a new user to DarPooling service.
+    [DataContract]
+    public class RegisterUserCommand : Command
+    {
+        // The User to be registered
+        [DataMember]
+        private User newUser;
+
+        // The delegate is used to perform an asynchronous invocation of the
+        // Join DarPoolingOperation
+        public delegate Result Register(User u);
+        Register register;
+
+
+        public RegisterUserCommand(User user)
+        {
+            this.newUser = user;
+        }
+
+        public override Result Execute()
+        {
+            register = new Register(receiver.RegisterUser);
+            register.BeginInvoke(newUser, callbackMethod, this);
+            return new NullResult();
+
+        }
+
+        public override Result EndExecute(IAsyncResult asyncValue)
+        {
+            AsyncResult asyncResult = (AsyncResult)asyncValue;
+            Register r = (Register)asyncResult.AsyncDelegate;
+            result = r.EndInvoke(asyncValue);
+
+            return result;
+        }
+
+        public User NewUser
+        {
+            get { return newUser; }
+            set { newUser = value; }
+        }
+
+    }
+
+    // Client request of logging into the DarPooling service.
     [DataContract]
     public class JoinCommand : Command 
     {
@@ -148,6 +192,7 @@ namespace Communication
         }
     }
 
+    // Unjoin the client from darpooling network
     [DataContract]
     public class UnjoinCommand : Command
     {
@@ -175,12 +220,10 @@ namespace Communication
 
         public override Result EndExecute(IAsyncResult asyncValue)
         {
-            // Obtain the AsyncResult object
             AsyncResult asyncResult = (AsyncResult)asyncValue;
-            // Obtain the delegate
             Logoff l = (Logoff) asyncResult.AsyncDelegate;
-            // Obtain the return value of the invoked method
             result = l.EndInvoke(asyncValue);
+
             return result;
         }
 
@@ -191,21 +234,7 @@ namespace Communication
         }
     }
 
-
-
-    public class RegisterUserCommand : Command
-    {
-        public override Result Execute()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Result EndExecute(IAsyncResult asyncValue)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
+    // Insert a new trip in the database
     [DataContract]
     public class InsertTripCommand : Command
     {
@@ -242,6 +271,8 @@ namespace Communication
         }
 
     }
+
+
 
 
     public class SearchTripCommand : Command
