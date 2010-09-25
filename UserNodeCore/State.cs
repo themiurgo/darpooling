@@ -10,7 +10,7 @@ namespace UserNodeCore
 {
     public interface IState
     {
-        bool RegisterUser(UserNodeCore context, User user);
+        bool RegisterUser(UserNodeCore context, User user, string serviceNodeAddress, string callbackAddress);
         bool Join(UserNodeCore context, string username, string password, string serviceNodeAddress, string callbackAddress);
         bool Unjoin(UserNodeCore context);
         bool InsertTrip(UserNodeCore context, Communication.Trip trip);
@@ -26,9 +26,38 @@ namespace UserNodeCore
     /// </summary>
     public class UnjointState : IState
     {
-        public bool RegisterUser(UserNodeCore context, User user)
+        public bool RegisterUser(UserNodeCore context, User user,
+            string serviceNodeAddress, string callbackAddress)
         {
+            try
+            {
+                ClientCallback callback = new ClientCallback(context);
+
+                // First of all, set up the connection
+                EndpointAddress endPointAddress = new EndpointAddress(serviceNodeAddress);
+                WSDualHttpBinding binding = new WSDualHttpBinding();
+                binding.ClientBaseAddress = new Uri(callbackAddress);
+                DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
+                        callback, binding, endPointAddress);
+                context.ServiceProxy = factory.CreateChannel();
+            }
+            catch
+            {
+                context.ServiceProxy = null;
+                return false;
+            }
+
             Command c = new Communication.RegisterUserCommand(user);
+
+            try
+            {
+                context.ServiceProxy.HandleDarPoolingRequest(c);
+            }
+            catch (TimeoutException e)
+            {
+                context.ServiceProxy = null;
+                throw e;
+            }
             return true;
         }
 
@@ -67,7 +96,7 @@ namespace UserNodeCore
                 throw e;
             }
 
-            // Finally, if Join is NOT successfull, remove reference (UserNodeCore.onResult)
+            // Finally, if Join is NOT successfull, remove reference (UserNodeCore.onResultReceive)
             return true;
         }
 
@@ -110,7 +139,8 @@ namespace UserNodeCore
             return true;
         }
 
-        public bool RegisterUser(UserNodeCore context, User user)
+        public bool RegisterUser(UserNodeCore context, User user,
+            string serviceNodeAddress, string callbackAddress)
         {
             return false;
         }
