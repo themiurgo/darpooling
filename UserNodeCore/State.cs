@@ -47,7 +47,7 @@ namespace UserNodeCore
                 binding.ClientBaseAddress = new Uri(callbackAddress);
                 DuplexChannelFactory<IDarPooling> factory = new DuplexChannelFactory<IDarPooling>(
                         callback, binding, endPointAddress);
-                
+                //Console.WriteLine("[{0}] Ready to invoke service",DateTime.Now.TimeOfDay);
                 context.ServiceProxy = factory.CreateChannel();
             }
             catch
