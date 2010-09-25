@@ -8,8 +8,10 @@ using System.Runtime.Serialization;
 namespace Communication
 {
     [DataContract]
-    [KnownType(typeof(ConnectionErrorResult))]
     [KnownType(typeof(NullResult))]
+    [KnownType(typeof(ConnectionErrorResult))]
+    [KnownType(typeof(RegisterOkResult))]
+    [KnownType(typeof(RegisterErrorResult))]
     [KnownType(typeof(LoginOkResult))]
     [KnownType(typeof(LoginInvalidResult))]
     [KnownType(typeof(LoginErrorResult))]
@@ -19,25 +21,17 @@ namespace Communication
     {
         [DataMember]
         protected string comment;
-        //protected int resultID;
 
         public string Comment
         {
             get { return comment; }
             set { comment = value; }
         }
-        /*
-        public int ResultID
-        {
-            get { return resultID; }
-            set { resultID = value; }
-        }*/
-
     }
 
-    /// <summary>
-    /// A result that does nothing. Used for debugging/testing.
-    /// </summary>
+
+
+    // General Purpose Result
     [DataContract]
     public class NullResult : Result { }
 
@@ -45,7 +39,26 @@ namespace Communication
     public class ConnectionErrorResult : Result { }
 
 
+    // Possible results in response to RegisterUserCommand
+
+    [DataContract]
+    public class RegisterOkResult : Result 
+    {
+        [DataMember]
+        private string registeredUsername;
+
+        public string FinalUsername
+        {
+            get { return registeredUsername; }
+            set { registeredUsername = value; }
+        }
+    }
+    [DataContract]
+    public class RegisterErrorResult : Result { }
+
+
     // Possible results in response to JoinCommand
+    
     [DataContract]
     public class LoginOkResult : Result 
     {
@@ -58,27 +71,20 @@ namespace Communication
             set { authorizedUsername = value; }
         }
     }
-
     [DataContract]
     public class LoginInvalidResult : Result { }
-
     [DataContract]
     public class LoginErrorResult : Result { }
     
 
     // Possible results in response to UnjoinCommand
-
+    
+    [DataContract]
     public class UnjoinConfirmed : Result { }
-
-
-    // Possible results in response to RegisterUserCommand
-
-    public class RegisterOkResult : Result { }
-
-    public class RegisterErrorResult : Result { }
 
     
     // Possible results in response to InsertTrip
+    
     [DataContract]
     public class InsertOkResult : Result { }
     [DataContract]
