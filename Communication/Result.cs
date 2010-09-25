@@ -89,7 +89,17 @@ namespace Communication
 
     public class SearchTripResult : Result
     {
-        public List<Trip> Trips;
+        private List<Trip> trips;
+
+        public List<Trip> Trips
+        {
+            get { return trips; }
+        }
+
+        public SearchTripResult(List<Trip> trips)
+        {
+            this.trips = trips;
+        }
     }
 
     public class SearchTripError : Result { }
