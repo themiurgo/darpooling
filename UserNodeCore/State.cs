@@ -105,6 +105,7 @@ namespace UserNodeCore
             Command command = new UnjoinCommand(context.UserNode.User.UserName);
             context.ServiceProxy.HandleDarPoolingRequest(command);
             context.State = new UnjointState();
+            context.ServiceProxy = null;
             
             return true;
         }

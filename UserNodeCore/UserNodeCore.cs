@@ -74,7 +74,6 @@ namespace UserNodeCore
             // right after it has sent the UnjoinCommand, without waiting confirmation
             else if (type == typeof(UnjoinConfirmed))
                 state = new UnjointState();
-
         }
 
         /// <summary>
