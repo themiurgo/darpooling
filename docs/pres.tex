@@ -88,16 +88,22 @@
 \section{Introduction}
 
 \begin{frame}{Carpooling}  
+\begin{columns}[c]
+\column{0.7\textwidth}
 \begin{quote}
 Carpooling is the sharing of car journeys so that more than one person travels in a car.
 
 \flushright{
-    \footnotesize{
+    \scriptsize{
     \color{blue}
         \url{http://en.wikipedia.org/wiki/Carpool}
     }
 }
 \end{quote}
+\column{0.3\textwidth}
+\includegraphics[width=1\textwidth]{img/indianCarpooling.png} \\
+\tiny{\href{http://www.flickr.com/photos/clara/2232510950/in/photostream/}{Photo "Indian Style Carpooling" by clara \& james}}
+\end{columns}
 
 \vfill
 
@@ -137,10 +143,34 @@ connected to.
 \caption{Diagram of a Darpooling network. On the left multiple Client Nodes
 (PCs, PDAs, smartphones, etc.) are connected to a single Service Node.
 The Service
-Node is itself connected to other Service Nodes, as depicted on the right.
-}
+Node is itself connected to other Service Nodes, as depicted on the right.}
 \end{flushleft}
 \end{figure}
+\end{frame}
+
+\begin{frame}{Project requirements and guidelines}
+We were given the following \textbf{requirements}:
+\begin{itemize}
+\item
+Implementation of a Distributed Carpooling system composed of servers, desktop clients and smartphone clients.
+\item
+Use of Microsoft Suite: C\#, WCF, Windows Forms, Windows Mobile.
+\item
+Use of Microsoft Visual Studio 2008 IDE.
+\end{itemize}
+\vfill
+
+In order to achieve components and code reuse, maintainability and
+transparency, we have chosen simple basic \textbf{guidelines}, followed
+while sketch out project structure and plans.
+\begin{itemize}
+\item
+Favor \textbf{modularity}, both at module level and at class level.
+\item
+Use \textbf{design patterns} whenever it is appropriate.
+\item
+Favor \textbf{interoperability} and \textbf{openness}.
+\end{itemize}
 \end{frame}
 
 \end{document}
