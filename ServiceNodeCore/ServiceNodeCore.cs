@@ -359,13 +359,33 @@ namespace ServiceNodeCore
         
         public Result InsertTrip(Trip newTrip)
         {
-            Result saveResult;
+            Result insertionResult;
 
+            /** Check if the current node is the nearest node to the 
+             * departure location.
+             */
+            string targetNode = NearestNodeToDeparture(newTrip.DepartureName);
+
+            if (!targetNode.Equals(NodeName))
+            {
+                Console.WriteLine("Decision: sending newTripCommand to : {0}", targetNode);
+                ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
+                forwardRequest.RequestID = serviceImpl.generateGUID();
+                forwardRequest.Destination = baseForwardAddress + targetNode;
+               
+                return forwardRequest;
+                
+            }
+            else
+                Console.WriteLine("Decision: I'll handle the newTripCommand !!");
+
+            return new NullResult();
+            /*
             if (!serviceImpl.IsJoinedUser(newTrip.Owner))
             {
-                saveResult = new InsertErrorResult();
-                saveResult.Comment = String.Format("Error! Invalid request: {0} has not joined DarPooling", newTrip.Owner);
-                return saveResult;
+                insertionResult = new InsertErrorResult();
+                insertionResult.Comment = String.Format("Error! Invalid request: {0} has not joined DarPooling", newTrip.Owner);
+                return insertionResult;
             }
             else
             {   //Save the trip
@@ -398,9 +418,9 @@ namespace ServiceNodeCore
                     tripDatabase.Element("Trips").Add(newXmlTrip);
                     tripDatabase.Save(tripDatabasePath);
 
-                    saveResult = new InsertOkResult();
-                    saveResult.Comment = "The trip has been successfully inserted";
-                    return saveResult;
+                    insertionResult = new InsertOkResult();
+                    insertionResult.Comment = "The trip has been successfully inserted";
+                    return insertionResult;
                 }
                 finally
                 {
@@ -408,8 +428,40 @@ namespace ServiceNodeCore
                 
                 }
             }// end else
+          
+             */
         }//End savetrip
-        
+
+
+        private string NearestNodeToDeparture(string departure)
+        {
+            Location departureLoc = GMapsAPI.geoNameToLocation(departure);
+
+            string targetNode = this.NodeName;
+            Location tempLocation = this.NodeLocation;
+            double tempDistance;
+            double minDistance = tempLocation.distance(departureLoc);
+
+            Console.WriteLine("Distance between {0} and {1}({2}) is  {3} km", departure, targetNode, NodeGeoName, minDistance);
+
+            foreach (ServiceNode neighbour in Neighbours)
+            {
+                tempLocation = neighbour.Location;
+                tempDistance = tempLocation.distance(departureLoc);
+
+                Console.WriteLine("Distance between {0} and {1}({2}) is  {3} km", departure, neighbour.NodeName,neighbour.NodeGeoName, tempDistance);
+
+                if (tempDistance < minDistance)
+                {
+                    minDistance = tempDistance;
+                    targetNode = neighbour.NodeName;
+                }
+            } 
+
+            return targetNode;
+        }
+
+
 
         public Result SearchTrip(QueryBuilder queryTrip)
         {
@@ -501,7 +553,13 @@ namespace ServiceNodeCore
         public string BaseForwardAddress
         {
             get { return baseForwardAddress; }
+
         }
+
+        #endregion
+
+
+        #region ServiceNode methods
 
         public string NodeName
         {
@@ -521,7 +579,11 @@ namespace ServiceNodeCore
             private set { serviceNode.Location = value; }
         }
 
-        public int NumNeighbours 
+
+
+
+
+        public int NumNeighbours
         {
             get { return serviceNode.NumNeighbours; }
         }
@@ -531,10 +593,10 @@ namespace ServiceNodeCore
             get { return serviceNode; }
         }
 
-        #endregion
-
-
-        #region ServiceNode methods
+        public ServiceNode[] Neighbours
+        {
+            get { return serviceNode.Neighbours.ToArray<ServiceNode>(); }
+        }
 
         public bool hasNeighbour(ServiceNodeCore node)
         {

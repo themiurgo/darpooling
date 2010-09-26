@@ -43,7 +43,9 @@ namespace ServiceNodeCore
         {
             Console.WriteLine("**** DarPooling Service Nodes ****\n");
 
-            string[] locNames = new string[] { "Aosta", "Milano", "Roma", "Napoli", "CT Pigno", "CT Nesima Superiore" };
+            string[] locNames = new string[] { "Venezia", "Milano", "Torino", "Genova", "Pisa", "Roma",
+                                                "Napoli", "Bari", "CT Aci Trezza", "CT Nicolosi", "Bologna"
+                                               };
 
             // Obtain the Location coordinates from the location name
             Console.WriteLine("Retrieving Coordinates from GMap Server....   ");
@@ -62,31 +64,49 @@ namespace ServiceNodeCore
             Console.WriteLine("Done!");
 
             // ServiceNode
-            ServiceNode aostaSN = new ServiceNode("Aosta", locNames[0], nameLoc[locNames[0]]);
+            ServiceNode veneziaSN = new ServiceNode("Venezia", locNames[0], nameLoc[locNames[0]]);
             ServiceNode milanoSN = new ServiceNode("Milano", locNames[1], nameLoc[locNames[1]]);
-            ServiceNode romaSN = new ServiceNode("Roma", locNames[2], nameLoc[locNames[2]]);
-            ServiceNode napoliSN = new ServiceNode("Napoli", locNames[3], nameLoc[locNames[3]]);
-            ServiceNode cataniaSN = new ServiceNode("Catania", locNames[4], nameLoc[locNames[4]]);
-            ServiceNode catania2SN = new ServiceNode("Catania2", locNames[5], nameLoc[locNames[5]]);
+            ServiceNode torinoSN = new ServiceNode("Torino", locNames[2], nameLoc[locNames[2]]);
+            ServiceNode genovaSN = new ServiceNode("Genova", locNames[3], nameLoc[locNames[3]]);
+            ServiceNode pisaSN = new ServiceNode("Pisa", locNames[4], nameLoc[locNames[4]]);
+            ServiceNode romaSN = new ServiceNode("Roma", locNames[5], nameLoc[locNames[5]]);
+            ServiceNode napoliSN = new ServiceNode("Napoli", locNames[6], nameLoc[locNames[6]]);
+            ServiceNode bariSN = new ServiceNode("Bari", locNames[7], nameLoc[locNames[7]]);
+            ServiceNode cataniaSN = new ServiceNode("Catania", locNames[8], nameLoc[locNames[8]]);
+            ServiceNode catania2SN = new ServiceNode("Catania2", locNames[9], nameLoc[locNames[9]]);
+            ServiceNode bolognaSN = new ServiceNode("Bologna", locNames[10], nameLoc[locNames[10]]);
             // ServiceNodeCore
-            ServiceNodeCore aosta = new ServiceNodeCore(aostaSN);
+            ServiceNodeCore venezia = new ServiceNodeCore(veneziaSN);
             ServiceNodeCore milano = new ServiceNodeCore(milanoSN);
+            ServiceNodeCore torino = new ServiceNodeCore(torinoSN);
+            ServiceNodeCore genova = new ServiceNodeCore(genovaSN);
+            ServiceNodeCore pisa = new ServiceNodeCore(pisaSN);
             ServiceNodeCore roma = new ServiceNodeCore(romaSN);
-            ServiceNodeCore napoli = new ServiceNodeCore(napoliSN);
+            ServiceNodeCore  napoli = new ServiceNodeCore(napoliSN);
+            ServiceNodeCore bari = new ServiceNodeCore(bariSN);
             ServiceNodeCore catania = new ServiceNodeCore(cataniaSN);
             ServiceNodeCore catania2 = new ServiceNodeCore(catania2SN);
+            ServiceNodeCore bologna = new ServiceNodeCore(bolognaSN);
+
 
             // Set Topology
-            aosta.addNeighbour(milano);
-            milano.addNeighbour(roma);
+            venezia.addNeighbour(milano);
+            milano.addNeighbour(torino);
+            milano.addNeighbour(genova);
+            torino.addNeighbour(genova);
+            genova.addNeighbour(pisa);
+            bologna.addNeighbour(venezia);
+            bologna.addNeighbour(pisa);
+            pisa.addNeighbour(roma);
             roma.addNeighbour(napoli);
+            napoli.addNeighbour(bari);
             napoli.addNeighbour(catania);
             napoli.addNeighbour(catania2);
             catania.addNeighbour(catania2);
 
             // FIXME: this array is used only to save some lines of codes.
             ServiceNodeCore[] nodes =
-                new ServiceNodeCore[] { milano, catania //, catania2, napoli, roma, aosta 
+                new ServiceNodeCore[] { milano, catania, //venezia, torino, genova, pisa, roma, napoli, bari, catania2, bologna
                                       };
             sncList.AddRange(nodes);
 

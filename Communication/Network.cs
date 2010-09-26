@@ -103,6 +103,10 @@ namespace Communication
             localUsers = new List<UserNode>();
         }
 
+        public List<ServiceNode> Neighbours
+        {
+            get { return neighbours; }
+        }
         
         public bool hasNeighbour(ServiceNode node)
         {

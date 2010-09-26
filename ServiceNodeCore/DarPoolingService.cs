@@ -81,7 +81,6 @@ namespace ServiceNodeCore
 
 
 
-
         /// <summary>
         /// Execute request of clients.
         /// </summary>
@@ -96,6 +95,7 @@ namespace ServiceNodeCore
             /** Save information about the client that has sent the command. */
             IDarPoolingCallback client = OperationContext.Current.GetCallbackChannel<IDarPoolingCallback>();
             commandClient.Add(command.CommandID, client);
+
             /** Set a ServiceNodeCore as the receiver of the command and execute the command. */
             command.Timestamp = DateTime.Now;
             command.Receiver = receiver;   
@@ -111,12 +111,12 @@ namespace ServiceNodeCore
         /// and the return the result to the rootSender service node.
         /// </summary>
         /// <param name="forwardedCommand"></param>
-        public void HandleForwardedDarPoolingRequest(Command fwdCommand, string senderAddress)
+        public void HandleForwardedDarPoolingRequest(Command fwdCommand, string rootSenderAddress)
         {
             if (debug)
                 Console.WriteLine("{0} {1} node received FWD_{2}",LogTimestamp, receiver.NodeName.ToUpper(), fwdCommand.GetType().Name);
 
-            AddFwdCommandService(fwdCommand.CommandID, senderAddress);
+            AddFwdCommandService(fwdCommand.CommandID, rootSenderAddress);
             fwdCommand.Receiver = receiver;
             fwdCommand.Callback = new AsyncCallback(ProcessResultOfForwardedCommand);
             fwdCommand.Execute();
@@ -128,7 +128,7 @@ namespace ServiceNodeCore
         /// </summary>
         /// <param name="forwardedCommand"></param>
         /// <param name="finalResult"></param>
-        public void BackPropagateResult(Result result, Command originalCommand)
+        public void ReturnFinalResult(Result result, Command originalCommand)
         {
 
             if (IsFwdCommand(originalCommand.CommandID))
@@ -141,7 +141,7 @@ namespace ServiceNodeCore
                 IDarPoolingForwarding service = myChannelFactory.CreateChannel();
 
                 // Give the result back to the the sender Service node.
-                service.BackPropagateResult(result, originalCommand);
+                service.ReturnFinalResult(result, originalCommand);
                 // Close channel.
                 ((IClientChannel)service).Close();
                 myChannelFactory.Close();
@@ -154,7 +154,7 @@ namespace ServiceNodeCore
                     Console.WriteLine("{0} Total time for {1}: {2}", LogTimestamp, originalCommand.GetType().Name, totalTime.TotalMilliseconds);
                 }
                 IDarPoolingCallback client = ExtractClient(originalCommand.CommandID);
-                ReturnFinalResult(result, client);
+                ReturnResultToClient(result, client);
             }
         }
 
@@ -180,7 +180,7 @@ namespace ServiceNodeCore
             if (checkForward != null)   //Forward the command
             {
                 string service = checkForward.Destination;
-                ForwardCommand(command, service);
+                ForwardCommand(command, service, receiver.BaseForwardAddress + receiver.NodeName);
             }
             else    //Give the result to client
             {
@@ -190,7 +190,7 @@ namespace ServiceNodeCore
                     Console.WriteLine("{0} Total time for {1}: {2}", LogTimestamp, command.GetType().Name, totalTime.TotalMilliseconds);
                 }
                 IDarPoolingCallback client = ExtractClient(command.CommandID);
-                ReturnFinalResult(result, client);
+                ReturnResultToClient(result, client);
             }
         }
 
@@ -205,13 +205,14 @@ namespace ServiceNodeCore
 
             if (checkForward != null)   //Forward the command
             {
+                string rootSenderAddress = ExtractService(fwdCommand.CommandID);
                 string service = checkForward.Destination;
-                ForwardCommand(fwdCommand, service);
+                ForwardCommand(fwdCommand, service, rootSenderAddress);
             }
             else
             {
 
-                BackPropagateResult(result, fwdCommand);
+                ReturnFinalResult(result, fwdCommand);
             }
 
         }
@@ -224,7 +225,7 @@ namespace ServiceNodeCore
         /// </summary>
         /// <param name="command">The Command to be forwarded</param>
         /// <param name="destination">String that represent the address of the target service.</param>
-        private void ForwardCommand(Command command, string destination)
+        private void ForwardCommand(Command command, string destination, string rootSender)
         {
             if (debug)
                 Console.WriteLine("{0} Forwarding a {1} to {2}",LogTimestamp, command.GetType().Name, destination.Split('/').Last().ToUpper());
@@ -235,8 +236,9 @@ namespace ServiceNodeCore
             ChannelFactory<IDarPoolingForwarding> fwdChannelFactory = new ChannelFactory<IDarPoolingForwarding>(fwdBinding, fwdEndpoint);
             IDarPoolingForwarding destinationService = fwdChannelFactory.CreateChannel();
 
-            string senderAddress = receiver.BaseForwardAddress + receiver.NodeName;
-            destinationService.HandleForwardedDarPoolingRequest(command, senderAddress);
+            //string senderAddress = receiver.BaseForwardAddress + receiver.NodeName;
+
+            destinationService.HandleForwardedDarPoolingRequest(command, rootSender);
 
             /** Close the channel: the communication is fire-and-forget (one-way) */
             ((IClientChannel)destinationService).Close();
@@ -244,7 +246,7 @@ namespace ServiceNodeCore
         }
 
 
-        private void ReturnFinalResult(Result finalResult, IDarPoolingCallback destination)
+        private void ReturnResultToClient(Result finalResult, IDarPoolingCallback destination)
         {
             /** Apply changes on the service. */
             RegisterResult(finalResult);
