@@ -180,7 +180,7 @@ namespace UserNodeCore
             Trip trip1 = new Trip
             {
                 Owner = "Shaoran@http://localhost:1111/Milano",
-                DepartureName = "Catania",
+                DepartureName = "Pisa",
                 DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
                 ArrivalName = "Messina",
                 ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
@@ -192,7 +192,7 @@ namespace UserNodeCore
                 Modifiable = false
             };
 
-
+/*
             // Case 4: LoginForward
             Console.ReadLine();
             Console.WriteLine("Press a key... (Forward expected)");
@@ -215,7 +215,7 @@ namespace UserNodeCore
             RegisterUserCommand register = new RegisterUserCommand(dummy);
             TestCommands(register);
             //TestCommands(register);
-
+            */
             Console.ReadLine();
             Console.WriteLine("Press a key... (Insert Trip)");
             Console.ReadLine();
