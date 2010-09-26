@@ -29,3 +29,4 @@ syntax: glob
 *.sig
 _ReSharper*\*
 config\*.xml
+.DS_Store
