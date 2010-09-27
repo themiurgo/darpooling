@@ -141,7 +141,7 @@ namespace UserNodeGUI
                 disconnectToolStripMenuItem.Enabled = true;
                 connectToolStripMenuItem.Enabled = false;
                 newTripToolStripMenuItem.Enabled = true;
-                SearchPanel.Show();
+                MainPanel.Show();
                 ResultTabControl.Show();
             }
             else
@@ -150,7 +150,7 @@ namespace UserNodeGUI
                 connectToolStripMenuItem.Enabled = true;
                 disconnectToolStripMenuItem.Enabled = false;
                 newTripToolStripMenuItem.Enabled = false;
-                SearchPanel.Hide();
+                MainPanel.Hide();
                 ResultTabControl.Hide();
             }
         }
