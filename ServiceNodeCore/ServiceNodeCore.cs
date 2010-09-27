@@ -377,18 +377,8 @@ namespace ServiceNodeCore
                 
             }
             else
-                Console.WriteLine("Decision: I'll handle the newTripCommand !!");
-
-            return new NullResult();
-            /*
-            if (!serviceImpl.IsJoinedUser(newTrip.Owner))
             {
-                insertionResult = new InsertErrorResult();
-                insertionResult.Comment = String.Format("Error! Invalid request: {0} has not joined DarPooling", newTrip.Owner);
-                return insertionResult;
-            }
-            else
-            {   //Save the trip
+                //Save the trip
                 tripDatabaseLock.EnterWriteLock();
                 try
                 {
@@ -418,6 +408,7 @@ namespace ServiceNodeCore
                     tripDatabase.Element("Trips").Add(newXmlTrip);
                     tripDatabase.Save(tripDatabasePath);
 
+                    Console.WriteLine("{0} Trip saved in {1}", serviceImpl.LogTimestamp, NodeName);
                     insertionResult = new InsertOkResult();
                     insertionResult.Comment = "The trip has been successfully inserted";
                     return insertionResult;
@@ -429,7 +420,6 @@ namespace ServiceNodeCore
                 }
             }// end else
           
-             */
         }//End savetrip
 
 
@@ -442,14 +432,18 @@ namespace ServiceNodeCore
             double tempDistance;
             double minDistance = tempLocation.distance(departureLoc);
 
-            Console.WriteLine("Distance between {0} and {1}({2}) is  {3} km", departure, targetNode, NodeGeoName, minDistance);
+            //Console.WriteLine("Distance between {0} and {1}({2}) is  {3} km", departure, targetNode, NodeGeoName, minDistance);
 
             foreach (ServiceNode neighbour in Neighbours)
             {
                 tempLocation = neighbour.Location;
                 tempDistance = tempLocation.distance(departureLoc);
 
-                Console.WriteLine("Distance between {0} and {1}({2}) is  {3} km", departure, neighbour.NodeName,neighbour.NodeGeoName, tempDistance);
+                //Console.WriteLine("Distance between {0} and {1}({2}) is  {3} km", departure, neighbour.NodeName,neighbour.NodeGeoName, tempDistance);
+
+                // Error due to decimal precision
+                if (tempDistance == Double.NaN)
+                    tempDistance = 0.0;
 
                 if (tempDistance < minDistance)
                 {

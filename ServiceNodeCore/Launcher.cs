@@ -30,7 +30,7 @@ namespace ServiceNodeCore
 
         public static void InitializeService()
         {
-            InitializeNodes();
+            InitializeNodes(false);
             PopulateUserDB();
             //PopulateTripDB();
         }
@@ -39,7 +39,7 @@ namespace ServiceNodeCore
         /// Retrieve the coordinates from location names, build the ServiceNode
         /// and ServiceNodeCore objects, set the topology of the net of service nodes.
         /// </summary>
-        public static void InitializeNodes()
+        public static void InitializeNodes(bool fullTopology)
         {
             Console.WriteLine("**** DarPooling Service Nodes ****\n");
 
@@ -53,7 +53,6 @@ namespace ServiceNodeCore
             {
                 Location location = GMapsAPI.geoNameToLocation(locName);
                 nameLoc.Add(locName, location);
-                //Console.WriteLine("{0} coords:\n lat:{1} long:{2}", locName, location.Latitude, location.Longitude);
             }
 
             foreach (string locName in locNames)
@@ -89,25 +88,49 @@ namespace ServiceNodeCore
             ServiceNodeCore bologna = new ServiceNodeCore(bolognaSN);
 
 
-            // Set Topology
-            venezia.addNeighbour(milano);
-            milano.addNeighbour(torino);
-            milano.addNeighbour(genova);
-            torino.addNeighbour(genova);
-            genova.addNeighbour(pisa);
-            bologna.addNeighbour(venezia);
-            bologna.addNeighbour(pisa);
-            pisa.addNeighbour(roma);
-            roma.addNeighbour(napoli);
-            napoli.addNeighbour(bari);
-            napoli.addNeighbour(catania);
-            napoli.addNeighbour(catania2);
-            catania.addNeighbour(catania2);
 
-            // FIXME: this array is used only to save some lines of codes.
-            ServiceNodeCore[] nodes =
-                new ServiceNodeCore[] { milano, catania, //venezia, torino, genova, pisa, roma, napoli, bari, catania2, bologna
+            // Set Topology
+            if (fullTopology)
+            {
+                venezia.addNeighbour(milano);
+                venezia.addNeighbour(bologna);
+
+                milano.addNeighbour(torino);
+                milano.addNeighbour(genova);
+
+                torino.addNeighbour(genova);
+
+                genova.addNeighbour(pisa);
+
+                bologna.addNeighbour(pisa);
+
+                pisa.addNeighbour(roma);
+                roma.addNeighbour(napoli);
+                napoli.addNeighbour(bari);
+                napoli.addNeighbour(catania);
+                napoli.addNeighbour(catania2);
+                catania.addNeighbour(catania2);
+            }
+            else
+            {
+                milano.addNeighbour(roma);
+                roma.addNeighbour(catania);
+            }
+
+            ServiceNodeCore[] nodes;
+
+            if (fullTopology)
+            {
+                nodes =
+                    new ServiceNodeCore[] { venezia, milano, torino, genova, bologna, pisa, roma, napoli, bari, catania, catania2
                                       };
+            }
+            else
+            {
+                nodes =
+                    new ServiceNodeCore[] { milano, roma, catania //,venezia, torino, genova, pisa, roma, napoli, bari, catania2, bologna
+                                      };
+            }
             sncList.AddRange(nodes);
 
         }
@@ -124,8 +147,8 @@ namespace ServiceNodeCore
             #region Create some sample user
             User daniele = new User
             {
-                UserName = "Shaoran",
-                Password = "shaoran",
+                UserName = "daniele",
+                Password = "dani",
                 Name = "Daniele",
                 UserSex = User.Sex.m,
                 BirthDate = new DateTime(1986, 04, 08),
@@ -137,7 +160,7 @@ namespace ServiceNodeCore
 
             User antonio = new User
             {
-                UserName = "Anto",
+                UserName = "antonio",
                 Password = "anto",
                 Name = "Antonio",
                 UserSex = User.Sex.m,
@@ -156,7 +179,16 @@ namespace ServiceNodeCore
             ServiceNodeCore lastNode = sncList.Last();
             Thread[] threads = new Thread[4];
 
+            Thread registerThread;
 
+            foreach (ServiceNodeCore snc in sncList)
+            {
+                snc.RegisterUser(daniele);
+                snc.RegisterUser(antonio);
+
+            }
+
+            /*
             threads[0] = new Thread(() => firstNode.RegisterUser(daniele));
             threads[0].Name = "Register Daniele";
 
@@ -173,11 +205,11 @@ namespace ServiceNodeCore
 
             threads[3] = new Thread(() => firstNode.Unjoin("Shaoran"));
             threads[3].Name = "UnJoin Daniele ";
-            */
+            
             // Testing the concurrency
             threads[0].Start();
             threads[1].Start();
-
+            */
             //Thread.Sleep(200);
             //threads[2].Start();
             //Thread.Sleep(1000);

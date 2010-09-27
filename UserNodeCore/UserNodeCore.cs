@@ -180,9 +180,9 @@ namespace UserNodeCore
             Trip trip1 = new Trip
             {
                 Owner = "Shaoran@http://localhost:1111/Milano",
-                DepartureName = "Pisa",
+                DepartureName = "Aci Trezza",
                 DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
-                ArrivalName = "Messina",
+                ArrivalName = "Milano",
                 ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
                 Smoke = false,
                 Music = false,
@@ -216,13 +216,17 @@ namespace UserNodeCore
             TestCommands(register);
             //TestCommands(register);
             */
-            Console.ReadLine();
-            Console.WriteLine("Press a key... (Insert Trip)");
-            Console.ReadLine();
-            InsertTripCommand insert = new InsertTripCommand(trip1);
-            TestCommands(insert);
-           
-            Console.ReadLine();
+            while (true)
+            {
+                //Console.ReadLine();
+                Console.WriteLine("Insert departure city... (Insert Trip)");
+                string city = Console.ReadLine();
+                trip1.DepartureName = city;
+                InsertTripCommand insert = new InsertTripCommand(trip1);
+                TestCommands(insert);
+
+                //Console.ReadLine();
+            }
         }
 
         public static void TestCommands(Command c)
