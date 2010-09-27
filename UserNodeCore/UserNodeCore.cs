@@ -37,7 +37,7 @@ namespace UserNodeCore
             Console.WriteLine("Service says: " + result.Comment);
             
             // FIXME: This line MUST BE decommented when using GUI
-            //parent.resultCallback(result);
+            parent.resultCallback(result);
             
         }
     }
@@ -179,7 +179,7 @@ namespace UserNodeCore
 
             Trip trip1 = new Trip
             {
-                Owner = "Shaoran@http://localhost:1111/Milano",
+                Owner = "daniele@http://localhost:1111/Milano",
                 DepartureName = "Aci Trezza",
                 DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
                 ArrivalName = "Milano",
@@ -194,7 +194,7 @@ namespace UserNodeCore
 
             QueryBuilder query1 = new QueryBuilder
             {
-                Owner = "Shaoran@http://localhost:1111/Milano",
+                Owner = "daniele@http://localhost:1111/Milano",
                 DepartureName = "Aci Trezza",
                 /*
                 DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
