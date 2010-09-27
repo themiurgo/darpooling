@@ -394,9 +394,9 @@ namespace ServiceNodeCore
                     XElement newXmlTrip = new XElement("Trip",
                         new XElement("ID", newTrip.ID),
                         new XElement("Owner", newTrip.Owner),
-                        new XElement("DepartureName", newTrip.DepartureName),
+                        new XElement("DepartureName", newTrip.DepartureName.ToLower()),
                         new XElement("DepartureDateTime", newTrip.DepartureDateTime),
-                        new XElement("ArrivalName", newTrip.ArrivalName),
+                        new XElement("ArrivalName", newTrip.ArrivalName.ToLower()),
                         new XElement("ArrivalDateTime", newTrip.ArrivalDateTime),
                         new XElement("Smoke", newTrip.Smoke),
                         new XElement("Music", newTrip.Music),
@@ -459,52 +459,74 @@ namespace ServiceNodeCore
 
         public Result SearchTrip(QueryBuilder queryTrip)
         {
-            return new NullResult();
+            /** Check if the current node is the nearest node to the 
+             * departure location.
+             */
+            string targetNode = NearestNodeToDeparture(queryTrip.DepartureName);
+
+            if (!targetNode.Equals(NodeName))
+            {
+                Console.WriteLine("Decision: sending SearchTripCommand to : {0}", targetNode);
+                ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
+                forwardRequest.RequestID = serviceImpl.generateGUID();
+                forwardRequest.Destination = baseForwardAddress + targetNode;
+
+                return forwardRequest;
+
+            }
+            else
+            {
+                    List<Trip> matchingTrip = GetTrip(queryTrip);
+
+                    SearchTripResult searchResult = new SearchTripResult(matchingTrip);
+                    Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
+
+                    return searchResult;   
+            }
+
         }
 
         #endregion
 
 
-        // Print some debug information
-        public void PrintDebug()
-        { 
-        
-        }
-
-
-
-
-
-        public List<Trip> GetTrip(Trip filterTrip)
+        public List<Trip> GetTrip(QueryBuilder filterTrip)
         {
-            tripDatabase = XDocument.Load(tripDatabasePath);
+            tripDatabaseLock.EnterReadLock();
+            try
+            {
+                tripDatabase = XDocument.Load(tripDatabasePath);
 
-            var baseQuery = (from t in tripDatabase.Descendants("Trip")
-                    where t.Element("DepartureName").Value.Equals(filterTrip.DepartureName) &&
-                          Convert.ToInt32(t.Element("FreeSits").Value) > 0
-                    select new Trip()
-                    {
-                        ID = Convert.ToInt32(t.Element("ID").Value),
-                        Owner = t.Element("Owner").Value,
-                        DepartureName = t.Element("DepartureName").Value,
-                        DepartureDateTime = Convert.ToDateTime(t.Element("DepartureDateTime").Value),
-                        ArrivalName = t.Element("ArrivalName").Value,
-                        ArrivalDateTime = Convert.ToDateTime(t.Element("ArrivalDateTime").Value),
-                        Smoke = Convert.ToBoolean(t.Element("Smoke").Value),
-                        Music = Convert.ToBoolean(t.Element("Music").Value),
-                        Cost = Convert.ToDouble(t.Element("Cost").Value),
-                        FreeSits = Convert.ToInt32(t.Element("FreeSits").Value),
-                        Notes = t.Element("Notes").Value,
-                        Modifiable = Convert.ToBoolean(t.Element("Modifiable").Value)
-                    });
+                var baseQuery = (from t in tripDatabase.Descendants("Trip")
+                                 where t.Element("DepartureName").Value.Equals(filterTrip.DepartureName.ToLower()) &&
+                                       Convert.ToInt32(t.Element("FreeSits").Value) > 0
+                                 select new Trip()
+                                 {
+                                     ID = Convert.ToInt32(t.Element("ID").Value),
+                                     Owner = t.Element("Owner").Value,
+                                     DepartureName = t.Element("DepartureName").Value,
+                                     DepartureDateTime = Convert.ToDateTime(t.Element("DepartureDateTime").Value),
+                                     ArrivalName = t.Element("ArrivalName").Value,
+                                     ArrivalDateTime = Convert.ToDateTime(t.Element("ArrivalDateTime").Value),
+                                     Smoke = Convert.ToBoolean(t.Element("Smoke").Value),
+                                     Music = Convert.ToBoolean(t.Element("Music").Value),
+                                     Cost = Convert.ToDouble(t.Element("Cost").Value),
+                                     FreeSits = Convert.ToInt32(t.Element("FreeSits").Value),
+                                     Notes = t.Element("Notes").Value,
+                                     Modifiable = Convert.ToBoolean(t.Element("Modifiable").Value)
+                                 });
 
-            IEnumerable<Trip> filteredQuery = FilterQuery(filterTrip, baseQuery);
-            return filteredQuery.ToList();
+                IEnumerable<Trip> filteredQuery = FilterQuery(filterTrip, baseQuery);
+                return filteredQuery.ToList();
+            }
+            finally
+            {
+                tripDatabaseLock.ExitReadLock();
+            }
 
         }
 
 
-        private IEnumerable<Trip> FilterQuery(Trip filterTrip, IEnumerable<Trip> filteringQuery)
+        private IEnumerable<Trip> FilterQuery(QueryBuilder filterTrip, IEnumerable<Trip> filteringQuery)
         {
             /* Prefiltering */
             filteringQuery = from i in filteringQuery
@@ -525,7 +547,7 @@ namespace ServiceNodeCore
             if (filterTrip.ArrivalName != null)
             {
                 filteringQuery = from i in filteringQuery
-                                 where i.ArrivalName == filterTrip.ArrivalName
+                                 where i.ArrivalName == filterTrip.ArrivalName.ToLower()
                                  select i;
             }
 
