@@ -37,7 +37,7 @@ namespace UserNodeCore
             Console.WriteLine("Service says: " + result.Comment);
             
             // FIXME: This line MUST BE decommented when using GUI
-            parent.resultCallback(result);
+            //parent.resultCallback(result);
             
         }
     }
@@ -192,6 +192,23 @@ namespace UserNodeCore
                 Modifiable = false
             };
 
+            QueryBuilder query1 = new QueryBuilder
+            {
+                Owner = "Shaoran@http://localhost:1111/Milano",
+                DepartureName = "Aci Trezza",
+                /*
+                DepartureDateTime = new DateTime(2010, 7, 30, 8, 0, 0),
+                ArrivalName = "Milano",
+                ArrivalDateTime = new DateTime(2010, 7, 30, 10, 30, 0),
+                Smoke = false,
+                Music = false,
+                Cost = 10,
+                FreeSits = 4,
+                Notes = "none",
+                Modifiable = false
+                */
+            };
+
 /*
             // Case 4: LoginForward
             Console.ReadLine();
@@ -216,14 +233,21 @@ namespace UserNodeCore
             TestCommands(register);
             //TestCommands(register);
             */
+            string city;
             while (true)
             {
                 //Console.ReadLine();
                 Console.WriteLine("Insert departure city... (Insert Trip)");
-                string city = Console.ReadLine();
+                city = Console.ReadLine();
                 trip1.DepartureName = city;
                 InsertTripCommand insert = new InsertTripCommand(trip1);
                 TestCommands(insert);
+
+                Console.WriteLine("Insert departure city... (Search Trip)");
+                city = Console.ReadLine();
+                query1.DepartureName = city;
+                SearchTripCommand search = new SearchTripCommand(query1);
+                TestCommands(search);
 
                 //Console.ReadLine();
             }

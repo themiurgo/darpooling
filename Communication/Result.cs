@@ -17,6 +17,8 @@ namespace Communication
     [KnownType(typeof(UnjoinConfirmedResult))]
     [KnownType(typeof(InsertErrorResult))]
     [KnownType(typeof(InsertOkResult))]
+    [KnownType(typeof(SearchTripResult))]
+    [KnownType(typeof(SearchTripError))]
     public abstract class Result
     {
         [DataMember]
@@ -90,9 +92,11 @@ namespace Communication
 
     
     // Possible results in response to SearchTrip
-
+    
+    [DataContract]
     public class SearchTripResult : Result
     {
+        [DataMember]
         private List<Trip> trips;
 
         public List<Trip> Trips
@@ -105,7 +109,8 @@ namespace Communication
             this.trips = trips;
         }
     }
-
+    
+    [DataContract]
     public class SearchTripError : Result { }
 
 

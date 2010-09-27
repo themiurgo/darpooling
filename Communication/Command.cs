@@ -43,6 +43,7 @@ namespace Communication
     [KnownType(typeof(JoinCommand))]
     [KnownType(typeof(UnjoinCommand))]
     [KnownType(typeof(InsertTripCommand))]
+    [KnownType(typeof(SearchTripCommand))]
     public abstract class Command : ICommand
     {
         [DataMember]
@@ -269,16 +270,34 @@ namespace Communication
 
     }
 
+    // Search trips that match given criteria.
+    [DataContract]
     public class SearchTripCommand : Command
     {
+        [DataMember]
+        private QueryBuilder queryBuilder;
+
+        public delegate Result SearchTrip(QueryBuilder q);
+        private SearchTrip search;
+
+        public SearchTripCommand(QueryBuilder query)
+        {
+            this.queryBuilder = query;
+        }
+
         public override Result Execute()
         {
-            throw new NotImplementedException();
+            search = new SearchTrip(receiver.SearchTrip);
+            search.BeginInvoke(queryBuilder, callbackMethod, this);
+            return new NullResult();
         }
 
         public override Result EndExecute(IAsyncResult asyncValue)
         {
-            throw new NotImplementedException();
+            AsyncResult asyncResult = (AsyncResult)asyncValue;
+            SearchTrip s = (SearchTrip)asyncResult.AsyncDelegate;
+            result = s.EndInvoke(asyncValue);
+            return result;
         }
     }
 }
