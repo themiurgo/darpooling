@@ -53,6 +53,11 @@ namespace UserNodeGUI
             Type type = result.GetType();
             if (type == typeof(Communication.SearchTripResult))
             {
+                // Update
+            }
+            else if (type == typeof(Communication.InsertOkResult))
+            {
+                connectedStatusLabel.Text = "Connected - Trip inserted";
             }
             else if (type == typeof(Communication.LoginOkResult))
             {
@@ -143,26 +148,10 @@ namespace UserNodeGUI
 
         private void AddTabPage(string label)
         {
-            TabPage page = new TabPage(label);
+            TabPage page = new ResultTabPage();
             ResultTabControl.Controls.Add(page);
-
-            DataGridView gridview = new DataGridView();
-
-            gridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridview.Dock = System.Windows.Forms.DockStyle.Fill;
-            gridview.Location = new System.Drawing.Point(3, 3);
-            gridview.Name = "resultGridView";
-            gridview.TabIndex = 0;
-            gridview.DataSource = stresult.Trips;
-
-            page.Controls.Add(gridview);
-            page.Location = new System.Drawing.Point(4, 22);
-            page.Padding = new System.Windows.Forms.Padding(3);
-            page.Size = new System.Drawing.Size(422, 379);
-            page.TabIndex = 0;
-            page.UseVisualStyleBackColor = true;
-
             ResultTabControl.SelectTab(page);
+            page.Text = label;
         }
 
         private void searchButton_UpdateStatus(object sender, EventArgs e)
@@ -181,7 +170,5 @@ namespace UserNodeGUI
             if (p != null)
                 p.Dispose();
         }
-
-
     }
 }
