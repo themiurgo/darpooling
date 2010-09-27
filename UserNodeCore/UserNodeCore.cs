@@ -153,9 +153,9 @@ namespace UserNodeCore
             state.InsertTrip(this, trip);
         }
 
-        public void SearchTrip()
+        public void SearchTrip(QueryBuilder qb)
         {
-            state.SearchTrip(this);
+            state.SearchTrip(this, qb);
         }
 
         // Console-Client, used for debug purposes

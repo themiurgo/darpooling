@@ -54,15 +54,8 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.connectedStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ResultTabControl = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.resultGridView = new System.Windows.Forms.DataGridView();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Partenza = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.closeButton = new System.Windows.Forms.Button();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.MainPanel = new System.Windows.Forms.Panel();
             this.SearchPanel = new System.Windows.Forms.Panel();
             this.searchButton = new System.Windows.Forms.Button();
             this.SourceLabel = new System.Windows.Forms.Label();
@@ -72,14 +65,10 @@
             this.destinationTextBox = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ResultTabControl = new System.Windows.Forms.TabControl();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.ResultTabControl.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.resultGridView)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.panel3.SuspendLayout();
+            this.MainPanel.SuspendLayout();
             this.SearchPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -277,82 +266,9 @@
             this.connectedStatusLabel.Size = new System.Drawing.Size(77, 17);
             this.connectedStatusLabel.Text = "Not connected";
             // 
-            // ResultTabControl
-            // 
-            this.ResultTabControl.Controls.Add(this.tabPage1);
-            this.ResultTabControl.Controls.Add(this.tabPage2);
-            this.ResultTabControl.Controls.Add(this.tabPage3);
-            this.ResultTabControl.Dock = System.Windows.Forms.DockStyle.Right;
-            this.ResultTabControl.Location = new System.Drawing.Point(196, 24);
-            this.ResultTabControl.Name = "ResultTabControl";
-            this.ResultTabControl.SelectedIndex = 0;
-            this.ResultTabControl.Size = new System.Drawing.Size(430, 405);
-            this.ResultTabControl.TabIndex = 3;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.resultGridView);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(422, 379);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // resultGridView
-            // 
-            this.resultGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.resultGridView.Location = new System.Drawing.Point(2, 0);
-            this.resultGridView.Name = "resultGridView";
-            this.resultGridView.Size = new System.Drawing.Size(420, 379);
-            this.resultGridView.TabIndex = 0;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.dataGridView1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(422, 379);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Partenza});
-            this.dataGridView1.Location = new System.Drawing.Point(-2, 38);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(424, 239);
-            this.dataGridView1.TabIndex = 3;
-            // 
-            // Partenza
-            // 
-            this.Partenza.HeaderText = "Column1";
-            this.Partenza.Name = "Partenza";
-            this.Partenza.ReadOnly = true;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(422, 379);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "tabPage3";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
             // closeButton
             // 
+            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.closeButton.Location = new System.Drawing.Point(112, 378);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 23);
@@ -361,15 +277,17 @@
             this.closeButton.UseVisualStyleBackColor = true;
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
-            // panel3
+            // MainPanel
             // 
-            this.panel3.Controls.Add(this.SearchPanel);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 24);
-            this.panel3.MinimumSize = new System.Drawing.Size(160, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(196, 405);
-            this.panel3.TabIndex = 4;
+            this.MainPanel.Controls.Add(this.SearchPanel);
+            this.MainPanel.Controls.Add(this.ResultTabControl);
+            this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainPanel.Location = new System.Drawing.Point(0, 24);
+            this.MainPanel.MinimumSize = new System.Drawing.Size(160, 0);
+            this.MainPanel.Name = "MainPanel";
+            this.MainPanel.Size = new System.Drawing.Size(626, 405);
+            this.MainPanel.TabIndex = 4;
+            this.MainPanel.Visible = false;
             // 
             // SearchPanel
             // 
@@ -449,8 +367,7 @@
             // 
             // splitter1
             // 
-            this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(193, 24);
+            this.splitter1.Location = new System.Drawing.Point(0, 24);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 405);
             this.splitter1.TabIndex = 5;
@@ -462,14 +379,24 @@
             this.dataGridViewTextBoxColumn1.HeaderText = "Tag";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
+            // ResultTabControl
+            // 
+            this.ResultTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.ResultTabControl.Location = new System.Drawing.Point(196, 3);
+            this.ResultTabControl.Name = "ResultTabControl";
+            this.ResultTabControl.SelectedIndex = 0;
+            this.ResultTabControl.Size = new System.Drawing.Size(427, 399);
+            this.ResultTabControl.TabIndex = 3;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 451);
             this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.ResultTabControl);
+            this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainWindow";
@@ -478,12 +405,7 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.ResultTabControl.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.resultGridView)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.panel3.ResumeLayout(false);
+            this.MainPanel.ResumeLayout(false);
             this.SearchPanel.ResumeLayout(false);
             this.SearchPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -517,13 +439,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel connectedStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
-        private System.Windows.Forms.TabControl ResultTabControl;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Partenza;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Label SourceLabel;
         private System.Windows.Forms.TextBox destinationTextBox;
         private System.Windows.Forms.Label label1;
@@ -533,7 +449,6 @@
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Panel SearchPanel;
         private System.Windows.Forms.Button closeButton;
-        private System.Windows.Forms.DataGridView resultGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptButtonDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn autoScrollDataGridViewCheckBoxColumn;
@@ -589,6 +504,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn paddingDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn imeModeDataGridViewTextBoxColumn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.TabControl ResultTabControl;
 
     }
 }

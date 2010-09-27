@@ -219,7 +219,18 @@ namespace Communication
     public class QueryBuilder
     {
         [DataMember]
-        public string QueryID { get; set; }
+        private DateTime time;
+
+        public QueryBuilder()
+        {
+            time = DateTime.Now;
+        }
+
+        public String ID
+        {
+            get { return (time.ToString() + Owner + DepartureName + ArrivalName).GetHashCode().ToString(); }
+        }
+
         [DataMember]
         public String Owner { get; set; }
 
@@ -240,7 +251,7 @@ namespace Communication
         public Boolean Smoke { get; set; }
         [DataMember]
         public Boolean Music { get; set; }
-
+        
         [DataMember]
         public Double Cost { get; set; }
         [DataMember]
@@ -250,9 +261,6 @@ namespace Communication
 
         //[DataMember]
         //public Boolean Modifiable { get; set; }
-
-        public QueryBuilder() { }
-
     }
 
     

@@ -51,7 +51,17 @@ namespace UserNodeGUI
         /// <param name="result"></param>
         public void onNewResult(Communication.Result result) {
             Type type = result.GetType();
-            if (type == typeof(Communication.LoginOkResult))
+            if (type == typeof(Communication.SearchTripResult))
+            {
+                Communication.SearchTripResult sr = (Communication.SearchTripResult) result;
+                //ResultTabControl.TabPages[key
+                // Update
+            }
+            else if (type == typeof(Communication.InsertOkResult))
+            {
+                connectedStatusLabel.Text = "Connected - Trip inserted";
+            }
+            else if (type == typeof(Communication.LoginOkResult))
             {
                 SetConnectedView(true);
                 connectDlg.Dispose();
@@ -111,9 +121,17 @@ namespace UserNodeGUI
              * 2. Create a new tab
              * 3. On receiving the result, populate the tab with trips.
              */
+            Communication.QueryBuilder qb = new Communication.QueryBuilder()
+            {
+                Owner = core.UserNode.User.UserName,
+                DepartureName = sourceTextBox.Text,
+                ArrivalName = destinationTextBox.Text
+            };
+
             string source = sourceTextBox.Text;
             string destination = destinationTextBox.Text;
-            AddTabPage(source + " - " + destination);
+            AddTabPage(qb.ID, source + " - " + destination);
+            core.SearchTrip(qb);
         }
 
         private void SetConnectedView(bool connected)
@@ -124,7 +142,7 @@ namespace UserNodeGUI
                 disconnectToolStripMenuItem.Enabled = true;
                 connectToolStripMenuItem.Enabled = false;
                 newTripToolStripMenuItem.Enabled = true;
-                SearchPanel.Show();
+                MainPanel.Show();
                 ResultTabControl.Show();
             }
             else
@@ -133,34 +151,20 @@ namespace UserNodeGUI
                 connectToolStripMenuItem.Enabled = true;
                 disconnectToolStripMenuItem.Enabled = false;
                 newTripToolStripMenuItem.Enabled = false;
-                SearchPanel.Hide();
+                MainPanel.Hide();
                 ResultTabControl.Hide();
             }
         }
 
-        private void AddTabPage(string label)
+        private void AddTabPage(string key, string label)
         {
-            TabPage page = new TabPage(label);
-            ResultTabControl.Controls.Add(page);
-
-            DataGridView gridview = new DataGridView();
-
-            gridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridview.Location = new System.Drawing.Point(2, 0);
-            gridview.Name = "resultGridView";
-            gridview.Size = new System.Drawing.Size(420, 379);
-            gridview.TabIndex = 0;
-            gridview.DataSource = stresult.Trips;
-
-            page.Controls.Add(gridview);
-            page.Location = new System.Drawing.Point(4, 22);
-            page.Padding = new System.Windows.Forms.Padding(3);
-            page.Size = new System.Drawing.Size(422, 379);
-            page.TabIndex = 0;
-            page.UseVisualStyleBackColor = true;
-
-            ResultTabControl.SelectTab(page);
-
+            TabPage page = new ResultTabPage();
+            page.Name = key;
+            page.Text = label;
+            ResultTabControl.TabPages.Add(page);
+            if (page != ResultTabControl.TabPages[key])
+                throw new Exception();
+            page.Select();
         }
 
         private void searchButton_UpdateStatus(object sender, EventArgs e)
@@ -179,7 +183,5 @@ namespace UserNodeGUI
             if (p != null)
                 p.Dispose();
         }
-
-
     }
 }
