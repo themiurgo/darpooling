@@ -51,7 +51,15 @@ namespace UserNodeGUI
         /// <param name="result"></param>
         public void onNewResult(Communication.Result result) {
             Type type = result.GetType();
-            if (type == typeof(Communication.LoginOkResult))
+            if (type == typeof(Communication.SearchTripResult))
+            {
+                // Update
+            }
+            else if (type == typeof(Communication.InsertOkResult))
+            {
+                connectedStatusLabel.Text = "Connected - Trip inserted";
+            }
+            else if (type == typeof(Communication.LoginOkResult))
             {
                 SetConnectedView(true);
                 connectDlg.Dispose();
@@ -140,27 +148,10 @@ namespace UserNodeGUI
 
         private void AddTabPage(string label)
         {
-            TabPage page = new TabPage(label);
+            TabPage page = new ResultTabPage();
             ResultTabControl.Controls.Add(page);
-
-            DataGridView gridview = new DataGridView();
-
-            gridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridview.Location = new System.Drawing.Point(2, 0);
-            gridview.Name = "resultGridView";
-            gridview.Size = new System.Drawing.Size(420, 379);
-            gridview.TabIndex = 0;
-            gridview.DataSource = stresult.Trips;
-
-            page.Controls.Add(gridview);
-            page.Location = new System.Drawing.Point(4, 22);
-            page.Padding = new System.Windows.Forms.Padding(3);
-            page.Size = new System.Drawing.Size(422, 379);
-            page.TabIndex = 0;
-            page.UseVisualStyleBackColor = true;
-
             ResultTabControl.SelectTab(page);
-
+            page.Text = label;
         }
 
         private void searchButton_UpdateStatus(object sender, EventArgs e)
@@ -179,7 +170,5 @@ namespace UserNodeGUI
             if (p != null)
                 p.Dispose();
         }
-
-
     }
 }
