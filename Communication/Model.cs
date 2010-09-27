@@ -219,7 +219,7 @@ namespace Communication
     public class QueryBuilder
     {
         [DataMember]
-        public int ID { get; set; }
+        public string QueryID { get; set; }
         [DataMember]
         public String Owner { get; set; }
 
@@ -248,8 +248,8 @@ namespace Communication
         [DataMember]
         public String Notes { get; set; }
 
-        [DataMember]
-        public Boolean Modifiable { get; set; }
+        //[DataMember]
+        //public Boolean Modifiable { get; set; }
 
         public QueryBuilder() { }
 

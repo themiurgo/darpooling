@@ -98,6 +98,8 @@ namespace Communication
     {
         [DataMember]
         private List<Trip> trips;
+        [DataMember]
+        private string originalQueryID;
 
         public List<Trip> Trips
         {
@@ -108,6 +110,13 @@ namespace Communication
         {
             this.trips = trips;
         }
+
+        public string OriginalQueryID
+        {
+            get { return originalQueryID; }
+            set { originalQueryID = value; }
+        }
+
     }
     
     [DataContract]
