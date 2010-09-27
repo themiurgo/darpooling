@@ -51,7 +51,7 @@ namespace ServiceNodeCore
             Console.WriteLine("Retrieving Coordinates from GMap Server....   ");
             foreach (string locName in locNames)
             {
-                Location location = GMapsAPI.geoNameToLocation(locName);
+                Location location = GMapsAPI.addressToLocation(locName);
                 nameLoc.Add(locName, location);
             }
 

@@ -425,7 +425,7 @@ namespace ServiceNodeCore
 
         private string NearestNodeToDeparture(string departure)
         {
-            Location departureLoc = GMapsAPI.geoNameToLocation(departure);
+            Location departureLoc = GMapsAPI.addressToLocation(departure);
 
             string targetNode = this.NodeName;
             Location tempLocation = this.NodeLocation;
