@@ -13,7 +13,7 @@ namespace UserNodeGUI
     {
         UserNodeCore.UserNodeCore core;
         ConnectDialog connectDlg;
-
+        RegisterUser registerDlg;
 
         public Communication.SearchTripResult stresult; // DEBUG
         public void Debug()
@@ -50,10 +50,16 @@ namespace UserNodeGUI
         /// </summary>
         /// <param name="result"></param>
         public void onNewResult(Communication.Result result) {
-            if (result.GetType() == typeof(Communication.LoginOkResult))
+            Type type = result.GetType();
+            if (type == typeof(Communication.LoginOkResult))
             {
                 SetConnectedView(true);
                 connectDlg.Dispose();
+            }
+            else if (type == typeof(Communication.RegisterOkResult))
+            {
+                SetConnectedView(true);
+                registerDlg.Dispose();
             }
         }
                 
@@ -62,12 +68,35 @@ namespace UserNodeGUI
             Application.Exit();
         }
 
+        # region MenuItems click
+
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             connectDlg = new ConnectDialog(core);           
             connectDlg.SetConnectedViewCallback = new ConnectDialog.SetConnectedViewDelegate(this.SetConnectedView);
             connectDlg.ShowDialog();
         }
+
+        private void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            core.Unjoin();
+            SetConnectedView(false);
+        }
+
+
+        private void newTripToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewTripDialog dlg = new NewTripDialog(core);
+            dlg.ShowDialog();
+        }
+
+        private void registerUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            registerDlg = new RegisterUser(core);
+            registerDlg.ShowDialog();
+        }
+
+        #endregion
 
         private void searchButton_Click(object sender, EventArgs e)
         {
@@ -103,18 +132,6 @@ namespace UserNodeGUI
             }
         }
 
-        private void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            core.Unjoin();
-            SetConnectedView(false);
-        }
-
-        private void newTripToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NewTripDialog dlg = new NewTripDialog(core);
-            dlg.ShowDialog();
-        }
-
         private void AddTabPage(string label)
         {
             TabPage page = new TabPage(label);
@@ -130,10 +147,6 @@ namespace UserNodeGUI
                 p.Dispose();
         }
 
-        private void registerUserToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RegisterUser form = new RegisterUser(core);
-            form.ShowDialog();
-        }
+
     }
 }
