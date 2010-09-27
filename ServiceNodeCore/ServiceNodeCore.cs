@@ -487,7 +487,7 @@ namespace ServiceNodeCore
                 List<Trip> matchingTrip = GetTripZeroRange(queryTrip);
 
                 SearchTripResult searchResult = new SearchTripResult(matchingTrip);
-                searchResult.OriginalQueryID = queryTrip.QueryID;
+                searchResult.OriginalQueryID = queryTrip.ID;
                 Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
 
                 return searchResult;
@@ -502,7 +502,7 @@ namespace ServiceNodeCore
                 List<Trip> matchingTrip = GetTripWithRange(queryTrip, departureLocRange);
 
                 SearchTripResult searchResult = new SearchTripResult(matchingTrip);
-                searchResult.OriginalQueryID = queryTrip.QueryID;
+                searchResult.OriginalQueryID = queryTrip.ID;
                 Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
 
                 return searchResult;
