@@ -150,6 +150,7 @@ namespace UserNodeGUI
             gridview.Name = "resultGridView";
             gridview.Size = new System.Drawing.Size(420, 379);
             gridview.TabIndex = 0;
+            gridview.DataSource = stresult.Trips;
 
             page.Controls.Add(gridview);
             page.Location = new System.Drawing.Point(4, 22);
