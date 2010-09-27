@@ -53,6 +53,7 @@ namespace UserNodeGUI
             Type type = result.GetType();
             if (type == typeof(Communication.SearchTripResult))
             {
+               // ResultTabControl.TabPages.IndexOfKey("key");
                 // Update
             }
             else if (type == typeof(Communication.InsertOkResult))
@@ -119,9 +120,17 @@ namespace UserNodeGUI
              * 2. Create a new tab
              * 3. On receiving the result, populate the tab with trips.
              */
+            Communication.QueryBuilder qb = new Communication.QueryBuilder()
+            {
+                Owner = core.UserNode.User.UserName,
+                DepartureName = sourceTextBox.Text,
+                ArrivalName = destinationTextBox.Text
+            };
+
             string source = sourceTextBox.Text;
             string destination = destinationTextBox.Text;
-            AddTabPage(source + " - " + destination);
+            AddTabPage(qb.ID, source + " - " + destination);
+            core.SearchTrip(qb);
         }
 
         private void SetConnectedView(bool connected)
@@ -146,12 +155,15 @@ namespace UserNodeGUI
             }
         }
 
-        private void AddTabPage(string label)
+        private void AddTabPage(string key, string label)
         {
             TabPage page = new ResultTabPage();
-            ResultTabControl.Controls.Add(page);
-            ResultTabControl.SelectTab(page);
+            page.Name = key;
             page.Text = label;
+            ResultTabControl.TabPages.Add(page);
+            if (page != ResultTabControl.TabPages[key])
+                throw new Exception();
+            page.Select();
         }
 
         private void searchButton_UpdateStatus(object sender, EventArgs e)

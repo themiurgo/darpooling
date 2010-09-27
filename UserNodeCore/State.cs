@@ -14,7 +14,7 @@ namespace UserNodeCore
         bool Join(UserNodeCore context, string username, string password, string serviceNodeAddress, string callbackAddress);
         bool Unjoin(UserNodeCore context);
         bool InsertTrip(UserNodeCore context, Communication.Trip trip);
-        bool SearchTrip(UserNodeCore context);
+        bool SearchTrip(UserNodeCore context, QueryBuilder qb);
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ namespace UserNodeCore
             return false;
         }
 
-        public bool SearchTrip(UserNodeCore context)
+        public bool SearchTrip(UserNodeCore context, QueryBuilder qb)
         {
             // Not possible
             return false;
@@ -159,8 +159,10 @@ namespace UserNodeCore
             return true;
         }
 
-        public bool SearchTrip(UserNodeCore context)
+        public bool SearchTrip(UserNodeCore context, QueryBuilder qb)
         {
+            Command command = new SearchTripCommand(qb);
+            context.ServiceProxy.HandleDarPoolingRequest(command);
             return true;
         }
     }
