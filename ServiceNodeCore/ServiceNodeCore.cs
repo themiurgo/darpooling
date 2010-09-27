@@ -26,7 +26,7 @@ namespace ServiceNodeCore
     /// result in the invocation of a specific DarPooling
     /// Operation; thus, the ServiceNodeCore is the class that
     /// actually satisfies the Client request.
-    /// It holds the local Users and Trips databases.
+    /// Moreover, it holds the local Users and Trips databases.
     /// </summary>
     public class ServiceNodeCore : IDarPoolingOperations
     {
@@ -58,22 +58,15 @@ namespace ServiceNodeCore
         private ReaderWriterLockSlim tripDatabaseLock = new ReaderWriterLockSlim();
 
         //Delegates that deal with DarPoolingService structures
-        private delegate void AddJoinedUser(string username);
         private delegate void RemoveJoinedUser(string username);
-        private AddJoinedUser addJoinedUser;
         private RemoveJoinedUser removeJoinedUser;
                         
-        // The root http and tcp addresses, which are the same for every
-        // service instance.
+        // The root http and tcp addresses, available to clients.
         private const string baseHTTPAddress = "http://localhost:1111/";
         private const string baseTCPAddress = "net.tcp://localhost:1155/";
-
-        // The root address where Services wait for a request forwarded by 
-        // another service node.
+        // The root address used for communication between services.
         private const string baseForwardAddress = "http://localhost:1177/";
-        // Keep track of total number of forwarded requests. Also used as an ID
-        // for these forwarded request.
-        //private int forwardCounter;
+
 
         #endregion
 
@@ -90,11 +83,7 @@ namespace ServiceNodeCore
             serviceImpl = new DarPoolingService(this);
 
             // Set the delegates
-            addJoinedUser = new AddJoinedUser(serviceImpl.AddJoinedUser);
             removeJoinedUser = new RemoveJoinedUser(serviceImpl.RemoveJoinedUser);
-
-            // The forwardCounter should always be greater than zero.
-            //forwardCounter = 1;
 
             InitializeXmlDatabases();
         }
@@ -368,7 +357,7 @@ namespace ServiceNodeCore
 
             if (!targetNode.Equals(NodeName))
             {
-                Console.WriteLine("Decision: sending newTripCommand to : {0}", targetNode);
+                //Console.WriteLine("Decision: sending newTripCommand to : {0}", targetNode);
                 ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
                 forwardRequest.RequestID = serviceImpl.generateGUID();
                 forwardRequest.Destination = baseForwardAddress + targetNode;
@@ -378,6 +367,9 @@ namespace ServiceNodeCore
             }
             else
             {
+                Location departureLoc = GMapsAPI.addressToLocation(newTrip.DepartureName);
+                Location arrivalLoc = GMapsAPI.addressToLocation(newTrip.ArrivalName);
+
                 //Save the trip
                 tripDatabaseLock.EnterWriteLock();
                 try
@@ -395,8 +387,12 @@ namespace ServiceNodeCore
                         new XElement("ID", newTrip.ID),
                         new XElement("Owner", newTrip.Owner),
                         new XElement("DepartureName", newTrip.DepartureName.ToLower()),
+                        new XElement("DepartureLatitude",departureLoc.Latitude),
+                        new XElement("DepartureLongitude",departureLoc.Longitude),
                         new XElement("DepartureDateTime", newTrip.DepartureDateTime),
                         new XElement("ArrivalName", newTrip.ArrivalName.ToLower()),
+                        new XElement("ArrivalLatitude", arrivalLoc.Latitude),
+                        new XElement("ArrivalLongitude", arrivalLoc.Longitude),
                         new XElement("ArrivalDateTime", newTrip.ArrivalDateTime),
                         new XElement("Smoke", newTrip.Smoke),
                         new XElement("Music", newTrip.Music),
@@ -459,37 +455,57 @@ namespace ServiceNodeCore
 
         public Result SearchTrip(QueryBuilder queryTrip)
         {
-            /** Check if the current node is the nearest node to the 
-             * departure location.
-             */
-            string targetNode = NearestNodeToDeparture(queryTrip.DepartureName);
-
-            if (!targetNode.Equals(NodeName))
+            // Error! Search range cannot be a negative number!
+            if (queryTrip.Range < 0)
             {
-                Console.WriteLine("Decision: sending SearchTripCommand to : {0}", targetNode);
-                ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
-                forwardRequest.RequestID = serviceImpl.generateGUID();
-                forwardRequest.Destination = baseForwardAddress + targetNode;
-
-                return forwardRequest;
-
+                SearchTripError error = new SearchTripError();
+                error.Comment = "Search range must be a non-negative number!";
+                return error;
             }
-            else
+            // The Search has no range criteria.
+            else if (queryTrip.Range == 0)
             {
-                    List<Trip> matchingTrip = GetTrip(queryTrip);
+
+
+                /** Check if the current node is the nearest node to the 
+                 * departure location.
+                 */
+                string targetNode = NearestNodeToDeparture(queryTrip.DepartureName);
+
+                if (!targetNode.Equals(NodeName))
+                {
+                    Console.WriteLine("Decision: sending SearchTripCommand to : {0}", targetNode);
+                    ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
+                    forwardRequest.RequestID = serviceImpl.generateGUID();
+                    forwardRequest.Destination = baseForwardAddress + targetNode;
+
+                    return forwardRequest;
+
+                }
+                else
+                {
+
+                    List<Trip> matchingTrip = GetTripZeroRange(queryTrip);
 
                     SearchTripResult searchResult = new SearchTripResult(matchingTrip);
                     Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
 
-                    return searchResult;   
+                    return searchResult;
+                }
+            }
+            // The client specified a range for search: we need to do the proper check!
+            else 
+            {
+
+                return new NullResult();
             }
 
-        }
+        }//End SearchTrip
 
         #endregion
 
 
-        public List<Trip> GetTrip(QueryBuilder filterTrip)
+        public List<Trip> GetTripZeroRange(QueryBuilder filterTrip)
         {
             tripDatabaseLock.EnterReadLock();
             try
