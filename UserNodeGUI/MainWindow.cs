@@ -54,8 +54,8 @@ namespace UserNodeGUI
             if (type == typeof(Communication.SearchTripResult))
             {
                 Communication.SearchTripResult sr = (Communication.SearchTripResult) result;
-                //ResultTabControl.TabPages[key
-                // Update
+                ((ResultTabPage)ResultTabControl.TabPages[sr.OriginalQueryID]).setGridviewDatasource(sr.Trips);
+                connectedStatusLabel.Text = "Connected";
             }
             else if (type == typeof(Communication.InsertOkResult))
             {
@@ -164,7 +164,7 @@ namespace UserNodeGUI
             ResultTabControl.TabPages.Add(page);
             if (page != ResultTabControl.TabPages[key])
                 throw new Exception();
-            page.Select();
+            ResultTabControl.SelectTab(page);
         }
 
         private void searchButton_UpdateStatus(object sender, EventArgs e)
