@@ -74,10 +74,6 @@ namespace Communication
 
             double ret = Math.Acos(Math.Cos(a1) * Math.Cos(b1) * Math.Cos(a2) * Math.Cos(b2) + Math.Cos(a1) * Math.Sin(b1) * Math.Cos(a2) * Math.Sin(b2) + Math.Sin(a1) * Math.Sin(a2)) * earthRadius;
 
-            // Error due to decimal precision
-            if (ret == Double.NaN)
-                ret = 0.0;
-
             return ret;
         }
     }

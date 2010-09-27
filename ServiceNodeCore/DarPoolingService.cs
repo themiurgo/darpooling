@@ -300,6 +300,11 @@ namespace ServiceNodeCore
             {
                 AddJoinedUser(login.AuthorizedUsername);
             }
+            RegisterOkResult register = commandResult as RegisterOkResult;
+            if (register != null)
+            {
+                AddJoinedUser(register.FinalUsername);
+            }
         
         }
 
@@ -313,7 +318,7 @@ namespace ServiceNodeCore
             }
         }
 
-        private string LogTimestamp
+        public string LogTimestamp
         {
             get
             {
