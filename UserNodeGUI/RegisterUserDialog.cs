@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace UserNodeGUI
 {
-    public partial class RegisterUser : Form
+    public partial class RegisterUserDialog : Form
     {
         private UserNodeCore.UserNodeCore core;
 
-        public RegisterUser(UserNodeCore.UserNodeCore core)
+        public RegisterUserDialog(UserNodeCore.UserNodeCore core)
         {
             this.core = core;
             InitializeComponent();

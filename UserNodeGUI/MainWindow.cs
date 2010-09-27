@@ -13,7 +13,7 @@ namespace UserNodeGUI
     {
         UserNodeCore.UserNodeCore core;
         ConnectDialog connectDlg;
-        RegisterUser registerDlg;
+        RegisterUserDialog registerDlg;
 
         public Communication.SearchTripResult stresult; // DEBUG
         public void Debug()
@@ -92,7 +92,7 @@ namespace UserNodeGUI
 
         private void registerUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            registerDlg = new RegisterUser(core);
+            registerDlg = new RegisterUserDialog(core);
             registerDlg.ShowDialog();
         }
 

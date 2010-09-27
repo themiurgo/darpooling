@@ -1,6 +1,6 @@
 ﻿namespace UserNodeGUI
 {
-    partial class RegisterUser
+    partial class RegisterUserDialog
     {
         /// <summary>
         /// Required designer variable.
