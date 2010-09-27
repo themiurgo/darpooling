@@ -46,6 +46,7 @@ namespace UserNodeGUI
             trip.Cost = System.Convert.ToInt32(contributeBox.Text);
 
             core.InsertTrip(trip);
+            Dispose();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)

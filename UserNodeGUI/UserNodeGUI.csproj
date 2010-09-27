@@ -113,6 +113,12 @@
     <Compile Include="RegisterUserDialog.Designer.cs">
       <DependentUpon>RegisterUserDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ResultTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ResultTabPage.Designer.cs">
+      <DependentUpon>ResultTabPage.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UserNodeCore\UserNodeCore.csproj">
