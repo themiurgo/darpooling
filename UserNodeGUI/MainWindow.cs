@@ -51,7 +51,10 @@ namespace UserNodeGUI
         /// <param name="result"></param>
         public void onNewResult(Communication.Result result) {
             Type type = result.GetType();
-            if (type == typeof(Communication.LoginOkResult))
+            if (type == typeof(Communication.SearchTripResult))
+            {
+            }
+            else if (type == typeof(Communication.LoginOkResult))
             {
                 SetConnectedView(true);
                 connectDlg.Dispose();
@@ -146,9 +149,9 @@ namespace UserNodeGUI
             DataGridView gridview = new DataGridView();
 
             gridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridview.Location = new System.Drawing.Point(2, 0);
+            gridview.Dock = System.Windows.Forms.DockStyle.Fill;
+            gridview.Location = new System.Drawing.Point(3, 3);
             gridview.Name = "resultGridView";
-            gridview.Size = new System.Drawing.Size(420, 379);
             gridview.TabIndex = 0;
             gridview.DataSource = stresult.Trips;
 
@@ -160,7 +163,6 @@ namespace UserNodeGUI
             page.UseVisualStyleBackColor = true;
 
             ResultTabControl.SelectTab(page);
-
         }
 
         private void searchButton_UpdateStatus(object sender, EventArgs e)

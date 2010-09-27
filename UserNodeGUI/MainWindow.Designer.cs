@@ -279,14 +279,16 @@
             // 
             // ResultTabControl
             // 
+            this.ResultTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ResultTabControl.Controls.Add(this.tabPage1);
             this.ResultTabControl.Controls.Add(this.tabPage2);
             this.ResultTabControl.Controls.Add(this.tabPage3);
-            this.ResultTabControl.Dock = System.Windows.Forms.DockStyle.Right;
-            this.ResultTabControl.Location = new System.Drawing.Point(196, 24);
+            this.ResultTabControl.Location = new System.Drawing.Point(196, 3);
             this.ResultTabControl.Name = "ResultTabControl";
             this.ResultTabControl.SelectedIndex = 0;
-            this.ResultTabControl.Size = new System.Drawing.Size(430, 405);
+            this.ResultTabControl.Size = new System.Drawing.Size(427, 399);
             this.ResultTabControl.TabIndex = 3;
             // 
             // tabPage1
@@ -295,7 +297,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(422, 379);
+            this.tabPage1.Size = new System.Drawing.Size(419, 373);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -303,9 +305,10 @@
             // resultGridView
             // 
             this.resultGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.resultGridView.Location = new System.Drawing.Point(2, 0);
+            this.resultGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.resultGridView.Location = new System.Drawing.Point(3, 3);
             this.resultGridView.Name = "resultGridView";
-            this.resultGridView.Size = new System.Drawing.Size(420, 379);
+            this.resultGridView.Size = new System.Drawing.Size(413, 367);
             this.resultGridView.TabIndex = 0;
             // 
             // tabPage2
@@ -353,6 +356,8 @@
             // 
             // closeButton
             // 
+            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.closeButton.Location = new System.Drawing.Point(112, 378);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 23);
@@ -364,11 +369,12 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.SearchPanel);
+            this.panel3.Controls.Add(this.ResultTabControl);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(0, 24);
             this.panel3.MinimumSize = new System.Drawing.Size(160, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(196, 405);
+            this.panel3.Size = new System.Drawing.Size(626, 405);
             this.panel3.TabIndex = 4;
             // 
             // SearchPanel
@@ -449,8 +455,7 @@
             // 
             // splitter1
             // 
-            this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(193, 24);
+            this.splitter1.Location = new System.Drawing.Point(0, 24);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 405);
             this.splitter1.TabIndex = 5;
@@ -469,7 +474,6 @@
             this.ClientSize = new System.Drawing.Size(626, 451);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel3);
-            this.Controls.Add(this.ResultTabControl);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainWindow";
