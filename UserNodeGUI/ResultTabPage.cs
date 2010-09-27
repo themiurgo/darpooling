@@ -33,6 +33,11 @@ namespace UserNodeGUI
             UseVisualStyleBackColor = true;
         }
 
+        public void setGridviewDatasource(object source)
+        {
+            gridview.DataSource = source;
+        }
+
         protected override void OnPaint(PaintEventArgs pe)
         {
             base.OnPaint(pe);
