@@ -224,6 +224,9 @@ namespace Communication
         public String Owner { get; set; }
 
         [DataMember]
+        public int Range { get; set; }
+
+        [DataMember]
         public String DepartureName { get; set; }
         [DataMember]
         public DateTime DepartureDateTime { get; set; }
