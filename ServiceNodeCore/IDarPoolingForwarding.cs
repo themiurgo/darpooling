@@ -17,10 +17,10 @@ namespace ServiceNodeCore
     public interface IDarPoolingForwarding
     {
         [OperationContract(IsOneWay = true)]
-        void HandleForwardedDarPoolingRequest(Command fwdCommand, string senderAddress);
+        void HandleForwardedDarPoolingRequest(Command fwdCommand, string rootSenderAddress);
 
         [OperationContract(IsOneWay = true)]
-        void BackPropagateResult(Result finalResult, Command originalCommand);
+        void ReturnFinalResult(Result finalResult, Command originalCommand);
 
     }
 
