@@ -61,14 +61,15 @@ namespace UserNodeGUI
                 SetConnectedView(true);
                 registerDlg.Dispose();
             }
+            else if (type == typeof(Communication.LoginErrorResult) ||
+                type == typeof(Communication.RegisterErrorResult) ||
+                type == typeof(Communication.InsertErrorResult))
+            {
+                MessageBox.Show("Error. Something went wrong, try again.");
+            }
         }
                 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        # region MenuItems click
+        # region MenuItems event
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -94,6 +95,11 @@ namespace UserNodeGUI
         {
             registerDlg = new RegisterUserDialog(core);
             registerDlg.ShowDialog();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         #endregion
@@ -136,7 +142,33 @@ namespace UserNodeGUI
         {
             TabPage page = new TabPage(label);
             ResultTabControl.Controls.Add(page);
+
+            DataGridView gridview = new DataGridView();
+
+            gridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            gridview.Location = new System.Drawing.Point(2, 0);
+            gridview.Name = "resultGridView";
+            gridview.Size = new System.Drawing.Size(420, 379);
+            gridview.TabIndex = 0;
+
+            page.Controls.Add(gridview);
+            page.Location = new System.Drawing.Point(4, 22);
+            page.Padding = new System.Windows.Forms.Padding(3);
+            page.Size = new System.Drawing.Size(422, 379);
+            page.TabIndex = 0;
+            page.UseVisualStyleBackColor = true;
+
             ResultTabControl.SelectTab(page);
+
+        }
+
+        private void searchButton_UpdateStatus(object sender, EventArgs e)
+        {
+            if (sourceTextBox.Text.Length != 0 &&
+                destinationTextBox.Text.Length != 0)
+                searchButton.Enabled = true;
+            else
+                searchButton.Enabled = false;
         }
 
         private void closeButton_Click(object sender, EventArgs e)
