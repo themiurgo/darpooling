@@ -48,7 +48,7 @@ namespace ServiceNodeCore
                                                };
 
             // Obtain the Location coordinates from the location name
-            Console.WriteLine("Retrieving Coordinates from GMap Server....   ");
+            Console.Write("Retrieving Coordinates from GMap Server....   ");
             foreach (string locName in locNames)
             {
                 Location location = GMapsAPI.addressToLocation(locName);

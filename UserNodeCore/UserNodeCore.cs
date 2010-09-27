@@ -234,22 +234,44 @@ namespace UserNodeCore
             //TestCommands(register);
             */
             string city;
+            int range;
             while (true)
             {
-                //Console.ReadLine();
-                Console.WriteLine("Insert departure city... (Insert Trip)");
-                city = Console.ReadLine();
-                trip1.DepartureName = city;
-                InsertTripCommand insert = new InsertTripCommand(trip1);
-                TestCommands(insert);
+                Console.WriteLine("I per insert, S per search, R per search-range:");
+                string instruction = Console.ReadLine();
+                switch(instruction)
+                {
+                    case "i":
+                    //Console.ReadLine();
+                    Console.WriteLine("Insert departure city... (Insert Trip)");
+                    city = Console.ReadLine();
+                    trip1.DepartureName = city;
+                    InsertTripCommand insert = new InsertTripCommand(trip1);
+                    TestCommands(insert);
+                    break;
+                    case "s":
+                    Console.WriteLine("Insert departure city... (Search Trip)");
+                    city = Console.ReadLine();
+                    query1.DepartureName = city;
+                    query1.Range = 0;
+                    SearchTripCommand search = new SearchTripCommand(query1);
+                    TestCommands(search);
+                    break;
+                    case "r":
+                    Console.WriteLine("Insert departure city... (Search Trip)");
+                    city = Console.ReadLine();
+                    query1.DepartureName = city;
+                    Console.WriteLine("Insert search Range... (Search Trip)");
+                    range = Convert.ToInt32(Console.ReadLine());
+                    query1.Range = range;
+                    SearchTripCommand search2 = new SearchTripCommand(query1);
+                    TestCommands(search2);
+                    break;
+                    default:
+                    break;
 
-                Console.WriteLine("Insert departure city... (Search Trip)");
-                city = Console.ReadLine();
-                query1.DepartureName = city;
-                SearchTripCommand search = new SearchTripCommand(query1);
-                TestCommands(search);
-
-                //Console.ReadLine();
+                }
+               //Console.ReadLine();
             }
         }
 

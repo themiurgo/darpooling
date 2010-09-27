@@ -124,7 +124,7 @@ namespace ServiceNodeCore
         /// </summary>
         public void StartService()
         {
-            Console.Write("Starting " + NodeName + " node in " + NodeGeoName + " ... ");
+            Console.Write("Starting " + NodeName + " node in " + NodeGeoName + "... ");
 
             // Set address, binding, contract and behavior of the Service
             Uri http_uri = new Uri(baseHTTPAddress + NodeName);
@@ -462,47 +462,90 @@ namespace ServiceNodeCore
                 error.Comment = "Search range must be a non-negative number!";
                 return error;
             }
-            // The Search has no range criteria.
-            else if (queryTrip.Range == 0)
+            
+            
+            /** Check if the current node is the nearest node to the 
+              * departure location.
+              */
+            string targetNode = NearestNodeToDeparture(queryTrip.DepartureName);
+
+            if (!targetNode.Equals(NodeName))
             {
+                Console.WriteLine("Decision: sending SearchTripCommand to : {0}", targetNode);
+                ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
+                forwardRequest.RequestID = serviceImpl.generateGUID();
+                forwardRequest.Destination = baseForwardAddress + targetNode;
 
+                return forwardRequest;
 
-                /** Check if the current node is the nearest node to the 
-                 * departure location.
-                 */
-                string targetNode = NearestNodeToDeparture(queryTrip.DepartureName);
-
-                if (!targetNode.Equals(NodeName))
-                {
-                    Console.WriteLine("Decision: sending SearchTripCommand to : {0}", targetNode);
-                    ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
-                    forwardRequest.RequestID = serviceImpl.generateGUID();
-                    forwardRequest.Destination = baseForwardAddress + targetNode;
-
-                    return forwardRequest;
-
-                }
-                else
-                {
-
-                    List<Trip> matchingTrip = GetTripZeroRange(queryTrip);
-
-                    SearchTripResult searchResult = new SearchTripResult(matchingTrip);
-                    Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
-
-                    return searchResult;
-                }
             }
-            // The client specified a range for search: we need to do the proper check!
+            
+          
+            // The Search has no range criteria.
+            if (queryTrip.Range == 0)
+            {
+                List<Trip> matchingTrip = GetTripZeroRange(queryTrip);
+
+                SearchTripResult searchResult = new SearchTripResult(matchingTrip);
+                Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
+
+                return searchResult;
+                
+            }
+            // The client specified a range for search: we need to do a more complex search
             else 
             {
+                Location departureLoc = GMapsAPI.addressToLocation(queryTrip.DepartureName);
+                LocationRange departureLocRange = new LocationRange(departureLoc.Latitude, departureLoc.Longitude, queryTrip.Range);
 
-                return new NullResult();
+                List<Trip> matchingTrip = GetTripWithRange(queryTrip, departureLocRange);
+
+                SearchTripResult searchResult = new SearchTripResult(matchingTrip);
+                Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
+
+                return searchResult;
             }
 
         }//End SearchTrip
 
         #endregion
+
+
+        public List<Trip> GetTripWithRange(QueryBuilder filterTrip, LocationRange departureLocRange)
+        { 
+            tripDatabaseLock.EnterReadLock();
+            try
+            {
+                tripDatabase = XDocument.Load(tripDatabasePath);
+
+                var baseQuery = (from t in tripDatabase.Descendants("Trip")
+                                 where departureLocRange.contains(new Location(Convert.ToDouble(t.Element("DepartureLatitude").Value),Convert.ToDouble(t.Element("DepartureLongitude").Value)))
+                                 select new Trip()
+                                 {
+                                     ID = Convert.ToInt32(t.Element("ID").Value),
+                                     Owner = t.Element("Owner").Value,
+                                     DepartureName = t.Element("DepartureName").Value,
+                                     DepartureDateTime = Convert.ToDateTime(t.Element("DepartureDateTime").Value),
+                                     ArrivalName = t.Element("ArrivalName").Value,
+                                     ArrivalDateTime = Convert.ToDateTime(t.Element("ArrivalDateTime").Value),
+                                     Smoke = Convert.ToBoolean(t.Element("Smoke").Value),
+                                     Music = Convert.ToBoolean(t.Element("Music").Value),
+                                     Cost = Convert.ToDouble(t.Element("Cost").Value),
+                                     FreeSits = Convert.ToInt32(t.Element("FreeSits").Value),
+                                     Notes = t.Element("Notes").Value,
+                                     Modifiable = Convert.ToBoolean(t.Element("Modifiable").Value)
+                                 });
+
+                IEnumerable<Trip> filteredQuery = FilterQuery(filterTrip, baseQuery);
+                return filteredQuery.ToList();
+
+            }
+            finally
+            {
+                tripDatabaseLock.ExitReadLock();
+            }
+        
+        }
 
 
         public List<Trip> GetTripZeroRange(QueryBuilder filterTrip)
