@@ -28,52 +28,52 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.userDetailsGroupBox = new System.Windows.Forms.GroupBox();
             this.smokerCheckBox = new System.Windows.Forms.CheckBox();
             this.locationTextBox = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.locationLabel = new System.Windows.Forms.Label();
+            this.sexLabel = new System.Windows.Forms.Label();
             this.femaleRadioButton = new System.Windows.Forms.RadioButton();
             this.maleRadioButton = new System.Windows.Forms.RadioButton();
-            this.label5 = new System.Windows.Forms.Label();
+            this.birthdateLabel = new System.Windows.Forms.Label();
             this.birthdateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.emailTextBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.emailLabel = new System.Windows.Forms.Label();
             this.nameTextBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.nameLabel = new System.Windows.Forms.Label();
             this.registerButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.passwordLabel = new System.Windows.Forms.Label();
             this.usernameTextBox = new System.Windows.Forms.TextBox();
             this.passwordTextBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.usernameLabel = new System.Windows.Forms.Label();
             this.registrarLabel = new System.Windows.Forms.Label();
             this.registrarTextBox = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.accountGroupBox = new System.Windows.Forms.GroupBox();
+            this.userDetailsGroupBox.SuspendLayout();
+            this.accountGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
-            // groupBox2
+            // userDetailsGroupBox
             // 
-            this.groupBox2.Controls.Add(this.smokerCheckBox);
-            this.groupBox2.Controls.Add(this.locationTextBox);
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.femaleRadioButton);
-            this.groupBox2.Controls.Add(this.maleRadioButton);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.birthdateTimePicker);
-            this.groupBox2.Controls.Add(this.emailTextBox);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.nameTextBox);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(12, 116);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 171);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "User details";
+            this.userDetailsGroupBox.Controls.Add(this.smokerCheckBox);
+            this.userDetailsGroupBox.Controls.Add(this.locationTextBox);
+            this.userDetailsGroupBox.Controls.Add(this.locationLabel);
+            this.userDetailsGroupBox.Controls.Add(this.sexLabel);
+            this.userDetailsGroupBox.Controls.Add(this.femaleRadioButton);
+            this.userDetailsGroupBox.Controls.Add(this.maleRadioButton);
+            this.userDetailsGroupBox.Controls.Add(this.birthdateLabel);
+            this.userDetailsGroupBox.Controls.Add(this.birthdateTimePicker);
+            this.userDetailsGroupBox.Controls.Add(this.emailTextBox);
+            this.userDetailsGroupBox.Controls.Add(this.emailLabel);
+            this.userDetailsGroupBox.Controls.Add(this.nameTextBox);
+            this.userDetailsGroupBox.Controls.Add(this.nameLabel);
+            this.userDetailsGroupBox.Location = new System.Drawing.Point(12, 116);
+            this.userDetailsGroupBox.Name = "userDetailsGroupBox";
+            this.userDetailsGroupBox.Size = new System.Drawing.Size(200, 171);
+            this.userDetailsGroupBox.TabIndex = 5;
+            this.userDetailsGroupBox.TabStop = false;
+            this.userDetailsGroupBox.Text = "User details";
             // 
             // smokerCheckBox
             // 
@@ -92,23 +92,23 @@
             this.locationTextBox.Size = new System.Drawing.Size(127, 20);
             this.locationTextBox.TabIndex = 9;
             // 
-            // label7
+            // locationLabel
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 125);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(48, 13);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "Location";
+            this.locationLabel.AutoSize = true;
+            this.locationLabel.Location = new System.Drawing.Point(6, 125);
+            this.locationLabel.Name = "locationLabel";
+            this.locationLabel.Size = new System.Drawing.Size(48, 13);
+            this.locationLabel.TabIndex = 6;
+            this.locationLabel.Text = "Location";
             // 
-            // label6
+            // sexLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 100);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(25, 13);
-            this.label6.TabIndex = 6;
-            this.label6.Text = "Sex";
+            this.sexLabel.AutoSize = true;
+            this.sexLabel.Location = new System.Drawing.Point(6, 100);
+            this.sexLabel.Name = "sexLabel";
+            this.sexLabel.Size = new System.Drawing.Size(25, 13);
+            this.sexLabel.TabIndex = 6;
+            this.sexLabel.Text = "Sex";
             // 
             // femaleRadioButton
             // 
@@ -132,14 +132,14 @@
             this.maleRadioButton.Text = "Male";
             this.maleRadioButton.UseVisualStyleBackColor = true;
             // 
-            // label5
+            // birthdateLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 77);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(49, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Birthdate";
+            this.birthdateLabel.AutoSize = true;
+            this.birthdateLabel.Location = new System.Drawing.Point(6, 77);
+            this.birthdateLabel.Name = "birthdateLabel";
+            this.birthdateLabel.Size = new System.Drawing.Size(49, 13);
+            this.birthdateLabel.TabIndex = 5;
+            this.birthdateLabel.Text = "Birthdate";
             // 
             // birthdateTimePicker
             // 
@@ -156,14 +156,14 @@
             this.emailTextBox.Size = new System.Drawing.Size(127, 20);
             this.emailTextBox.TabIndex = 5;
             // 
-            // label4
+            // emailLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 49);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Email";
+            this.emailLabel.AutoSize = true;
+            this.emailLabel.Location = new System.Drawing.Point(6, 49);
+            this.emailLabel.Name = "emailLabel";
+            this.emailLabel.Size = new System.Drawing.Size(32, 13);
+            this.emailLabel.TabIndex = 2;
+            this.emailLabel.Text = "Email";
             // 
             // nameTextBox
             // 
@@ -172,14 +172,14 @@
             this.nameTextBox.Size = new System.Drawing.Size(127, 20);
             this.nameTextBox.TabIndex = 4;
             // 
-            // label3
+            // nameLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Name";
+            this.nameLabel.AutoSize = true;
+            this.nameLabel.Location = new System.Drawing.Point(6, 22);
+            this.nameLabel.Name = "nameLabel";
+            this.nameLabel.Size = new System.Drawing.Size(35, 13);
+            this.nameLabel.TabIndex = 0;
+            this.nameLabel.Text = "Name";
             // 
             // registerButton
             // 
@@ -201,14 +201,14 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // label2
+            // passwordLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 48);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Password";
+            this.passwordLabel.AutoSize = true;
+            this.passwordLabel.Location = new System.Drawing.Point(6, 48);
+            this.passwordLabel.Name = "passwordLabel";
+            this.passwordLabel.Size = new System.Drawing.Size(53, 13);
+            this.passwordLabel.TabIndex = 1;
+            this.passwordLabel.Text = "Password";
             // 
             // usernameTextBox
             // 
@@ -224,14 +224,14 @@
             this.passwordTextBox.Size = new System.Drawing.Size(127, 20);
             this.passwordTextBox.TabIndex = 2;
             // 
-            // label1
+            // usernameLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Username";
+            this.usernameLabel.AutoSize = true;
+            this.usernameLabel.Location = new System.Drawing.Point(6, 22);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.Size = new System.Drawing.Size(55, 13);
+            this.usernameLabel.TabIndex = 0;
+            this.usernameLabel.Text = "Username";
             // 
             // registrarLabel
             // 
@@ -249,20 +249,20 @@
             this.registrarTextBox.Size = new System.Drawing.Size(127, 20);
             this.registrarTextBox.TabIndex = 3;
             // 
-            // groupBox1
+            // accountGroupBox
             // 
-            this.groupBox1.Controls.Add(this.registrarTextBox);
-            this.groupBox1.Controls.Add(this.registrarLabel);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.passwordTextBox);
-            this.groupBox1.Controls.Add(this.usernameTextBox);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 98);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Account informations";
+            this.accountGroupBox.Controls.Add(this.registrarTextBox);
+            this.accountGroupBox.Controls.Add(this.registrarLabel);
+            this.accountGroupBox.Controls.Add(this.usernameLabel);
+            this.accountGroupBox.Controls.Add(this.passwordTextBox);
+            this.accountGroupBox.Controls.Add(this.usernameTextBox);
+            this.accountGroupBox.Controls.Add(this.passwordLabel);
+            this.accountGroupBox.Location = new System.Drawing.Point(12, 12);
+            this.accountGroupBox.Name = "accountGroupBox";
+            this.accountGroupBox.Size = new System.Drawing.Size(200, 98);
+            this.accountGroupBox.TabIndex = 4;
+            this.accountGroupBox.TabStop = false;
+            this.accountGroupBox.Text = "Account informations";
             // 
             // RegisterUserDialog
             // 
@@ -271,42 +271,42 @@
             this.ClientSize = new System.Drawing.Size(224, 348);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.registerButton);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.userDetailsGroupBox);
+            this.Controls.Add(this.accountGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "RegisterUserDialog";
             this.Text = "RegisterUser";
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.userDetailsGroupBox.ResumeLayout(false);
+            this.userDetailsGroupBox.PerformLayout();
+            this.accountGroupBox.ResumeLayout(false);
+            this.accountGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox userDetailsGroupBox;
         private System.Windows.Forms.TextBox nameTextBox;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label nameLabel;
         private System.Windows.Forms.RadioButton maleRadioButton;
         private System.Windows.Forms.RadioButton femaleRadioButton;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label birthdateLabel;
         private System.Windows.Forms.DateTimePicker birthdateTimePicker;
         private System.Windows.Forms.TextBox emailTextBox;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label emailLabel;
+        private System.Windows.Forms.Label sexLabel;
         private System.Windows.Forms.TextBox locationTextBox;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label locationLabel;
         private System.Windows.Forms.Button registerButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label passwordLabel;
         private System.Windows.Forms.TextBox usernameTextBox;
         private System.Windows.Forms.TextBox passwordTextBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label usernameLabel;
         private System.Windows.Forms.Label registrarLabel;
         private System.Windows.Forms.TextBox registrarTextBox;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox accountGroupBox;
         private System.Windows.Forms.CheckBox smokerCheckBox;
     }
 }
