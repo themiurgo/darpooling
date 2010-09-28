@@ -51,9 +51,11 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.connectedStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.closeButton = new System.Windows.Forms.Button();
+            this.closeTabButton = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
             this.SearchPanel = new System.Windows.Forms.Panel();
+            this.rangeUpDown = new System.Windows.Forms.NumericUpDown();
+            this.rangeLabel = new System.Windows.Forms.Label();
             this.searchButton = new System.Windows.Forms.Button();
             this.SourceLabel = new System.Windows.Forms.Label();
             this.sourceTextBox = new System.Windows.Forms.TextBox();
@@ -63,8 +65,6 @@
             this.ResultTabControl = new System.Windows.Forms.TabControl();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rangeLabel = new System.Windows.Forms.Label();
-            this.rangeUpDown = new System.Windows.Forms.NumericUpDown();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.MainPanel.SuspendLayout();
@@ -199,30 +199,30 @@
             // contentsToolStripMenuItem
             // 
             this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.contentsToolStripMenuItem.Text = "&Contents";
             // 
             // indexToolStripMenuItem
             // 
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.searchToolStripMenuItem.Text = "&Search";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(115, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.aboutToolStripMenuItem.Text = "&About...";
             // 
             // statusStrip1
@@ -241,16 +241,16 @@
             this.connectedStatusLabel.Size = new System.Drawing.Size(77, 17);
             this.connectedStatusLabel.Text = "Not connected";
             // 
-            // closeButton
+            // closeTabButton
             // 
-            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeButton.Location = new System.Drawing.Point(112, 378);
-            this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(75, 23);
-            this.closeButton.TabIndex = 0;
-            this.closeButton.Text = "Close";
-            this.closeButton.UseVisualStyleBackColor = true;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            this.closeTabButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.closeTabButton.Location = new System.Drawing.Point(112, 378);
+            this.closeTabButton.Name = "closeTabButton";
+            this.closeTabButton.Size = new System.Drawing.Size(75, 23);
+            this.closeTabButton.TabIndex = 0;
+            this.closeTabButton.Text = "Close Tab";
+            this.closeTabButton.UseVisualStyleBackColor = true;
+            this.closeTabButton.Click += new System.EventHandler(this.closeTabButton_Click);
             // 
             // MainPanel
             // 
@@ -270,7 +270,7 @@
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.SearchPanel.Controls.Add(this.rangeUpDown);
             this.SearchPanel.Controls.Add(this.rangeLabel);
-            this.SearchPanel.Controls.Add(this.closeButton);
+            this.SearchPanel.Controls.Add(this.closeTabButton);
             this.SearchPanel.Controls.Add(this.searchButton);
             this.SearchPanel.Controls.Add(this.SourceLabel);
             this.SearchPanel.Controls.Add(this.sourceTextBox);
@@ -281,6 +281,22 @@
             this.SearchPanel.Name = "SearchPanel";
             this.SearchPanel.Size = new System.Drawing.Size(193, 405);
             this.SearchPanel.TabIndex = 0;
+            // 
+            // rangeUpDown
+            // 
+            this.rangeUpDown.Location = new System.Drawing.Point(148, 25);
+            this.rangeUpDown.Name = "rangeUpDown";
+            this.rangeUpDown.Size = new System.Drawing.Size(42, 20);
+            this.rangeUpDown.TabIndex = 2;
+            // 
+            // rangeLabel
+            // 
+            this.rangeLabel.AutoSize = true;
+            this.rangeLabel.Location = new System.Drawing.Point(143, 9);
+            this.rangeLabel.Name = "rangeLabel";
+            this.rangeLabel.Size = new System.Drawing.Size(44, 13);
+            this.rangeLabel.TabIndex = 4;
+            this.rangeLabel.Text = "+/- (km)";
             // 
             // searchButton
             // 
@@ -367,22 +383,6 @@
             this.dataGridViewTextBoxColumn1.HeaderText = "Tag";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
-            // rangeLabel
-            // 
-            this.rangeLabel.AutoSize = true;
-            this.rangeLabel.Location = new System.Drawing.Point(143, 9);
-            this.rangeLabel.Name = "rangeLabel";
-            this.rangeLabel.Size = new System.Drawing.Size(44, 13);
-            this.rangeLabel.TabIndex = 4;
-            this.rangeLabel.Text = "+/- (km)";
-            // 
-            // rangeUpDown
-            // 
-            this.rangeUpDown.Location = new System.Drawing.Point(148, 25);
-            this.rangeUpDown.Name = "rangeUpDown";
-            this.rangeUpDown.Size = new System.Drawing.Size(42, 20);
-            this.rangeUpDown.TabIndex = 2;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -439,7 +439,7 @@
         private System.Windows.Forms.Button ResetButton;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Panel SearchPanel;
-        private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.Button closeTabButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn acceptButtonDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn autoScrollDataGridViewCheckBoxColumn;

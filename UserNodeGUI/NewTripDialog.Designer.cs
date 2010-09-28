@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.departureNameTextBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.departureLabel = new System.Windows.Forms.Label();
+            this.arrivalLabel = new System.Windows.Forms.Label();
             this.arrivalNameTextBox = new System.Windows.Forms.TextBox();
             this.freeSeatsUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
+            this.freeSeatsLabel = new System.Windows.Forms.Label();
             this.smokingCheckBox = new System.Windows.Forms.CheckBox();
             this.musicCheckBox = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.contributeLabel = new System.Windows.Forms.Label();
             this.departureDatePicker = new System.Windows.Forms.DateTimePicker();
             this.departureTimePicker = new System.Windows.Forms.DateTimePicker();
             this.arrivalDatePicker = new System.Windows.Forms.DateTimePicker();
@@ -44,7 +44,7 @@
             this.CancButton = new System.Windows.Forms.Button();
             this.OKButton = new System.Windows.Forms.Button();
             this.contributeUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
+            this.currencyLabel = new System.Windows.Forms.Label();
             this.notesTextBox = new System.Windows.Forms.TextBox();
             this.notesLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.freeSeatsUpDown)).BeginInit();
@@ -58,23 +58,23 @@
             this.departureNameTextBox.Size = new System.Drawing.Size(309, 20);
             this.departureNameTextBox.TabIndex = 0;
             // 
-            // label1
+            // departureLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(54, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Departure";
+            this.departureLabel.AutoSize = true;
+            this.departureLabel.Location = new System.Drawing.Point(12, 9);
+            this.departureLabel.Name = "departureLabel";
+            this.departureLabel.Size = new System.Drawing.Size(54, 13);
+            this.departureLabel.TabIndex = 1;
+            this.departureLabel.Text = "Departure";
             // 
-            // label2
+            // arrivalLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 61);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Arrival";
+            this.arrivalLabel.AutoSize = true;
+            this.arrivalLabel.Location = new System.Drawing.Point(12, 61);
+            this.arrivalLabel.Name = "arrivalLabel";
+            this.arrivalLabel.Size = new System.Drawing.Size(36, 13);
+            this.arrivalLabel.TabIndex = 2;
+            this.arrivalLabel.Text = "Arrival";
             // 
             // arrivalNameTextBox
             // 
@@ -90,14 +90,14 @@
             this.freeSeatsUpDown.Size = new System.Drawing.Size(43, 20);
             this.freeSeatsUpDown.TabIndex = 6;
             // 
-            // label3
+            // freeSeatsLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 121);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Free seats";
+            this.freeSeatsLabel.AutoSize = true;
+            this.freeSeatsLabel.Location = new System.Drawing.Point(12, 121);
+            this.freeSeatsLabel.Name = "freeSeatsLabel";
+            this.freeSeatsLabel.Size = new System.Drawing.Size(56, 13);
+            this.freeSeatsLabel.TabIndex = 5;
+            this.freeSeatsLabel.Text = "Free seats";
             // 
             // smokingCheckBox
             // 
@@ -119,14 +119,14 @@
             this.musicCheckBox.Text = "Music";
             this.musicCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label4
+            // contributeLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 148);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(55, 13);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Contribute";
+            this.contributeLabel.AutoSize = true;
+            this.contributeLabel.Location = new System.Drawing.Point(12, 148);
+            this.contributeLabel.Name = "contributeLabel";
+            this.contributeLabel.Size = new System.Drawing.Size(55, 13);
+            this.contributeLabel.TabIndex = 9;
+            this.contributeLabel.Text = "Contribute";
             // 
             // departureDatePicker
             // 
@@ -189,14 +189,14 @@
             this.contributeUpDown.Size = new System.Drawing.Size(43, 20);
             this.contributeUpDown.TabIndex = 7;
             // 
-            // label5
+            // currencyLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(121, 148);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 13);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "EUR";
+            this.currencyLabel.AutoSize = true;
+            this.currencyLabel.Location = new System.Drawing.Point(121, 148);
+            this.currencyLabel.Name = "currencyLabel";
+            this.currencyLabel.Size = new System.Drawing.Size(30, 13);
+            this.currencyLabel.TabIndex = 17;
+            this.currencyLabel.Text = "EUR";
             // 
             // notesTextBox
             // 
@@ -224,7 +224,7 @@
             this.ClientSize = new System.Drawing.Size(393, 313);
             this.Controls.Add(this.notesLabel);
             this.Controls.Add(this.notesTextBox);
-            this.Controls.Add(this.label5);
+            this.Controls.Add(this.currencyLabel);
             this.Controls.Add(this.contributeUpDown);
             this.Controls.Add(this.OKButton);
             this.Controls.Add(this.CancButton);
@@ -232,14 +232,14 @@
             this.Controls.Add(this.arrivalDatePicker);
             this.Controls.Add(this.departureTimePicker);
             this.Controls.Add(this.departureDatePicker);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.contributeLabel);
             this.Controls.Add(this.musicCheckBox);
             this.Controls.Add(this.smokingCheckBox);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.freeSeatsLabel);
             this.Controls.Add(this.freeSeatsUpDown);
             this.Controls.Add(this.arrivalNameTextBox);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.arrivalLabel);
+            this.Controls.Add(this.departureLabel);
             this.Controls.Add(this.departureNameTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "NewTripDialog";
@@ -254,14 +254,14 @@
         #endregion
 
         private System.Windows.Forms.TextBox departureNameTextBox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label departureLabel;
+        private System.Windows.Forms.Label arrivalLabel;
         private System.Windows.Forms.TextBox arrivalNameTextBox;
         private System.Windows.Forms.NumericUpDown freeSeatsUpDown;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label freeSeatsLabel;
         private System.Windows.Forms.CheckBox smokingCheckBox;
         private System.Windows.Forms.CheckBox musicCheckBox;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label contributeLabel;
         private System.Windows.Forms.DateTimePicker departureDatePicker;
         private System.Windows.Forms.DateTimePicker departureTimePicker;
         private System.Windows.Forms.DateTimePicker arrivalDatePicker;
@@ -269,7 +269,7 @@
         private System.Windows.Forms.Button CancButton;
         private System.Windows.Forms.Button OKButton;
         private System.Windows.Forms.NumericUpDown contributeUpDown;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label currencyLabel;
         private System.Windows.Forms.TextBox notesTextBox;
         private System.Windows.Forms.Label notesLabel;
     }

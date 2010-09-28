@@ -15,31 +15,10 @@ namespace UserNodeGUI
         ConnectDialog connectDlg;
         RegisterUserDialog registerDlg;
 
-        public Communication.SearchTripResult stresult; // DEBUG
-        public void Debug()
-        {
-            Communication.Trip trip1 = new Communication.Trip();
-            trip1.ArrivalName = "catania";
-            trip1.DepartureName = "messina";
-            trip1.ArrivalDateTime = new DateTime(1999, 06, 20);
-            trip1.DepartureDateTime = new DateTime(1999, 06, 19);
-            trip1.Smoke = false;
-            trip1.Music = false;
-            trip1.Owner = "provaowner";
-            trip1.FreeSits = 3;
-            trip1.Cost = 19;
-            List<Communication.Trip> list = new List<Communication.Trip>();
-            list.Add(trip1);
-            stresult = new Communication.SearchTripResult(list);
-        }
-
         public MainWindow()
         {
             InitializeComponent();
-            Debug();
             core = new UserNodeCore.UserNodeCore(new Communication.UserNode("prova"));
-            //SearchPanel.Hide();
-            //ResultTabControl.Hide();
             core.resultCallback += new UserNodeCore.UserNodeCore.ResultReceiveHandler(onNewResult);
         }
 
@@ -114,6 +93,10 @@ namespace UserNodeGUI
 
         #endregion
 
+        /*
+         * Main interface methods
+         */
+
         private void searchButton_Click(object sender, EventArgs e)
         {
             /*
@@ -134,6 +117,27 @@ namespace UserNodeGUI
             AddTabPage(qb.ID, source + " - " + destination);
             core.SearchTrip(qb);
         }
+
+        private void searchButton_UpdateStatus(object sender, EventArgs e)
+        {
+            if (sourceTextBox.Text.Length != 0 &&
+                destinationTextBox.Text.Length != 0)
+                searchButton.Enabled = true;
+            else
+                searchButton.Enabled = false;
+        }
+
+        private void closeTabButton_Click(object sender, EventArgs e)
+        {
+            //ResultTabControl.Controls.RemoveAt();
+            TabPage p = ResultTabControl.SelectedTab;
+            if (p != null)
+                p.Dispose();
+        }
+
+        /*
+         * Helper methods
+         */
 
         private void SetConnectedView(bool connected)
         {
@@ -166,23 +170,6 @@ namespace UserNodeGUI
             if (page != ResultTabControl.TabPages[key])
                 throw new Exception();
             ResultTabControl.SelectTab(page);
-        }
-
-        private void searchButton_UpdateStatus(object sender, EventArgs e)
-        {
-            if (sourceTextBox.Text.Length != 0 &&
-                destinationTextBox.Text.Length != 0)
-                searchButton.Enabled = true;
-            else
-                searchButton.Enabled = false;
-        }
-
-        private void closeButton_Click(object sender, EventArgs e)
-        {
-            //ResultTabControl.Controls.RemoveAt();
-            TabPage p = ResultTabControl.SelectedTab;
-            if (p != null)
-                p.Dispose();
         }
     }
 }
