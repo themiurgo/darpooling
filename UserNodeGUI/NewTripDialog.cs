@@ -27,23 +27,26 @@ namespace UserNodeGUI
 
         private void OKButton_Click(object sender, EventArgs e)
         {
-            Communication.Trip trip = new Communication.Trip();
-            trip.Owner = core.UserNode.User.UserName; // FIXME?
-            trip.ArrivalName = arrivalNameTextBox.Text;
-            trip.DepartureName = departureNameTextBox.Text;
             DateTime depDate = departureDatePicker.Value;
             DateTime depTime = departureTimePicker.Value;
-            trip.DepartureDateTime = new DateTime(depDate.Year, depDate.Month,
-                depDate.Day, depTime.Hour, depTime.Minute, 0);
-
             DateTime arrDate = arrivalDatePicker.Value;
             DateTime arrTime = arrivalTimePicker.Value;
-            trip.ArrivalDateTime = new DateTime(arrDate.Year, arrDate.Month,
-                arrDate.Day, arrDate.Hour, arrDate.Minute, 0);
-            trip.FreeSits = (int) freeSeatsUpDown.Value;
-            trip.Smoke = smokingCheckBox.Checked;
-            trip.Music = musicCheckBox.Checked;
-            trip.Cost = System.Convert.ToInt32(contributeBox.Text);
+
+            Communication.Trip trip = new Communication.Trip()
+            {
+                Owner = core.UserNode.User.UserName, // FIXME?
+                DepartureName = departureNameTextBox.Text,
+                DepartureDateTime = new DateTime(depDate.Year, depDate.Month,
+                    depDate.Day, depTime.Hour, depTime.Minute, 0),
+                ArrivalName = arrivalNameTextBox.Text,
+                ArrivalDateTime = new DateTime(arrDate.Year, arrDate.Month,
+                    arrDate.Day, arrDate.Hour, arrDate.Minute, 0),
+                FreeSits = (int) freeSeatsUpDown.Value,
+                Smoke = smokingCheckBox.Checked,
+                Music = musicCheckBox.Checked,
+                Cost = (int) contributeUpDown.Value,
+                Notes = notesTextBox.Text
+            };
 
             core.InsertTrip(trip);
             Dispose();
