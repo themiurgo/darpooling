@@ -167,7 +167,7 @@
             this.CancButton.Location = new System.Drawing.Point(305, 278);
             this.CancButton.Name = "CancButton";
             this.CancButton.Size = new System.Drawing.Size(75, 23);
-            this.CancButton.TabIndex = 14;
+            this.CancButton.TabIndex = 12;
             this.CancButton.Text = "Cancel";
             this.CancButton.UseVisualStyleBackColor = true;
             this.CancButton.Click += new System.EventHandler(this.CancelButton_Click);
@@ -177,7 +177,7 @@
             this.OKButton.Location = new System.Drawing.Point(224, 278);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
-            this.OKButton.TabIndex = 15;
+            this.OKButton.TabIndex = 11;
             this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
             this.OKButton.Click += new System.EventHandler(this.OKButton_Click);
@@ -187,7 +187,7 @@
             this.contributeUpDown.Location = new System.Drawing.Point(72, 146);
             this.contributeUpDown.Name = "contributeUpDown";
             this.contributeUpDown.Size = new System.Drawing.Size(43, 20);
-            this.contributeUpDown.TabIndex = 16;
+            this.contributeUpDown.TabIndex = 7;
             // 
             // label5
             // 
@@ -206,7 +206,7 @@
             this.notesTextBox.Name = "notesTextBox";
             this.notesTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.notesTextBox.Size = new System.Drawing.Size(366, 84);
-            this.notesTextBox.TabIndex = 18;
+            this.notesTextBox.TabIndex = 10;
             // 
             // notesLabel
             // 
