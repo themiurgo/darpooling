@@ -98,7 +98,7 @@
             this.ConnectButton.Location = new System.Drawing.Point(201, 238);
             this.ConnectButton.Name = "ConnectButton";
             this.ConnectButton.Size = new System.Drawing.Size(75, 23);
-            this.ConnectButton.TabIndex = 6;
+            this.ConnectButton.TabIndex = 20;
             this.ConnectButton.Text = "Connect";
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
@@ -109,7 +109,7 @@
             this.CancButton.Location = new System.Drawing.Point(282, 238);
             this.CancButton.Name = "CancButton";
             this.CancButton.Size = new System.Drawing.Size(75, 23);
-            this.CancButton.TabIndex = 7;
+            this.CancButton.TabIndex = 21;
             this.CancButton.Text = "Cancel";
             this.CancButton.UseVisualStyleBackColor = true;
             this.CancButton.Click += new System.EventHandler(this.CancelButton_Click);

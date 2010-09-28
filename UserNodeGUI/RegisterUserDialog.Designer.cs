@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.smokerCheckBox = new System.Windows.Forms.CheckBox();
             this.locationTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -49,7 +50,6 @@
             this.registrarLabel = new System.Windows.Forms.Label();
             this.registrarTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.smokerCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -75,12 +75,22 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "User details";
             // 
+            // smokerCheckBox
+            // 
+            this.smokerCheckBox.AutoSize = true;
+            this.smokerCheckBox.Location = new System.Drawing.Point(67, 148);
+            this.smokerCheckBox.Name = "smokerCheckBox";
+            this.smokerCheckBox.Size = new System.Drawing.Size(62, 17);
+            this.smokerCheckBox.TabIndex = 10;
+            this.smokerCheckBox.Text = "Smoker";
+            this.smokerCheckBox.UseVisualStyleBackColor = true;
+            // 
             // locationTextBox
             // 
             this.locationTextBox.Location = new System.Drawing.Point(67, 122);
             this.locationTextBox.Name = "locationTextBox";
             this.locationTextBox.Size = new System.Drawing.Size(127, 20);
-            this.locationTextBox.TabIndex = 6;
+            this.locationTextBox.TabIndex = 9;
             // 
             // label7
             // 
@@ -106,7 +116,7 @@
             this.femaleRadioButton.Location = new System.Drawing.Point(127, 99);
             this.femaleRadioButton.Name = "femaleRadioButton";
             this.femaleRadioButton.Size = new System.Drawing.Size(59, 17);
-            this.femaleRadioButton.TabIndex = 6;
+            this.femaleRadioButton.TabIndex = 8;
             this.femaleRadioButton.TabStop = true;
             this.femaleRadioButton.Text = "Female";
             this.femaleRadioButton.UseVisualStyleBackColor = true;
@@ -117,7 +127,7 @@
             this.maleRadioButton.Location = new System.Drawing.Point(71, 99);
             this.maleRadioButton.Name = "maleRadioButton";
             this.maleRadioButton.Size = new System.Drawing.Size(48, 17);
-            this.maleRadioButton.TabIndex = 2;
+            this.maleRadioButton.TabIndex = 7;
             this.maleRadioButton.TabStop = true;
             this.maleRadioButton.Text = "Male";
             this.maleRadioButton.UseVisualStyleBackColor = true;
@@ -137,14 +147,14 @@
             this.birthdateTimePicker.Location = new System.Drawing.Point(67, 73);
             this.birthdateTimePicker.Name = "birthdateTimePicker";
             this.birthdateTimePicker.Size = new System.Drawing.Size(100, 20);
-            this.birthdateTimePicker.TabIndex = 4;
+            this.birthdateTimePicker.TabIndex = 6;
             // 
             // emailTextBox
             // 
             this.emailTextBox.Location = new System.Drawing.Point(67, 46);
             this.emailTextBox.Name = "emailTextBox";
             this.emailTextBox.Size = new System.Drawing.Size(127, 20);
-            this.emailTextBox.TabIndex = 3;
+            this.emailTextBox.TabIndex = 5;
             // 
             // label4
             // 
@@ -160,7 +170,7 @@
             this.nameTextBox.Location = new System.Drawing.Point(67, 19);
             this.nameTextBox.Name = "nameTextBox";
             this.nameTextBox.Size = new System.Drawing.Size(127, 20);
-            this.nameTextBox.TabIndex = 1;
+            this.nameTextBox.TabIndex = 4;
             // 
             // label3
             // 
@@ -176,7 +186,7 @@
             this.registerButton.Location = new System.Drawing.Point(56, 313);
             this.registerButton.Name = "registerButton";
             this.registerButton.Size = new System.Drawing.Size(75, 23);
-            this.registerButton.TabIndex = 6;
+            this.registerButton.TabIndex = 11;
             this.registerButton.Text = "Register";
             this.registerButton.UseVisualStyleBackColor = true;
             this.registerButton.Click += new System.EventHandler(this.registerButton_Click);
@@ -186,7 +196,7 @@
             this.cancelButton.Location = new System.Drawing.Point(137, 313);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 7;
+            this.cancelButton.TabIndex = 12;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
@@ -205,14 +215,14 @@
             this.usernameTextBox.Location = new System.Drawing.Point(67, 19);
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(127, 20);
-            this.usernameTextBox.TabIndex = 2;
+            this.usernameTextBox.TabIndex = 1;
             // 
             // passwordTextBox
             // 
             this.passwordTextBox.Location = new System.Drawing.Point(67, 45);
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(127, 20);
-            this.passwordTextBox.TabIndex = 3;
+            this.passwordTextBox.TabIndex = 2;
             // 
             // label1
             // 
@@ -237,7 +247,7 @@
             this.registrarTextBox.Location = new System.Drawing.Point(67, 71);
             this.registrarTextBox.Name = "registrarTextBox";
             this.registrarTextBox.Size = new System.Drawing.Size(127, 20);
-            this.registrarTextBox.TabIndex = 6;
+            this.registrarTextBox.TabIndex = 3;
             // 
             // groupBox1
             // 
@@ -254,17 +264,7 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Account informations";
             // 
-            // smokerCheckBox
-            // 
-            this.smokerCheckBox.AutoSize = true;
-            this.smokerCheckBox.Location = new System.Drawing.Point(67, 148);
-            this.smokerCheckBox.Name = "smokerCheckBox";
-            this.smokerCheckBox.Size = new System.Drawing.Size(62, 17);
-            this.smokerCheckBox.TabIndex = 7;
-            this.smokerCheckBox.Text = "Smoker";
-            this.smokerCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // RegisterUser
+            // RegisterUserDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -274,7 +274,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "RegisterUser";
+            this.Name = "RegisterUserDialog";
             this.Text = "RegisterUser";
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
