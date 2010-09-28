@@ -125,7 +125,8 @@ namespace UserNodeGUI
             {
                 Owner = core.UserNode.User.UserName,
                 DepartureName = sourceTextBox.Text,
-                ArrivalName = destinationTextBox.Text
+                ArrivalName = destinationTextBox.Text,
+                Range = (int) rangeUpDown.Value
             };
 
             string source = sourceTextBox.Text;

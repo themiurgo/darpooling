@@ -36,9 +36,6 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.printPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,13 +60,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.ResetButton = new System.Windows.Forms.Button();
             this.destinationTextBox = new System.Windows.Forms.TextBox();
+            this.ResultTabControl = new System.Windows.Forms.TabControl();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ResultTabControl = new System.Windows.Forms.TabControl();
+            this.rangeLabel = new System.Windows.Forms.Label();
+            this.rangeUpDown = new System.Windows.Forms.NumericUpDown();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.MainPanel.SuspendLayout();
             this.SearchPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rangeUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -92,9 +92,6 @@
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.toolStripSeparator1,
-            this.printToolStripMenuItem,
-            this.printPreviewToolStripMenuItem,
-            this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
@@ -134,28 +131,6 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(152, 6);
-            // 
-            // printToolStripMenuItem
-            // 
-            this.printToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("printToolStripMenuItem.Image")));
-            this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.printToolStripMenuItem.Name = "printToolStripMenuItem";
-            this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.printToolStripMenuItem.Text = "&Print";
-            // 
-            // printPreviewToolStripMenuItem
-            // 
-            this.printPreviewToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripMenuItem.Image")));
-            this.printPreviewToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
-            this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.printPreviewToolStripMenuItem.Text = "Print Pre&view";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(152, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -224,30 +199,30 @@
             // contentsToolStripMenuItem
             // 
             this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.contentsToolStripMenuItem.Text = "&Contents";
             // 
             // indexToolStripMenuItem
             // 
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.searchToolStripMenuItem.Text = "&Search";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(115, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "&About...";
             // 
             // statusStrip1
@@ -293,6 +268,8 @@
             // 
             this.SearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
+            this.SearchPanel.Controls.Add(this.rangeUpDown);
+            this.SearchPanel.Controls.Add(this.rangeLabel);
             this.SearchPanel.Controls.Add(this.closeButton);
             this.SearchPanel.Controls.Add(this.searchButton);
             this.SearchPanel.Controls.Add(this.SourceLabel);
@@ -309,10 +286,10 @@
             // 
             this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.searchButton.Enabled = false;
-            this.searchButton.Location = new System.Drawing.Point(34, 94);
+            this.searchButton.Location = new System.Drawing.Point(34, 104);
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(75, 23);
-            this.searchButton.TabIndex = 3;
+            this.searchButton.TabIndex = 4;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
             this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
@@ -332,14 +309,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.sourceTextBox.Location = new System.Drawing.Point(3, 25);
             this.sourceTextBox.Name = "sourceTextBox";
-            this.sourceTextBox.Size = new System.Drawing.Size(187, 20);
+            this.sourceTextBox.Size = new System.Drawing.Size(139, 20);
             this.sourceTextBox.TabIndex = 1;
             this.sourceTextBox.TextChanged += new System.EventHandler(this.searchButton_UpdateStatus);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 52);
+            this.label1.Location = new System.Drawing.Point(12, 48);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 2;
@@ -348,10 +325,10 @@
             // ResetButton
             // 
             this.ResetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ResetButton.Location = new System.Drawing.Point(115, 94);
+            this.ResetButton.Location = new System.Drawing.Point(115, 104);
             this.ResetButton.Name = "ResetButton";
             this.ResetButton.Size = new System.Drawing.Size(75, 23);
-            this.ResetButton.TabIndex = 3;
+            this.ResetButton.TabIndex = 5;
             this.ResetButton.Text = "Reset";
             this.ResetButton.UseVisualStyleBackColor = true;
             // 
@@ -359,11 +336,22 @@
             // 
             this.destinationTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.destinationTextBox.Location = new System.Drawing.Point(3, 68);
+            this.destinationTextBox.Location = new System.Drawing.Point(3, 64);
             this.destinationTextBox.Name = "destinationTextBox";
             this.destinationTextBox.Size = new System.Drawing.Size(187, 20);
-            this.destinationTextBox.TabIndex = 2;
+            this.destinationTextBox.TabIndex = 3;
             this.destinationTextBox.TextChanged += new System.EventHandler(this.searchButton_UpdateStatus);
+            // 
+            // ResultTabControl
+            // 
+            this.ResultTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.ResultTabControl.Location = new System.Drawing.Point(196, 3);
+            this.ResultTabControl.Name = "ResultTabControl";
+            this.ResultTabControl.SelectedIndex = 0;
+            this.ResultTabControl.Size = new System.Drawing.Size(427, 399);
+            this.ResultTabControl.TabIndex = 3;
             // 
             // splitter1
             // 
@@ -379,16 +367,21 @@
             this.dataGridViewTextBoxColumn1.HeaderText = "Tag";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
-            // ResultTabControl
+            // rangeLabel
             // 
-            this.ResultTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.ResultTabControl.Location = new System.Drawing.Point(196, 3);
-            this.ResultTabControl.Name = "ResultTabControl";
-            this.ResultTabControl.SelectedIndex = 0;
-            this.ResultTabControl.Size = new System.Drawing.Size(427, 399);
-            this.ResultTabControl.TabIndex = 3;
+            this.rangeLabel.AutoSize = true;
+            this.rangeLabel.Location = new System.Drawing.Point(143, 9);
+            this.rangeLabel.Name = "rangeLabel";
+            this.rangeLabel.Size = new System.Drawing.Size(44, 13);
+            this.rangeLabel.TabIndex = 4;
+            this.rangeLabel.Text = "+/- (km)";
+            // 
+            // rangeUpDown
+            // 
+            this.rangeUpDown.Location = new System.Drawing.Point(148, 25);
+            this.rangeUpDown.Name = "rangeUpDown";
+            this.rangeUpDown.Size = new System.Drawing.Size(42, 20);
+            this.rangeUpDown.TabIndex = 2;
             // 
             // MainWindow
             // 
@@ -408,6 +401,7 @@
             this.MainPanel.ResumeLayout(false);
             this.SearchPanel.ResumeLayout(false);
             this.SearchPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rangeUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -422,9 +416,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem printPreviewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
@@ -505,6 +496,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn imeModeDataGridViewTextBoxColumn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.TabControl ResultTabControl;
+        private System.Windows.Forms.Label rangeLabel;
+        private System.Windows.Forms.NumericUpDown rangeUpDown;
 
     }
 }
