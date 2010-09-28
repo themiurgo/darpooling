@@ -7,6 +7,10 @@ using System.Runtime.Serialization;
 
 namespace Communication
 {
+
+    /// <summary>
+    /// Abstract class representing a result to a command.
+    /// </summary>
     [DataContract]
     [KnownType(typeof(NullResult))]
     [KnownType(typeof(ConnectionErrorResult))]
@@ -31,14 +35,27 @@ namespace Communication
         }
     }
 
+    // General purpose results
 
-
-    // General Purpose Result
+    /// <summary>
+    /// Represents a null result. Used when service cannot return a result
+    /// immediately.
+    /// </summary>
     [DataContract]
     public class NullResult : Result { }
 
     [DataContract]
     public class ConnectionErrorResult : Result { }
+
+    /// <summary>
+    /// This result is used when working with callbacks is not possible
+    /// (i.e. smartphone devices). It simply says to wait for a given (or
+    /// arbitrary) amount of time and then try again requesting the resource.
+    /// </summary>
+    public class WaitAndTryResult : Result
+    {
+        public int Seconds { get; set; }
+    }
 
 
     // Possible results in response to RegisterUserCommand
@@ -121,15 +138,4 @@ namespace Communication
     
     [DataContract]
     public class SearchTripError : Result { }
-
-
-    /// <summary>
-    /// This result is used when working with callbacks is not possible
-    /// (i.e. smartphone devices). It simply says to wait for a given (or
-    /// arbitrary) amount of time and then try again requesting the resource.
-    /// </summary>
-    public class WaitAndTryResult : Result
-    {
-        public int Seconds { get; set; }
-    }
 }
