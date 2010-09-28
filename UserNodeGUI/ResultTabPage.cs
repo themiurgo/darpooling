@@ -11,7 +11,7 @@ namespace UserNodeGUI
 {
     public partial class ResultTabPage : TabPage
     {
-        DataGridView gridview;
+        private DataGridView gridview;
 
         public ResultTabPage()
         {
@@ -23,7 +23,6 @@ namespace UserNodeGUI
             gridview.Location = new System.Drawing.Point(3, 3);
             gridview.Name = "resultGridView";
             gridview.TabIndex = 0;
-            //gridview.DataSource = stresult.Trips;
 
             Controls.Add(gridview);
             Location = new System.Drawing.Point(4, 22);
