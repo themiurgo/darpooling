@@ -49,21 +49,20 @@ namespace Communication
     }
 
 
-
+    /// <summary>
+    /// Represents a user node, i.e. a client node that connects to a service
+    /// node in order to request its services.
+    /// </summary>
     public class UserNode : Node
     {
         private string userLocationName;
         private User user;
 
         public UserNode(string userName, Location nodeLocation) :
-            base(userName, null, nodeLocation)
-        {
-        }
+            base(userName, null, nodeLocation) { }
 
         public UserNode(string userName) :
-            base(userName)
-        {
-        }
+            base(userName) { }
 
         public UserNode(User user, string userLocationName)
             : base(user.UserName)
@@ -71,7 +70,6 @@ namespace Communication
             this.user = user;
             this.userLocationName = userLocationName;
         }
-
 
         public UserNode(string userName, string userLocationName) :
             base(userName)
@@ -92,6 +90,11 @@ namespace Communication
 
     }
 
+
+    /// <summary>
+    /// Represents a service node, i.e. a node that exposes services available
+    /// to user nodes, and is connected to other service peers.
+    /// </summary>
     public class ServiceNode : Node
     {
         private List<ServiceNode> neighbours;
@@ -114,7 +117,6 @@ namespace Communication
             return neighbours.Contains(node);
         }
 
-
         public void addNeighbour(ServiceNode neighbourNode)
         {
             if (!hasNeighbour(neighbourNode))
@@ -124,32 +126,26 @@ namespace Communication
             }
         }
 
-
         public void removeNeighbour(ServiceNode neighbour)
         {
             neighbours.Remove(neighbour);
         }
-
 
         public bool hasUser(UserNode node)
         {
             return localUsers.Contains(node);
         }
 
-
         public void addUser(UserNode node)
         {
             localUsers.Add(node);
         }
-
 
         public void removeUser(UserNode node)
         {
             localUsers.Remove(node);
         }
 
-
-        //Properties
         public int NumNeighbours
         {
             get { return neighbours.Count; }

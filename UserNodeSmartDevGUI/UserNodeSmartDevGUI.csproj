@@ -46,6 +46,8 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ServiceModel.Channels.Mail" />
+    <Reference Include="Microsoft.ServiceModel.Channels.Mail.WindowsMobile" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
