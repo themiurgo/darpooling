@@ -6,9 +6,8 @@ namespace Communication
 {
 
     /// <summary>
-    /// Location is the class that models the geocoord of a city, in terms of
-    /// latitude and longitude.
-    /// It also exposes the method to compute the distance between two location.
+    /// Represents a punctual location, in terms of latitude, longitude (and
+    /// a name). It is possible to compute the distance between two location.
     /// </summary>
     public class Location
     {
@@ -34,7 +33,6 @@ namespace Communication
             Longitude = longitude;
         }
 
-        #region Properties
         public string Name
         {
             get { return name; }
@@ -52,7 +50,6 @@ namespace Communication
             get { return longitude; }
             set { longitude = value; }
         }
-        #endregion
 
         /// <summary>
         /// Return distance in km to another Location.
@@ -79,6 +76,11 @@ namespace Communication
     }
 
 
+    /// <summary>
+    /// Represents a circle-like location, as a puntual location and a range
+    /// around it. It is possible to check if a location is inside a
+    /// LocationRange.
+    /// </summary>
     public class LocationRange : Location
     {
         private int range;
@@ -97,10 +99,9 @@ namespace Communication
 
 
     /// <summary>
-    /// Class User represents the generic user of the DarPooling system.
-    /// It containts the fields that model the personal information and the properties
-    /// to access them.
-    /// Instances of this class will be stored in the service database.
+    /// Represents a User. It contains the fields that model the personal
+    /// information. Instances of this class are meant to be stored in
+    /// service database/files.
     /// </summary>
     [DataContract]
     public class User
@@ -114,7 +115,7 @@ namespace Communication
         public int UserID { get; set; }
         [DataMember]
         public String UserName { get; set; }
-        // [DataMember] Should be datamember?
+
         public String Password
         {
             set { pw_hash = Tools.HashString(value); }
@@ -152,9 +153,8 @@ namespace Communication
 
 
     /// <summary>
-    /// Trip models the fundamental entity of the DarPooling service, that is
-    /// trip that a generic user chooses to share with other users. Trip are created
-    /// and stored in the service databases, and they could be searched and modified.
+    /// Represents a trip. Trip are created and stored in service databases,
+    /// and they can be searched and modified.
     /// </summary>
     [DataContract]
     public class Trip
@@ -258,18 +258,6 @@ namespace Communication
         public int FreeSits { get; set; }
         [DataMember]
         public String Notes { get; set; }
-
-        //[DataMember]
-        //public Boolean Modifiable { get; set; }
     }
 
-    
-    public class TripSpecifier
-    {
-        private Location source;
-        private Location destination;
-    }
-
-
-
-} //End Namespace
+}
