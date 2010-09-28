@@ -42,7 +42,7 @@ namespace UserNodeGUI
                 core.Join(UsernameTextbox.Text, PasswordTextBox.Text,
                     AddressComboBox.Text, "http://localhost:2222");
             }
-            catch (Exception exc)
+            catch
             {
                 MessageBox.Show("Connection error");
             }
