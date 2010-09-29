@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DarPoolingService.cs" />
+    <Compile Include="DarPoolingServiceMobile.cs" />
     <Compile Include="IDarPoolingForwarding.cs" />
     <Compile Include="Launcher.cs" />
     <Compile Include="ServiceNodeCore.cs" />

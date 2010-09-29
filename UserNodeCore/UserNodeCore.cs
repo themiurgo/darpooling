@@ -237,16 +237,17 @@ namespace UserNodeCore
             int range;
             while (true)
             {
-                /*
-                EndpointAddress endPointAddress = new EndpointAddress("http://79.53.101.54:1111/Calc");
+                
+                EndpointAddress endPointAddress = new EndpointAddress("http://localhost:1155/Catania");
                 BasicHttpBinding binding = new BasicHttpBinding();
 
-                ChannelFactory<ICalculator> factory = new ChannelFactory<ICalculator>(
+                ChannelFactory<IDarPoolingMobile> factory = new ChannelFactory<IDarPoolingMobile>(
                         binding, endPointAddress);
 
-                ICalculator serviceProxy = factory.CreateChannel();
-                serviceProxy.Add(2, 3);
-                */
+                IDarPoolingMobile serviceProxy = factory.CreateChannel();
+                string res = serviceProxy.HandleDarPoolingMobileRequest(new UnjoinCommand("pippo"));
+
+                Console.WriteLine("Got :  {0}", res);
 
                 Console.WriteLine("I per insert, S per search, R per search-range:");
                 string instruction = Console.ReadLine();

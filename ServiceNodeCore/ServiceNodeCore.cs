@@ -38,9 +38,11 @@ namespace ServiceNodeCore
         
         // Provide a host for the DarPooling Service.
         private ServiceHost serviceHost;
-        
         // Reference of the implementor of the IDarPooling interface.
         private DarPoolingService serviceImpl;
+
+        private ServiceHost mobileServiceHost;
+        private DarPoolingServiceMobile mobileServiceImpl;
 
         // The root directory for all local databases
         // FIXME: The directory should be automatically created, if it is not found.
@@ -81,6 +83,8 @@ namespace ServiceNodeCore
             
             // Create a new instance of the service implementor.
             serviceImpl = new DarPoolingService(this);
+
+            mobileServiceImpl = new DarPoolingServiceMobile();
 
             // Set the delegates
             removeJoinedUser = new RemoveJoinedUser(serviceImpl.RemoveJoinedUser);
@@ -140,15 +144,23 @@ namespace ServiceNodeCore
             mex_behavior.HttpGetEnabled = true;
 
             // Hosting the services
-            serviceHost = new ServiceHost(serviceImpl, mobile_uri);
-            serviceHost.AddServiceEndpoint(darPoolingMobileContract, mobile_binding, "");
-            serviceHost.AddServiceEndpoint(darPoolingContract, http_binding, http_uri); 
+            serviceHost = new ServiceHost(serviceImpl, http_uri);
+            //serviceHost.AddServiceEndpoint(darPoolingMobileContract, mobile_binding, "");
+            serviceHost.AddServiceEndpoint(darPoolingContract, http_binding, ""); 
             serviceHost.AddServiceEndpoint(darPoolingForwardingContract, fwd_binding, fwd_uri);
             serviceHost.Description.Behaviors.Add(mex_behavior);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
 
+            mobileServiceHost = new ServiceHost(mobileServiceImpl, mobile_uri);
+            mobileServiceHost.AddServiceEndpoint(darPoolingMobileContract, mobile_binding, "");
+            mobileServiceHost.Description.Behaviors.Add(mex_behavior);
+            mobileServiceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
+ 
+
+
             // Run the service
             serviceHost.Open();
+            mobileServiceHost.Open();
 
             // Start the daemons in the service
             serviceImpl.StartTimers();
