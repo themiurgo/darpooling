@@ -20,6 +20,9 @@ namespace ServiceNodeCore
         void HandleForwardedDarPoolingRequest(Command fwdCommand, string rootSenderAddress);
 
         [OperationContract(IsOneWay = true)]
+        void HandleForwardedRangeSearch(Command command, string senderAddress, QueryBuilder query);
+
+        [OperationContract(IsOneWay = true)]
         void ReturnFinalResult(Result finalResult, Command originalCommand);
 
     }
@@ -51,4 +54,17 @@ namespace ServiceNodeCore
         }
         
     }
+
+
+    public class MultipleForwardRequiredResult : Result
+    {
+        //private QueryBuilder originalQuery;
+
+        //MultipleForwardRequiredResult(QueryBuilder qb)
+        //{
+        //    originalQuery = qb;
+        //}
+    
+    }
+
 }

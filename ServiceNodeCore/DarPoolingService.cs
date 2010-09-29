@@ -47,6 +47,13 @@ namespace ServiceNodeCore
         private Dictionary<string, string> fwdCommandService;
         private ReaderWriterLockSlim fwdCommandServiceLock;
 
+        // Keep track of the time when a command has been received.
+        private Dictionary<string, DateTime> commandTimestamp;
+        private ReaderWriterLockSlim commandTimestampLock;
+
+        // Start a routine that periodically check the liveness of the commands
+        private Timer commandTimer;
+
         private bool debug = true;
         
 
@@ -77,6 +84,15 @@ namespace ServiceNodeCore
             fwdCommandService = new Dictionary<string, string>();
             fwdCommandServiceLock = new ReaderWriterLockSlim();
 
+            commandTimestamp = new Dictionary<string, DateTime>();
+            commandTimestampLock = new ReaderWriterLockSlim();
+
+        }
+
+        public void StartTimers()
+        {
+            TimerCallback checkCommand = new TimerCallback(PeriodicCheckCommands);
+            commandTimer = new Timer(checkCommand, null, 5000, 10000);
         }
 
 
@@ -104,6 +120,15 @@ namespace ServiceNodeCore
         }
 
 
+        public void HandleForwardedRangeSearch(Command command, string senderAddress, QueryBuilder query)
+        {
+            if (debug)
+                Console.WriteLine("{0} {1} node received FWD_RangeSearch", LogTimestamp, receiver.NodeName.ToUpper());
+
+            //AddFwdCommandService(fwdCommand.CommandID, rootSenderAddress);
+        
+        }
+
         /// <summary>
         /// IDarPoolingForwarding method. The user-related command uses only one hop,
         /// i.e. they always reach the correct and final destination node with only
@@ -121,6 +146,7 @@ namespace ServiceNodeCore
             fwdCommand.Callback = new AsyncCallback(ProcessResultOfForwardedCommand);
             fwdCommand.Execute();
         }
+
 
 
         /// <summary>
@@ -220,6 +246,7 @@ namespace ServiceNodeCore
 
 
 
+
         /// <summary>
         /// Forward aCommand to remote service.
         /// </summary>
@@ -278,20 +305,6 @@ namespace ServiceNodeCore
 
             return false;        
         }
-        
-
-
-
-        // Generate GUIDs using SHA1
-        public string generateGUID()
-        {
-            // Use atomic sum
-            Interlocked.Add(ref commandCounter, 1);
-            string baseString = receiver.BaseForwardAddress + receiver.NodeName +
-                                DateTime.Now.ToString() + commandCounter;// +objType.ToString();
-            return Tools.HashString(baseString);
-        }
-
 
         private void RegisterResult(Result commandResult)
         {
@@ -305,8 +318,45 @@ namespace ServiceNodeCore
             {
                 AddJoinedUser(register.FinalUsername);
             }
+
+        }
+
+
+        private void PeriodicCheckCommands(object state)
+        {
+            Console.WriteLine("{0} Total pending commands in {1}: {2}", LogTimestamp, receiver.NodeName, commandClient.Count);
+
+            commandClientLock.EnterUpgradeableReadLock();
+            try
+            {
+                /*
+                foreach (KeyValuePair<Command,IDarPoolingCallback> pair in commandClient)
+                TimeSpan totalTime = DateTime.Now.Subtract(originalCommand.Timestamp);
+                Console.WriteLine("{0} Total time for {1}: {2}", LogTimestamp, originalCommand.GetType().Name, totalTime.TotalMilliseconds);
+
+                Console.WriteLine("{0} {1}:Command check daemon", LogTimestamp, receiver.NodeName);
+                 */ 
+            }
+            finally
+            {
+                commandClientLock.ExitUpgradeableReadLock();
+            }
         
         }
+
+
+        // Generate GUIDs using SHA1
+        public string generateGUID()
+        {
+            // Use atomic sum
+            Interlocked.Add(ref commandCounter, 1);
+            string baseString = receiver.BaseForwardAddress + receiver.NodeName +
+                                DateTime.Now.ToString() + commandCounter;// +objType.ToString();
+            return Tools.HashString(baseString);
+        }
+
+
+
 
 
         private string UTC
@@ -385,8 +435,52 @@ namespace ServiceNodeCore
         #endregion
 
 
+        #region Command-Timestamp Management
+
+        private void AddCommandTimestamp(string commandID, DateTime time)
+        {
+            commandTimestampLock.EnterWriteLock();
+            try
+            {
+                commandTimestamp.Add(commandID, time);
+            }
+            finally
+            {
+                commandTimestampLock.ExitWriteLock();
+            }
+        }
+
+        private DateTime GetCommandTimestamp(string commandID)
+        {
+            commandTimestampLock.EnterReadLock();
+            try
+            {
+                return commandTimestamp[commandID];
+            }
+            finally
+            {
+                commandTimestampLock.ExitReadLock();
+            }
+        }
+
+        private void RemoveCommandTimestamp(string commandID)
+        {
+            commandTimestampLock.EnterWriteLock();
+            try
+            {
+                commandTimestamp.Remove(commandID);
+            }
+            finally
+            {
+                commandTimestampLock.ExitWriteLock();
+            }
+        }
+
+        #endregion
+
+
         #region Command-Client Management
-        
+
         private void AddCommandClient(string commandID, IDarPoolingCallback client)
         {
             commandClientLock.EnterWriteLock();
