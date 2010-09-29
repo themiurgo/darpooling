@@ -27,7 +27,7 @@ namespace ServiceNodeCore
     /// it will forward the request to another node.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class DarPoolingService : IDarPooling, IDarPoolingForwarding
+    public class DarPoolingService : IDarPooling, IDarPoolingForwarding, IDarPoolingMobile
     {
         // An istance of ServiceNodeCore is the receiver for all client commands.
         private ServiceNodeCore receiver;
@@ -147,6 +147,11 @@ namespace ServiceNodeCore
             fwdCommand.Execute();
         }
 
+
+        public Result HandleDarPoolingMobileRequest()
+        {
+            return new NullResult();
+        }
 
 
         /// <summary>

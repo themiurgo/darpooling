@@ -63,7 +63,7 @@ namespace ServiceNodeCore
                         
         // The root http and tcp addresses, available to clients.
         private const string baseHTTPAddress = "http://localhost:1111/";
-        private const string baseTCPAddress = "net.tcp://localhost:1155/";
+        private const string baseMobileAddress = "http://localhost:1155/";
         // The root address used for communication between services.
         private const string baseForwardAddress = "http://localhost:1177/";
 
@@ -128,20 +128,21 @@ namespace ServiceNodeCore
 
             // Set address, binding, contract and behavior of the Service
             Uri http_uri = new Uri(baseHTTPAddress + NodeName);
-            Uri tcp_uri = new Uri(baseTCPAddress + NodeName);
+            Uri mobile_uri = new Uri(baseMobileAddress + NodeName);
             Uri fwd_uri = new Uri(baseForwardAddress + NodeName);
             WSDualHttpBinding http_binding = new WSDualHttpBinding();
-            NetTcpBinding tcp_binding = new NetTcpBinding();
+            BasicHttpBinding mobile_binding = new BasicHttpBinding();
             BasicHttpBinding fwd_binding = new BasicHttpBinding();
             Type darPoolingContract = typeof(IDarPooling);
             Type darPoolingForwardingContract = typeof(IDarPoolingForwarding);
+            Type darPoolingMobileContract = typeof(IDarPoolingMobile);
             ServiceMetadataBehavior mex_behavior = new ServiceMetadataBehavior();
             mex_behavior.HttpGetEnabled = true;
 
             // Hosting the services
-            serviceHost = new ServiceHost(serviceImpl, http_uri);
-            serviceHost.AddServiceEndpoint(darPoolingContract, http_binding, "");
-            serviceHost.AddServiceEndpoint(darPoolingContract, tcp_binding, tcp_uri);
+            serviceHost = new ServiceHost(serviceImpl, mobile_uri);
+            serviceHost.AddServiceEndpoint(darPoolingMobileContract, mobile_binding, "");
+            serviceHost.AddServiceEndpoint(darPoolingContract, http_binding, http_uri); 
             serviceHost.AddServiceEndpoint(darPoolingForwardingContract, fwd_binding, fwd_uri);
             serviceHost.Description.Behaviors.Add(mex_behavior);
             serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
