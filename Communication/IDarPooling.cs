@@ -37,5 +37,10 @@ namespace Communication
     /// the mobile clients.
     /// </summary>
     [ServiceContract]
-    public interface IDarPoolingMobile { }
+    public interface IDarPoolingMobile 
+    {
+        [OperationContract]
+        Result HandleDarPoolingMobileRequest();
+    
+    }
 }
