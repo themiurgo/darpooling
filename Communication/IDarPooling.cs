@@ -40,7 +40,10 @@ namespace Communication
     public interface IDarPoolingMobile 
     {
         [OperationContract]
-        Result HandleDarPoolingMobileRequest();
+        string HandleDarPoolingMobileRequest(Command c);
+
+        [OperationContract]
+        Result GetMobileResult(string requestID);
     
     }
 }

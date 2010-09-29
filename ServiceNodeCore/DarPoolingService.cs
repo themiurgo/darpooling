@@ -27,7 +27,7 @@ namespace ServiceNodeCore
     /// it will forward the request to another node.
     /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class DarPoolingService : IDarPooling, IDarPoolingForwarding, IDarPoolingMobile
+    public class DarPoolingService : IDarPooling, IDarPoolingForwarding
     {
         // An istance of ServiceNodeCore is the receiver for all client commands.
         private ServiceNodeCore receiver;
@@ -147,11 +147,6 @@ namespace ServiceNodeCore
             fwdCommand.Execute();
         }
 
-
-        public Result HandleDarPoolingMobileRequest()
-        {
-            return new NullResult();
-        }
 
 
         /// <summary>
@@ -329,7 +324,7 @@ namespace ServiceNodeCore
 
         private void PeriodicCheckCommands(object state)
         {
-            Console.WriteLine("{0} Total pending commands in {1}: {2}", LogTimestamp, receiver.NodeName, commandClient.Count);
+            //Console.WriteLine("{0} Total pending commands in {1}: {2}", LogTimestamp, receiver.NodeName, commandClient.Count);
 
             commandClientLock.EnterUpgradeableReadLock();
             try
