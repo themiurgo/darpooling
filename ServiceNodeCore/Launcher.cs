@@ -179,7 +179,7 @@ namespace ServiceNodeCore
             ServiceNodeCore lastNode = sncList.Last();
             Thread[] threads = new Thread[4];
 
-            Thread registerThread;
+            //Thread registerThread;
 
             foreach (ServiceNodeCore snc in sncList)
             {

@@ -149,6 +149,9 @@ namespace ServiceNodeCore
             // Run the service
             serviceHost.Open();
 
+            // Start the daemons in the service
+            serviceImpl.StartTimers();
+
             Console.WriteLine("OK!");
         }
 
@@ -419,6 +422,106 @@ namespace ServiceNodeCore
         }//End savetrip
 
 
+
+        public Result ForwardedSearchTrip()
+        {
+            return new NullResult();
+        }
+
+
+        public Result SearchTrip(QueryBuilder queryTrip)
+        {
+            // Error! Search range cannot be a negative number!
+            if (queryTrip.Range < 0)
+            {
+                SearchTripError error = new SearchTripError();
+                error.Comment = "Search range must be a non-negative number!";
+                return error;
+            }
+
+            /** Check if the current node is the nearest node to the departure location. */
+            string targetNode = NearestNodeToDeparture(queryTrip.DepartureName);
+
+            if (!targetNode.Equals(NodeName))
+            {
+                Console.WriteLine("Decision: sending SearchTripCommand to : {0}", targetNode);
+                ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
+                forwardRequest.RequestID = serviceImpl.generateGUID();
+                forwardRequest.Destination = baseForwardAddress + targetNode;
+
+                return forwardRequest;
+            }
+
+            // The Search has no range criteria. We can perform a simple search or 
+            // a simple forward request.
+            if (queryTrip.Range == 0)
+            {
+                Console.WriteLine("Testing Range 0");
+                List<Trip> matchingTrip = GetTripZeroRange(queryTrip);
+
+                SearchTripResult searchResult = new SearchTripResult(matchingTrip);
+                searchResult.OriginalQueryID = queryTrip.ID;
+                Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
+
+                return searchResult;
+                
+            }
+            // The client specified a range for search: we need to do a more complex search
+            // and potentially a multiple forwarding.
+            else 
+            {
+
+                Location departureLoc = GMapsAPI.addressToLocation(queryTrip.DepartureName);
+                LocationRange departureLocRange = new LocationRange(departureLoc.Latitude, departureLoc.Longitude, queryTrip.Range);
+
+                List<Trip> matchingTrip = GetTripWithRange(queryTrip, departureLocRange);
+
+                SearchTripResult searchResult = new SearchTripResult(matchingTrip);
+                searchResult.OriginalQueryID = queryTrip.ID;
+                Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
+
+                /** Check if there are other neighbour nodes within the range of search. */
+                string[] targetNeighbours = NeighbourNodesInRange(departureLocRange);
+                if (targetNeighbours.Length > 0)
+                {
+                    foreach (string n in targetNeighbours)
+                    {
+                        Console.WriteLine("{0} is in range.", n);
+                    }
+
+                    return new NullResult();
+
+                }
+                else
+                {
+                    //Console.WriteLine("No neighbour is in range.");
+                    return searchResult;
+                
+                }
+                
+            }
+
+        }//End SearchTrip
+
+        #endregion
+
+
+        private string[] NeighbourNodesInRange(LocationRange departureLocRange)
+        {
+            List<string> targetNeighbours = new List<string>();
+
+            foreach (ServiceNode neighbour in Neighbours)
+            {
+                /** The neighbour is within the range. */
+                if (departureLocRange.contains(neighbour.Location))
+                {
+                    targetNeighbours.Add(baseForwardAddress + neighbour.NodeName);
+                }
+            }
+
+            return targetNeighbours.ToArray();        
+        }
+
         private string NearestNodeToDeparture(string departure)
         {
             Location departureLoc = GMapsAPI.addressToLocation(departure);
@@ -446,72 +549,10 @@ namespace ServiceNodeCore
                     minDistance = tempDistance;
                     targetNode = neighbour.NodeName;
                 }
-            } 
+            }
 
             return targetNode;
         }
-
-
-
-        public Result SearchTrip(QueryBuilder queryTrip)
-        {
-            // Error! Search range cannot be a negative number!
-            if (queryTrip.Range < 0)
-            {
-                SearchTripError error = new SearchTripError();
-                error.Comment = "Search range must be a non-negative number!";
-                return error;
-            }
-            
-            
-            /** Check if the current node is the nearest node to the 
-              * departure location.
-              */
-            string targetNode = NearestNodeToDeparture(queryTrip.DepartureName);
-
-            if (!targetNode.Equals(NodeName))
-            {
-                Console.WriteLine("Decision: sending SearchTripCommand to : {0}", targetNode);
-                ForwardRequiredResult forwardRequest = new ForwardRequiredResult();
-                forwardRequest.RequestID = serviceImpl.generateGUID();
-                forwardRequest.Destination = baseForwardAddress + targetNode;
-
-                return forwardRequest;
-
-            }
-            
-          
-            // The Search has no range criteria.
-            if (queryTrip.Range == 0)
-            {
-                List<Trip> matchingTrip = GetTripZeroRange(queryTrip);
-
-                SearchTripResult searchResult = new SearchTripResult(matchingTrip);
-                searchResult.OriginalQueryID = queryTrip.ID;
-                Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
-
-                return searchResult;
-                
-            }
-            // The client specified a range for search: we need to do a more complex search
-            else 
-            {
-                Location departureLoc = GMapsAPI.addressToLocation(queryTrip.DepartureName);
-                LocationRange departureLocRange = new LocationRange(departureLoc.Latitude, departureLoc.Longitude, queryTrip.Range);
-
-                List<Trip> matchingTrip = GetTripWithRange(queryTrip, departureLocRange);
-
-                SearchTripResult searchResult = new SearchTripResult(matchingTrip);
-                searchResult.OriginalQueryID = queryTrip.ID;
-                Console.WriteLine("{0} {1} Trip(s) were found in {2}", serviceImpl.LogTimestamp, matchingTrip.Count, NodeName);
-
-                return searchResult;
-            }
-
-        }//End SearchTrip
-
-        #endregion
-
 
         public List<Trip> GetTripWithRange(QueryBuilder filterTrip, LocationRange departureLocRange)
         { 

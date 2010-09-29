@@ -237,6 +237,17 @@ namespace UserNodeCore
             int range;
             while (true)
             {
+                /*
+                EndpointAddress endPointAddress = new EndpointAddress("http://79.53.101.54:1111/Calc");
+                BasicHttpBinding binding = new BasicHttpBinding();
+
+                ChannelFactory<ICalculator> factory = new ChannelFactory<ICalculator>(
+                        binding, endPointAddress);
+
+                ICalculator serviceProxy = factory.CreateChannel();
+                serviceProxy.Add(2, 3);
+                */
+
                 Console.WriteLine("I per insert, S per search, R per search-range:");
                 string instruction = Console.ReadLine();
                 switch(instruction)
@@ -304,6 +315,14 @@ namespace UserNodeCore
             }
         }
     }
+
+    /*
+    [ServiceContract(Namespace = "http://opennetcf.wcf.sample")]
+    public interface ICalculator
+    {
+        [OperationContract]
+        int Add(int a, int b);
+    }*/
 
 
 }

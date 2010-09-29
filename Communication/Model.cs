@@ -5,6 +5,7 @@ using System.Reflection;
 namespace Communication
 {
 
+
     /// <summary>
     /// Represents a punctual location, in terms of latitude, longitude (and
     /// a name). It is possible to compute the distance between two location.
