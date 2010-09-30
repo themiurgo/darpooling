@@ -31,7 +31,7 @@ namespace ServiceNodeCore
     {
         // An istance of ServiceNodeCore is the receiver for all client commands.
         private ServiceNodeCore receiver;
-        private IDarPoolingMobile mobile;
+        private DarPoolingServiceMobile mobile;
 
         // A local identifier for Commands.
         private int commandCounter;
@@ -67,6 +67,7 @@ namespace ServiceNodeCore
         /// be aware of attemps to instantiate this class (WCF mess).
         /// </summary>
         private DarPoolingService() { }
+
 
 
         /// <summary>
@@ -206,6 +207,7 @@ namespace ServiceNodeCore
                 if (IsMobileCommand(originalCommand.CommandID))
                 {
                    Console.WriteLine("\n{0} Ready to send the result back to Mobile", LogTimestamp);
+                   mobile.AddMobileResult(originalCommand.CommandID, result);
                    //mobile.
 
                 }
@@ -252,6 +254,7 @@ namespace ServiceNodeCore
                 if (IsMobileCommand(command.CommandID))
                 {
                     Console.WriteLine("\n{0} Ready to send the result back to Mobile", LogTimestamp);
+                    mobile.AddMobileResult(command.CommandID, result);
 
                 }
                 else
@@ -398,7 +401,8 @@ namespace ServiceNodeCore
         }
 
 
-        public IDarPoolingMobile SetMobileHandler
+        
+        public DarPoolingServiceMobile SetMobileHandler
         {
             set { mobile = value; }
         }

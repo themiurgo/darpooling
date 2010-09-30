@@ -9,24 +9,29 @@ using System.ServiceModel;
 namespace ServiceNodeCore
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    class DarPoolingServiceMobile : IDarPoolingMobile
+    public class DarPoolingServiceMobile : IDarPoolingMobile
     {
         private DarPoolingService mainServiceImpl;
         
         private Dictionary<string, Result> results;
         private ReaderWriterLockSlim resultsLock;
 
-        private DarPoolingServiceMobile() { }
+        //private DarPoolingServiceMobile() { }
 
 
         public DarPoolingServiceMobile(DarPoolingService serviceImpl)
         {
             mainServiceImpl = serviceImpl;
+            serviceImpl.SetMobileHandler = this;
 
             results = new Dictionary<string, Result>();
             resultsLock = new ReaderWriterLockSlim();
         }
 
+        public void SetMainImpl(DarPoolingService d)
+        {
+            mainServiceImpl = d;
+        }
 
         #region IDarPoolingMobile Members
 
@@ -77,8 +82,9 @@ namespace ServiceNodeCore
         }
 
 
-        private void AddMobileResult(string requestID, Result result)
+        public void AddMobileResult(string requestID, Result result)
         {
+            Console.WriteLine("{0} A {1} is ready",LogTimestamp,result.GetType().Name);
             resultsLock.EnterWriteLock();
             try
             {
