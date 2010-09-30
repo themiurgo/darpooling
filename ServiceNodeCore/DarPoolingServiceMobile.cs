@@ -16,6 +16,7 @@ namespace ServiceNodeCore
 
         string IDarPoolingMobile.HandleDarPoolingMobileRequest(Command c)
         {
+            Console.WriteLine("Received Mobile Request");
             string timestamp = DateTime.Now.ToString();
             c.CommandID = Tools.HashString(timestamp);
             return timestamp;
