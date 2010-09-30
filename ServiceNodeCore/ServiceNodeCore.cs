@@ -12,8 +12,10 @@ using System.Security.Cryptography;
 
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using System.Net;
 
 using Communication;
+
 
 namespace ServiceNodeCore
 {
@@ -64,10 +66,10 @@ namespace ServiceNodeCore
         private RemoveJoinedUser removeJoinedUser;
                         
         // The root http and tcp addresses, available to clients.
-        private const string baseHTTPAddress = "http://localhost:1111/";
-        private const string baseMobileAddress = "http://localhost:1155/";
+        private string baseHTTPAddress;// = "http://localhost:1111/";
+        private string baseMobileAddress;// = "http://localhost:1155/";
         // The root address used for communication between services.
-        private const string baseForwardAddress = "http://localhost:1177/";
+        private string baseForwardAddress;// = "http://localhost:1177/";
 
 
         #endregion
@@ -84,10 +86,19 @@ namespace ServiceNodeCore
             // Create a new instance of the service implementor.
             serviceImpl = new DarPoolingService(this);
 
-            mobileServiceImpl = new DarPoolingServiceMobile();
+            mobileServiceImpl = new DarPoolingServiceMobile(serviceImpl);
+            serviceImpl.SetMobileHandler = mobileServiceImpl;
 
             // Set the delegates
             removeJoinedUser = new RemoveJoinedUser(serviceImpl.RemoveJoinedUser);
+
+            string serviceIP = "localhost";
+            baseHTTPAddress = "http://" + serviceIP + ":1111/";
+            baseMobileAddress = "http://" + serviceIP + ":1155/";
+            baseForwardAddress = "http://" + serviceIP + ":1177/";
+
+            //Console.WriteLine("Final addresses are:\n {0}\n{1}\n{2}",baseHTTPAddress, baseMobileAddress, baseForwardAddress);
+
 
             InitializeXmlDatabases();
         }

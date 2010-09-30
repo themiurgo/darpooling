@@ -31,6 +31,7 @@ namespace ServiceNodeCore
     {
         // An istance of ServiceNodeCore is the receiver for all client commands.
         private ServiceNodeCore receiver;
+        private IDarPoolingMobile mobile;
 
         // A local identifier for Commands.
         private int commandCounter;
@@ -46,6 +47,10 @@ namespace ServiceNodeCore
         // Keep track of the received forwarded commands.
         private Dictionary<string, string> fwdCommandService;
         private ReaderWriterLockSlim fwdCommandServiceLock;
+
+        // Keep track of the mobile commands
+        private Dictionary<string, Command> pendingMobileCommands;
+        private ReaderWriterLockSlim pendingMobileCommandsLock;
 
         // Keep track of the time when a command has been received.
         private Dictionary<string, DateTime> commandTimestamp;
@@ -83,6 +88,9 @@ namespace ServiceNodeCore
             
             fwdCommandService = new Dictionary<string, string>();
             fwdCommandServiceLock = new ReaderWriterLockSlim();
+
+            pendingMobileCommands = new Dictionary<string, Command>();
+            pendingMobileCommandsLock = new ReaderWriterLockSlim();
 
             commandTimestamp = new Dictionary<string, DateTime>();
             commandTimestampLock = new ReaderWriterLockSlim();
@@ -148,6 +156,22 @@ namespace ServiceNodeCore
         }
 
 
+        public void HandleMobileDarPoolingRequest(Command command)
+        {
+            if (debug)
+                Console.WriteLine("\n{0} {1} node received {2}", LogTimestamp, receiver.NodeName.ToUpper(), command.GetType());
+
+            /** Assign a GUID to the command. */
+            pendingMobileCommands.Add(command.CommandID, command);
+
+            /** Set a ServiceNodeCore as the receiver of the command and execute the command. */
+            command.Timestamp = DateTime.Now;
+            command.Receiver = receiver;
+            command.Callback = new AsyncCallback(ProcessResult);
+            command.Execute();  
+        
+        }
+
 
         /// <summary>
         /// IDarPoolingForwarding method. The service node obtain the result of the forwarded command.
@@ -179,8 +203,17 @@ namespace ServiceNodeCore
                     TimeSpan totalTime = DateTime.Now.Subtract(originalCommand.Timestamp);
                     Console.WriteLine("{0} Total time for {1}: {2}", LogTimestamp, originalCommand.GetType().Name, totalTime.TotalMilliseconds);
                 }
-                IDarPoolingCallback client = ExtractClient(originalCommand.CommandID);
-                ReturnResultToClient(result, client);
+                if (IsMobileCommand(originalCommand.CommandID))
+                {
+                   Console.WriteLine("\n{0} Ready to send the result back to Mobile", LogTimestamp);
+                   //mobile.
+
+                }
+                else
+                {
+                    IDarPoolingCallback client = ExtractClient(originalCommand.CommandID);
+                    ReturnResultToClient(result, client);
+                }
             }
         }
 
@@ -215,8 +248,17 @@ namespace ServiceNodeCore
                     TimeSpan totalTime = DateTime.Now.Subtract(command.Timestamp);
                     Console.WriteLine("{0} Total time for {1}: {2}", LogTimestamp, command.GetType().Name, totalTime.TotalMilliseconds);
                 }
-                IDarPoolingCallback client = ExtractClient(command.CommandID);
-                ReturnResultToClient(result, client);
+
+                if (IsMobileCommand(command.CommandID))
+                {
+                    Console.WriteLine("\n{0} Ready to send the result back to Mobile", LogTimestamp);
+
+                }
+                else
+                {
+                    IDarPoolingCallback client = ExtractClient(command.CommandID);
+                    ReturnResultToClient(result, client);
+                }
             }
         }
 
@@ -356,7 +398,10 @@ namespace ServiceNodeCore
         }
 
 
-
+        public IDarPoolingMobile SetMobileHandler
+        {
+            set { mobile = value; }
+        }
 
 
         private string UTC
@@ -613,6 +658,22 @@ namespace ServiceNodeCore
         }
 
         #endregion
+
+
+
+        private bool IsMobileCommand(string requestID)
+        {
+            pendingMobileCommandsLock.EnterReadLock();
+            try
+            {
+                return pendingMobileCommands.ContainsKey(requestID);
+            }
+            finally
+            {
+                pendingMobileCommandsLock.ExitReadLock();
+            }
+
+        }
 
     }
 }
