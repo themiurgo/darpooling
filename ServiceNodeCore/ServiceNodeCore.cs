@@ -82,12 +82,14 @@ namespace ServiceNodeCore
         public ServiceNodeCore(ServiceNode serviceNode)
         {
             this.serviceNode = serviceNode;
+
             
             // Create a new instance of the service implementor.
             serviceImpl = new DarPoolingService(this);
-
             mobileServiceImpl = new DarPoolingServiceMobile(serviceImpl);
-            serviceImpl.SetMobileHandler = mobileServiceImpl;
+
+
+            //serviceImpl.SetMobileHandler = mobileServiceImpl;
 
             // Set the delegates
             removeJoinedUser = new RemoveJoinedUser(serviceImpl.RemoveJoinedUser);
