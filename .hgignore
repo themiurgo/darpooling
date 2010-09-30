@@ -27,6 +27,8 @@ syntax: glob
 *.sbr
 *.scc
 *.sig
+*\Thumbs.db
+doc\*
 _ReSharper*\*
 config\*.xml
 .DS_Store
