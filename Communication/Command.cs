@@ -155,9 +155,7 @@ namespace Communication
         private UserNode node;
 
         // Credentials
-        [DataMember]
         private string username;
-        [DataMember]
         private string passwordHash;
 
         // The delegate is used to perform an asynchronous invocation
@@ -190,11 +188,20 @@ namespace Communication
             return result;
         }
 
+        [DataMember]
         public string UserName
         {
             get { return username; }
             set { username = value; }
         }
+
+        [DataMember]
+        public string PasswordHash
+        {
+            get { return passwordHash; }
+            set { passwordHash = value; }
+        }
+
     }
 
     // Unjoin the client from darpooling network
@@ -209,8 +216,7 @@ namespace Communication
         // Join DarPoolingOperation
         public delegate Result Logoff(string x);
         Logoff logoff;
-        
-
+       
         public UnjoinCommand(string username)
         {
             this.username = username;
@@ -232,6 +238,7 @@ namespace Communication
             return result;
         }
 
+        [DataMember]
         public string UserName
         {
             get { return username; }

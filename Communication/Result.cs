@@ -23,6 +23,7 @@ namespace Communication
     [KnownType(typeof(InsertOkResult))]
     [KnownType(typeof(SearchTripResult))]
     [KnownType(typeof(SearchTripError))]
+    [KnownType(typeof(WaitAndTryResult))]
     public abstract class Result
     {
         [DataMember]
@@ -46,16 +47,6 @@ namespace Communication
 
     [DataContract]
     public class ConnectionErrorResult : Result { }
-
-    /// <summary>
-    /// This result is used when working with callbacks is not possible
-    /// (i.e. smartphone devices). It simply says to wait for a given (or
-    /// arbitrary) amount of time and then try again requesting the resource.
-    /// </summary>
-    public class WaitAndTryResult : Result
-    {
-        public int Seconds { get; set; }
-    }
 
 
     // Possible results in response to RegisterUserCommand
@@ -138,4 +129,20 @@ namespace Communication
     
     [DataContract]
     public class SearchTripError : Result { }
+
+
+    /// <summary>
+    /// This result is used when working with callbacks is not possible
+    /// (i.e. smartphone devices). It simply says to wait for a given (or
+    /// arbitrary) amount of time and then try again requesting the resource.
+    /// </summary>
+    [DataContract]
+    public class WaitAndTryResult : Result
+    {
+        [DataMember]
+        public int MilliSeconds { get; set; }
+    }
+
+
+
 }
