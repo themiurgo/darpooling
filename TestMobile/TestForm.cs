@@ -42,6 +42,9 @@ namespace TestMobile
 
         private void resultButton_Click(object sender, EventArgs e)
         {
+            //Command c = new Command();
+           
+
             Result result;
             try
             {

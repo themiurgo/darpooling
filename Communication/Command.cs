@@ -51,8 +51,8 @@ namespace Communication
     [KnownType(typeof(SearchTripCommand))]
     public abstract class Command : ICommand
     {
-        [DataMember]
         protected string commandID;
+        protected DateTime timestamp;
         
         // The concrete executer of the Command.
         protected IDarPoolingOperations receiver;
@@ -65,9 +65,6 @@ namespace Communication
         // Result of the Command, will be returned by EndExecute().
         protected Result result;
 
-        [DataMember]
-        protected DateTime timestamp;
-
         /// <summary>
         /// Execute lets the Command be executed. After execution, EndExecute
         /// is called, which returns the Result of the Command execution.
@@ -77,10 +74,19 @@ namespace Communication
         public abstract Result EndExecute(IAsyncResult asyncValue);
 
         #region Basic Properties
+
+        [DataMember]
         public string CommandID
         {
             get { return commandID; }
             set { commandID = value; }
+        }
+
+        [DataMember]
+        public DateTime Timestamp
+        {
+            get { return timestamp; }
+            set { timestamp = value; }
         }
 
         public IDarPoolingOperations Receiver 
@@ -94,11 +100,7 @@ namespace Communication
             set { callbackMethod = value; }
         }
         
-        public DateTime Timestamp
-        {
-            get { return timestamp; }
-            set { timestamp = value; }
-        }
+
         #endregion
     }
 
