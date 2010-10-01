@@ -11,9 +11,25 @@ namespace UserNodeSmartDeviceGUI
 {
     public partial class NewTripForm : Form
     {
+        private SearchForm main;
+
+        public SearchForm Main
+        {
+            get { return main; }
+            set { main = value; }
+        }
+
         public NewTripForm()
         {
             InitializeComponent();
+            main = null;
+        }
+
+        private void cancelMenuItem_Click(object sender, EventArgs e)
+        {
+            Dispose();
+            if (main != null)
+                main.Show();
         }
     }
 }

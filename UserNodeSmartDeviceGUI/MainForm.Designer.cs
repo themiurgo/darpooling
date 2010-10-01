@@ -6,7 +6,7 @@
         /// Variabile di progettazione necessaria.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.MainMenu searchTripMenu;
+        private System.Windows.Forms.MainMenu mainMenu1;
 
         /// <summary>
         /// Liberare le risorse in uso.
@@ -29,98 +29,82 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.searchTripMenu = new System.Windows.Forms.MainMenu();
-            this.menuItem1 = new System.Windows.Forms.MenuItem();
-            this.newTripMenu = new System.Windows.Forms.MenuItem();
+            this.mainMenu1 = new System.Windows.Forms.MainMenu();
+            this.registerItem = new System.Windows.Forms.MenuItem();
+            this.connectItem = new System.Windows.Forms.MenuItem();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // searchTripMenu
+            // mainMenu1
             // 
-            this.searchTripMenu.MenuItems.Add(this.menuItem1);
-            this.searchTripMenu.MenuItems.Add(this.newTripMenu);
+            this.mainMenu1.MenuItems.Add(this.registerItem);
+            this.mainMenu1.MenuItems.Add(this.connectItem);
             // 
-            // menuItem1
+            // registerItem
             // 
-            this.menuItem1.Text = "Search Trip";
+            this.registerItem.Text = "Register";
+            this.registerItem.Click += new System.EventHandler(this.connectItem_Click);
             // 
-            // newTripMenu
+            // connectItem
             // 
-            this.newTripMenu.Text = "New Trip";
-            this.newTripMenu.Click += new System.EventHandler(this.newTripMenu_Click);
+            this.connectItem.Text = "Register";
+            this.connectItem.Click += new System.EventHandler(this.cancelItem_Click);
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(3, 247);
+            this.label1.Location = new System.Drawing.Point(3, 4);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(234, 21);
-            this.label1.Text = "Status: Connected";
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(3, 4);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 20);
-            this.label2.Text = "Source";
+            this.label1.Size = new System.Drawing.Size(70, 20);
+            this.label1.Text = "Username";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(81, 3);
+            this.textBox1.Location = new System.Drawing.Point(79, 3);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(156, 21);
-            this.textBox1.TabIndex = 2;
+            this.textBox1.Size = new System.Drawing.Size(158, 21);
+            this.textBox1.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(3, 31);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(70, 20);
+            this.label2.Text = "Password";
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(0, 59);
+            this.label3.Location = new System.Drawing.Point(3, 58);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(72, 20);
-            this.label3.Text = "Destination";
+            this.label3.Size = new System.Drawing.Size(70, 20);
+            this.label3.Text = "Server";
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(81, 58);
+            this.textBox2.Location = new System.Drawing.Point(79, 30);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(156, 21);
-            this.textBox2.TabIndex = 4;
+            this.textBox2.Size = new System.Drawing.Size(158, 21);
+            this.textBox2.TabIndex = 5;
             // 
-            // numericUpDown1
+            // textBox3
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(81, 30);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(100, 22);
-            this.numericUpDown1.TabIndex = 5;
-            // 
-            // label4
-            // 
-            this.label4.Location = new System.Drawing.Point(0, 32);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 20);
-            this.label4.Text = "+/- (km)";
+            this.textBox3.Location = new System.Drawing.Point(79, 57);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(158, 21);
+            this.textBox3.TabIndex = 6;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(81, 85);
+            this.button1.Location = new System.Drawing.Point(79, 84);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(72, 20);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "Cancel";
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(165, 245);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(72, 20);
-            this.button2.TabIndex = 14;
-            this.button2.Text = "Logout";
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Reset";
             // 
             // MainForm
             // 
@@ -128,35 +112,33 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(240, 268);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
-            this.Menu = this.searchTripMenu;
+            this.KeyPreview = true;
+            this.Menu = this.mainMenu1;
             this.Name = "MainForm";
-            this.Text = "Darpooling - Connected";
+            this.Text = "Darpooling";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ConnectForm_KeyDown);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.MenuItem menuItem1;
-        private System.Windows.Forms.MenuItem newTripMenu;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.MenuItem registerItem;
+        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.MenuItem connectItem;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-
     }
 }
+

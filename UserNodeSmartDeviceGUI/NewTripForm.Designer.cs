@@ -47,7 +47,14 @@
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.insertMenuItem = new System.Windows.Forms.MenuItem();
+            this.cancelMenuItem = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
+            // 
+            // mainMenu1
+            // 
+            this.mainMenu1.MenuItems.Add(this.insertMenuItem);
+            this.mainMenu1.MenuItems.Add(this.cancelMenuItem);
             // 
             // textBox2
             // 
@@ -192,6 +199,15 @@
             this.label5.Size = new System.Drawing.Size(100, 20);
             this.label5.Text = "Notes";
             // 
+            // insertMenuItem
+            // 
+            this.insertMenuItem.Text = "Insert";
+            // 
+            // cancelMenuItem
+            // 
+            this.cancelMenuItem.Text = "Cancel";
+            this.cancelMenuItem.Click += new System.EventHandler(this.cancelMenuItem_Click);
+            // 
             // NewTripForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -241,5 +257,7 @@
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.MenuItem insertMenuItem;
+        private System.Windows.Forms.MenuItem cancelMenuItem;
     }
 }

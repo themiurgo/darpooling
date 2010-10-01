@@ -13,7 +13,7 @@ namespace UserNodeSmartDeviceGUI
         [MTAThread]
         static void Main()
         {
-            Application.Run(new ConnectForm());
+            Application.Run(new MainForm());
         }
     }
 }
