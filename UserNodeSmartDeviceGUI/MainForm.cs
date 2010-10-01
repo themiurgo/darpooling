@@ -41,18 +41,14 @@ namespace UserNodeSmartDeviceGUI
 
         }
 
+        private void registerItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+
         private void connectItem_Click(object sender, EventArgs e)
         {
-            // CONNECT
-            SearchForm f = new SearchForm();
-            f.Show();
-            this.Close();
+            SearchForm sf = new SearchForm(null);
         }
-
-        private void cancelItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }
