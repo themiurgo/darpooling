@@ -8,6 +8,9 @@ using System.Security.Cryptography;
 
 namespace UserNodeCore
 {
+    /// <summary>
+    /// Interface of a UserNode state.
+    /// </summary>
     public interface IState
     {
         bool RegisterUser(UserNodeCore context, User user, string serviceNodeAddress, string callbackAddress);
@@ -18,15 +21,28 @@ namespace UserNodeCore
     }
 
     /// <summary>
+    /// Default implementation of a UserNode state.
+    /// Derived class should override supported methods.
+    /// </summary>
+    public abstract class State : IState
+    {
+        public virtual bool RegisterUser(UserNodeCore context, User user, string serviceNodeAddress, string callbackAddress) { return false; }
+        public virtual bool Join(UserNodeCore context, string username, string password, string serviceNodeAddress, string callbackAddress) { return false; }
+        public virtual bool Unjoin(UserNodeCore context) { return false; }
+        public virtual bool InsertTrip(UserNodeCore context, Communication.Trip trip) { return false; }
+        public virtual bool SearchTrip(UserNodeCore context, QueryBuilder qb) { return false; }
+    }
+
+    /// <summary>
     /// The initial state of any UserNode.
     /// 
     /// From here you can just:
     /// - Register a new User
     /// - Join (login) the network
     /// </summary>
-    public class UnjointState : IState
+    public class UnjointState : State
     {
-        public bool RegisterUser(UserNodeCore context, User user,
+        public override bool RegisterUser(UserNodeCore context, User user,
             string serviceNodeAddress, string callbackAddress)
         {
             try
@@ -61,7 +77,7 @@ namespace UserNodeCore
             return true;
         }
 
-        public bool Join(UserNodeCore context, string username, string password,
+        public override bool Join(UserNodeCore context, string username, string password,
             string serviceNodeAddress, string callbackAddress)
         {
             try
@@ -99,24 +115,6 @@ namespace UserNodeCore
             // Finally, if Join is NOT successfull, remove reference (UserNodeCore.onResultReceive)
             return true;
         }
-
-        public bool Unjoin(UserNodeCore context)
-        {
-            // Not Possible
-            return false;
-        }
-
-        public bool InsertTrip(UserNodeCore context, Communication.Trip trip)
-        {
-            // Not possible
-            return false;
-        }
-
-        public bool SearchTrip(UserNodeCore context, QueryBuilder qb)
-        {
-            // Not possible
-            return false;
-        }
     }
 
     /// <summary>
@@ -127,9 +125,9 @@ namespace UserNodeCore
     /// - Insert a new trip
     /// - Search trips
     /// </summary>
-    public class JointState : IState
+    public class JointState : State
     {
-        public bool Unjoin(UserNodeCore context)
+        public override bool Unjoin(UserNodeCore context)
         {
             Command command = new UnjoinCommand(context.UserNode.User.UserName);
             context.ServiceProxy.HandleDarPoolingRequest(command);
@@ -139,19 +137,13 @@ namespace UserNodeCore
             return true;
         }
 
-        public bool RegisterUser(UserNodeCore context, User user,
+        public override bool RegisterUser(UserNodeCore context, User user,
             string serviceNodeAddress, string callbackAddress)
         {
             return false;
         }
 
-        public bool Join(UserNodeCore context, string username, string password,
-            string serviceNodeAddress, string callbackAddress)
-        {
-            return false;
-        }
-
-        public bool InsertTrip(UserNodeCore context, Communication.Trip trip)
+        public override bool InsertTrip(UserNodeCore context, Communication.Trip trip)
         {
             Command command = new InsertTripCommand(trip);
             context.ServiceProxy.HandleDarPoolingRequest(command);
@@ -159,7 +151,7 @@ namespace UserNodeCore
             return true;
         }
 
-        public bool SearchTrip(UserNodeCore context, QueryBuilder qb)
+        public override bool SearchTrip(UserNodeCore context, QueryBuilder qb)
         {
             Command command = new SearchTripCommand(qb);
             context.ServiceProxy.HandleDarPoolingRequest(command);

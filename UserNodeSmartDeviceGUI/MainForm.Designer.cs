@@ -49,12 +49,12 @@
             // registerItem
             // 
             this.registerItem.Text = "Register";
-            this.registerItem.Click += new System.EventHandler(this.connectItem_Click);
+            this.registerItem.Click += new System.EventHandler(this.registerItem_Click);
             // 
             // connectItem
             // 
-            this.connectItem.Text = "Register";
-            this.connectItem.Click += new System.EventHandler(this.cancelItem_Click);
+            this.connectItem.Text = "Connect";
+            this.connectItem.Click += new System.EventHandler(this.connectItem_Click);
             // 
             // label1
             // 
