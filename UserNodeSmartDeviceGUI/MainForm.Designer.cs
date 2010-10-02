@@ -33,12 +33,12 @@
             this.registerItem = new System.Windows.Forms.MenuItem();
             this.connectItem = new System.Windows.Forms.MenuItem();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.usernameTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.passwordTextBox = new System.Windows.Forms.TextBox();
+            this.serverTextBox = new System.Windows.Forms.TextBox();
+            this.resetButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -63,12 +63,12 @@
             this.label1.Size = new System.Drawing.Size(70, 20);
             this.label1.Text = "Username";
             // 
-            // textBox1
+            // usernameTextBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(79, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(158, 21);
-            this.textBox1.TabIndex = 1;
+            this.usernameTextBox.Location = new System.Drawing.Point(79, 3);
+            this.usernameTextBox.Name = "usernameTextBox";
+            this.usernameTextBox.Size = new System.Drawing.Size(158, 21);
+            this.usernameTextBox.TabIndex = 1;
             // 
             // label2
             // 
@@ -84,27 +84,28 @@
             this.label3.Size = new System.Drawing.Size(70, 20);
             this.label3.Text = "Server";
             // 
-            // textBox2
+            // passwordTextBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(79, 30);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(158, 21);
-            this.textBox2.TabIndex = 5;
+            this.passwordTextBox.Location = new System.Drawing.Point(79, 30);
+            this.passwordTextBox.Name = "passwordTextBox";
+            this.passwordTextBox.Size = new System.Drawing.Size(158, 21);
+            this.passwordTextBox.TabIndex = 5;
             // 
-            // textBox3
+            // serverTextBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(79, 57);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(158, 21);
-            this.textBox3.TabIndex = 6;
+            this.serverTextBox.Location = new System.Drawing.Point(79, 57);
+            this.serverTextBox.Name = "serverTextBox";
+            this.serverTextBox.Size = new System.Drawing.Size(158, 21);
+            this.serverTextBox.TabIndex = 6;
             // 
-            // button1
+            // resetButton
             // 
-            this.button1.Location = new System.Drawing.Point(79, 84);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(72, 20);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Reset";
+            this.resetButton.Location = new System.Drawing.Point(79, 84);
+            this.resetButton.Name = "resetButton";
+            this.resetButton.Size = new System.Drawing.Size(72, 20);
+            this.resetButton.TabIndex = 10;
+            this.resetButton.Text = "Reset";
+            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
             // 
             // MainForm
             // 
@@ -112,12 +113,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(240, 268);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.resetButton);
+            this.Controls.Add(this.serverTextBox);
+            this.Controls.Add(this.passwordTextBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.usernameTextBox);
             this.Controls.Add(this.label1);
             this.KeyPreview = true;
             this.Menu = this.mainMenu1;
@@ -131,14 +132,14 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox usernameTextBox;
         private System.Windows.Forms.MenuItem registerItem;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox passwordTextBox;
+        private System.Windows.Forms.TextBox serverTextBox;
         private System.Windows.Forms.MenuItem connectItem;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button resetButton;
     }
 }
 

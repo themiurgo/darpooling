@@ -59,9 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Communication\Command.cs">
-      <Link>Command.cs</Link>
-    </Compile>
     <Compile Include="LogicLayer.cs" />
     <Compile Include="SearchForm.cs">
       <SubType>Form</SubType>
@@ -104,7 +101,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="State.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
   <ProjectExtensions>
